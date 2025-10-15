@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.screens
+package com.dms.dailyjoy.ui.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

@@ -26,9 +26,9 @@ import com.dms.dailyjoy.ui.HistoryRoute
 import com.dms.dailyjoy.ui.HomeRoute
 import com.dms.dailyjoy.ui.SettingsRoute
 import com.dms.dailyjoy.ui.components.BottomNavBar
-import com.dms.dailyjoy.ui.screens.HistoryScreen
-import com.dms.dailyjoy.ui.screens.HomeScreen
-import com.dms.dailyjoy.ui.screens.SettingsScreen
+import com.dms.dailyjoy.ui.history.HistoryScreen
+import com.dms.dailyjoy.ui.home.HomeScreen
+import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 
 class MainActivity : ComponentActivity() {

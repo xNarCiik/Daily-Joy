@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.screens
+package com.dms.dailyjoy.ui.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -6,14 +6,14 @@ import com.dms.dailyjoy.Greeting
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 
 @Composable
-fun HistoryScreen() {
-    Greeting(name = "History")
+fun HomeScreen() {
+    Greeting(name = "Home")
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HistoryScreenPreview() {
+fun HomeScreenPreview() {
     DailyJoyTheme {
-        HistoryScreen()
+        HomeScreen()
     }
 }
