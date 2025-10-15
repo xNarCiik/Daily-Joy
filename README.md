@@ -1,3 +1,5 @@
+![screenshot](docs/banner.png)
+
 # 🌞 Daily Joy — Les petits plaisirs de ta journée
 
 ---
@@ -38,32 +40,7 @@ L’idée : s’accorder un moment rien qu’à soi, sans culpabilité, avec une
 
 ---
 
----
-
-## ⚙️ Structure du projet
-
-com.damien.dailyjoy/
-│
-├── ui/
-│ ├── deck/ # Écran principal (cartes)
-│ ├── detail/ # Écran détail plaisir
-│ ├── history/ # Historique hebdo
-│ ├── settings/ # Paramètres et thèmes
-│ └── components/ # UI réutilisables
-│
-├── data/
-│ ├── model/ # Classes: Pleasure, Category, DayHistory
-│ ├── local/ # Room / DataStore
-│ └── repository/ # Gestion des données
-│
-├── viewmodel/
-│ ├── DeckViewModel.kt
-│ ├── HistoryViewModel.kt
-│ └── SettingsViewModel.kt
-│
-└── utils/
-  ├── AnimationUtils.kt
-  └── ThemeUtils.kt
+## ⚙️ Structure du projet (à venir)
 
 ---
 
