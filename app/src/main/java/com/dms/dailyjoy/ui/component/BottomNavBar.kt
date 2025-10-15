@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.components
+package com.dms.dailyjoy.ui.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange

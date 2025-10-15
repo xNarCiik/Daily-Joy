@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.dms.dailyjoy
+package com.dms.dailyjoy.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,15 +24,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dms.dailyjoy.ui.HistoryRoute
-import com.dms.dailyjoy.ui.HomeRoute
-import com.dms.dailyjoy.ui.SettingsRoute
-import com.dms.dailyjoy.ui.components.BottomNavBar
+import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.BottomNavBar
 import com.dms.dailyjoy.ui.history.HistoryScreen
 import com.dms.dailyjoy.ui.home.HomeScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
