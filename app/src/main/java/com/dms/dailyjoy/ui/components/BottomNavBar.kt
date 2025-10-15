@@ -15,9 +15,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.HistoryRoute
 import com.dms.dailyjoy.ui.HomeRoute
 import com.dms.dailyjoy.ui.SettingsRoute
@@ -32,11 +34,23 @@ data class TabBarItem(
 
 @Composable
 fun BottomNavBar(navController: NavController) {
-    val homeItem = TabBarItem(title = "Home", icon = Icons.Filled.Home, route = HomeRoute)
+    val homeItem = TabBarItem(
+        title = stringResource(R.string.bottom_nav_bar_home_title),
+        icon = Icons.Filled.Home,
+        route = HomeRoute
+    )
     val historyItem =
-        TabBarItem(title = "History", icon = Icons.Filled.DateRange, route = HistoryRoute)
+        TabBarItem(
+            title = stringResource(R.string.bottom_nav_bar_history_title),
+            icon = Icons.Filled.DateRange,
+            route = HistoryRoute
+        )
     val settingsItem =
-        TabBarItem(title = "Settings", icon = Icons.Filled.Settings, route = SettingsRoute)
+        TabBarItem(
+            title = stringResource(R.string.bottom_nav_bar_settings_title),
+            icon = Icons.Filled.Settings,
+            route = SettingsRoute
+        )
 
     val tabBarItems = listOf(homeItem, historyItem, settingsItem)
 
@@ -48,8 +62,17 @@ fun BottomNavBar(navController: NavController) {
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    selectedTabIndex = index
-                    navController.navigate(route = tabBarItem.route)
+                    if (!isSelected) {
+                        selectedTabIndex = index
+                        navController.navigate(route = tabBarItem.route) {
+                            popUpTo(
+                                route = navController.currentBackStackEntry?.destination?.route
+                                    ?: ""
+                            ) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 },
                 icon = {
                     Icon(

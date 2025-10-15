@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,24 +61,67 @@ fun MainActivityContent() {
                     BottomNavBar(navController = navController)
                 }
             ) { innerPadding ->
-                Box(modifier = Modifier.padding(innerPadding)) {
+                Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
                     NavHost(navController = navController, startDestination = HomeRoute) {
-                        composable<HomeRoute> { HomeScreen() }
-                        composable<HistoryRoute> { HistoryScreen() }
-                        composable<SettingsRoute> { SettingsScreen() }
+                        composable<HomeRoute>(
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(durationMillis = 700)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(durationMillis = 700)
+                                )
+                            }
+                        ) {
+                            HomeScreen()
+                        }
+
+                        composable<HistoryRoute>(
+                            enterTransition = {
+                                val leftTransition =
+                                    initialState.destination.route == HomeRoute::class.qualifiedName
+                                slideIntoContainer(
+                                    towards = if (leftTransition) AnimatedContentTransitionScope.SlideDirection.Left else AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(durationMillis = 700)
+                                )
+                            },
+                            exitTransition = {
+                                val rightTransition =
+                                    targetState.destination.route == HomeRoute::class.qualifiedName
+                                slideOutOfContainer(
+                                    towards = if (rightTransition) AnimatedContentTransitionScope.SlideDirection.Right else AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(durationMillis = 700)
+                                )
+                            }
+                        ) {
+                            HistoryScreen()
+                        }
+
+                        composable<SettingsRoute>(
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(durationMillis = 700)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(durationMillis = 700)
+                                )
+                            }
+                        ) {
+                            SettingsScreen()
+                        }
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
