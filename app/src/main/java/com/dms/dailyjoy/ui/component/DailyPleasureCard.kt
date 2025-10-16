@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,30 +45,27 @@ fun DailyPleasureCard(
         label = "rotationAnimation"
     )
 
-    Box(modifier = modifier.fillMaxSize()) {
-        Card(
-            modifier = Modifier
-                .width(250.dp)
-                .height(400.dp)
-                .align(alignment = Alignment.Center)
-                .graphicsLayer {
-                    rotationY = rotation
-                    cameraDistance = 8 * density // Perspective 3D
-                },
-            shape = RoundedCornerShape(size = 16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-            onClick = { flipCard() }
-        ) {
-            // Do inverse rotation to avoid mirror render
-            val modifier = Modifier.graphicsLayer { rotationY = 180f }
-            if (rotation < 90f) {
-                BackCardContent(modifier = modifier)
-            } else {
-                DailyPleasureCardContent(
-                    modifier = modifier,
-                    pleasure = pleasure
-                )
-            }
+    Card(
+        modifier = modifier
+            .width(250.dp)
+            .height(400.dp)
+            .graphicsLayer {
+                rotationY = rotation
+                cameraDistance = 8 * density // Perspective 3D
+            },
+        shape = RoundedCornerShape(size = 16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        onClick = { flipCard() }
+    ) {
+        // Do inverse rotation to avoid mirror render
+        val modifier = Modifier.graphicsLayer { rotationY = 180f }
+        if (rotation < 90f) {
+            BackCardContent(modifier = modifier)
+        } else {
+            DailyPleasureCardContent(
+                modifier = modifier,
+                pleasure = pleasure
+            )
         }
     }
 }
@@ -77,7 +75,7 @@ private fun BackCardContent(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.Yellow)
+            .background(color = MaterialTheme.colorScheme.primary)
     ) {
 
     }
@@ -88,22 +86,57 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(all = 24.dp),
+            .padding(vertical = 12.dp, horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(size = 12.dp)
+                )
+                .padding(horizontal = 8.dp, vertical = 2.dp)
+        ) {
+            Text(
+                text = "# ${
+                    pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }
+                }",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+
+        Spacer(Modifier.weight(1f))
+
         Text(
             text = pleasure.title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(6.dp))
+
+        Text(
+            text = pleasure.description,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center
         )
 
         Spacer(Modifier.weight(1f))
 
-        Text(
-            text = "#${pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }}",
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(size = 12.dp),
+            onClick = { }
+        ) {
+            Text(
+                text = "Plaisir réalisé ?",
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 

@@ -52,7 +52,7 @@ private fun DailyPleasureContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(vertical = 12.dp, horizontal = 24.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
