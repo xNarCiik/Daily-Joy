@@ -2,7 +2,7 @@ package com.dms.dailyjoy.ui.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.DailyPleasureRoute
 import com.dms.dailyjoy.ui.HistoryRoute
-import com.dms.dailyjoy.ui.HomeRoute
 import com.dms.dailyjoy.ui.SettingsRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 
@@ -35,9 +35,9 @@ data class TabBarItem(
 @Composable
 fun BottomNavBar(navController: NavController) {
     val homeItem = TabBarItem(
-        title = stringResource(R.string.bottom_nav_bar_home_title),
-        icon = Icons.Filled.Home,
-        route = HomeRoute
+        title = stringResource(R.string.bottom_nav_bar_daily_pleasure_title),
+        icon = Icons.Filled.Mood,
+        route = DailyPleasureRoute
     )
     val historyItem =
         TabBarItem(

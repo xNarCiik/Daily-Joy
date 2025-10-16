@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Daily Joy</string>
-    <string name="bottom_nav_bar_home_title">Home</string>
-    <string name="bottom_nav_bar_history_title">History</string>
-    <string name="bottom_nav_bar_settings_title">Settings</string>
+    <string name="bottom_nav_bar_daily_pleasure_title">Mon Plaisir</string>
+    <string name="bottom_nav_bar_history_title">Historique</string>
+    <string name="bottom_nav_bar_settings_title">Paramètres</string>
 </resources>

@@ -3,7 +3,7 @@ package com.dms.dailyjoy.ui
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeRoute
+object DailyPleasureRoute
 
 @Serializable
 object HistoryRoute

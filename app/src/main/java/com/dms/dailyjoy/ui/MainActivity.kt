@@ -26,8 +26,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.component.BottomNavBar
+import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.history.HistoryScreen
-import com.dms.dailyjoy.ui.home.HomeScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,8 +62,8 @@ fun MainActivityContent() {
                 }
             ) { innerPadding ->
                 Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
-                    NavHost(navController = navController, startDestination = HomeRoute) {
-                        composable<HomeRoute>(
+                    NavHost(navController = navController, startDestination = DailyPleasureRoute) {
+                        composable<DailyPleasureRoute>(
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Right,
@@ -77,13 +77,13 @@ fun MainActivityContent() {
                                 )
                             }
                         ) {
-                            HomeScreen()
+                            DailyPleasureScreen()
                         }
 
                         composable<HistoryRoute>(
                             enterTransition = {
                                 val leftTransition =
-                                    initialState.destination.route == HomeRoute::class.qualifiedName
+                                    initialState.destination.route == DailyPleasureRoute::class.qualifiedName
                                 slideIntoContainer(
                                     towards = if (leftTransition) AnimatedContentTransitionScope.SlideDirection.Left else AnimatedContentTransitionScope.SlideDirection.Right,
                                     animationSpec = tween(durationMillis = 700)
@@ -91,7 +91,7 @@ fun MainActivityContent() {
                             },
                             exitTransition = {
                                 val rightTransition =
-                                    targetState.destination.route == HomeRoute::class.qualifiedName
+                                    targetState.destination.route == DailyPleasureRoute::class.qualifiedName
                                 slideOutOfContainer(
                                     towards = if (rightTransition) AnimatedContentTransitionScope.SlideDirection.Right else AnimatedContentTransitionScope.SlideDirection.Left,
                                     animationSpec = tween(durationMillis = 700)
