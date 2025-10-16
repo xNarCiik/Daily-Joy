@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,13 +60,12 @@ fun DailyPleasureCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         onClick = { flipCard() }
     ) {
-        // Do inverse rotation to avoid mirror render
-        val modifier = Modifier.graphicsLayer { rotationY = 180f }
         if (rotation < 90f) {
-            BackCardContent(modifier = modifier)
+            BackCardContent()
         } else {
+            // Do inverse rotation to avoid mirror render
             DailyPleasureCardContent(
-                modifier = modifier,
+                modifier = Modifier.graphicsLayer { rotationY = 180f },
                 pleasure = pleasure
             )
         }
@@ -75,9 +77,15 @@ private fun BackCardContent(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color = MaterialTheme.colorScheme.primaryContainer)
+            .padding(all = 24.dp)
     ) {
-
+        Icon(
+            modifier = Modifier.fillMaxSize(),
+            imageVector = Icons.Default.QuestionMark,
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = null
+        )
     }
 }
 
