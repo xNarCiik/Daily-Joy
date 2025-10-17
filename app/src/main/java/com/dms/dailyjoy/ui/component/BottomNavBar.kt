@@ -1,5 +1,6 @@
 package com.dms.dailyjoy.ui.component
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -21,6 +22,7 @@ import com.dms.dailyjoy.ui.HistoryRoute
 import com.dms.dailyjoy.ui.SettingsRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
+import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import kotlinx.coroutines.launch
 
 data class TabBarItem(
@@ -61,7 +63,10 @@ fun BottomNavBar(pagerState: PagerState) {
                 selected = isSelected,
                 onClick = {
                     scope.launch {
-                        pagerState.animateScrollToPage(index)
+                        pagerState.animateScrollToPage(
+                            page = index,
+                            animationSpec = tween(durationMillis = navigationAnimationDuration)
+                        )
                     }
                 },
                 icon = {

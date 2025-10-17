@@ -7,12 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import com.dms.dailyjoy.ui.history.HistoryScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
+import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -76,9 +79,18 @@ fun MainActivityContent() {
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
+                        val flingBehavior = PagerDefaults.flingBehavior(
+                            state = pagerState,
+                            snapAnimationSpec = tween(
+                                durationMillis = navigationAnimationDuration,
+                                easing = LinearOutSlowInEasing
+                            )
+                        )
+
                         HorizontalPager(
                             state = pagerState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
+                            flingBehavior = flingBehavior
                         ) { page ->
                             when (page) {
                                 0 -> DailyPleasureScreen()
