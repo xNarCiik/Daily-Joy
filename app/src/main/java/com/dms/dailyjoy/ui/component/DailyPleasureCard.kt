@@ -28,6 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -38,34 +43,55 @@ import com.dms.dailyjoy.ui.util.previewDailyPleasure
 fun DailyPleasureCard(
     modifier: Modifier = Modifier,
     pleasure: Pleasure,
+    durationRotation: Int,
     flipCard: () -> Unit
 ) {
     // Animation Rotation
     val rotation by animateFloatAsState(
         targetValue = if (pleasure.isFlipped) 180f else 0f,
-        animationSpec = tween(durationMillis = 700),
+        animationSpec = tween(durationMillis = durationRotation),
         label = "rotationAnimation"
     )
 
-    Card(
-        modifier = modifier
-            .width(250.dp)
-            .height(400.dp)
-            .graphicsLayer {
-                rotationY = rotation
-                cameraDistance = 8 * density // Perspective 3D
-            },
-        shape = RoundedCornerShape(size = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        onClick = { flipCard() }
+    Box(
+        modifier = modifier.height(400.dp),
+        contentAlignment = Alignment.Center
     ) {
-        if (rotation < 90f) {
-            BackCardContent()
-        } else {
-            // Do inverse rotation to avoid mirror render
-            DailyPleasureCardContent(
-                modifier = Modifier.graphicsLayer { rotationY = 180f },
-                pleasure = pleasure
+        Card(
+            modifier = Modifier
+                .width(250.dp)
+                .height(400.dp)
+                .graphicsLayer {
+                    rotationY = rotation
+                    cameraDistance = 8 * density // Perspective 3D
+                },
+            shape = RoundedCornerShape(size = 16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            onClick = { flipCard() }
+        ) {
+            if (rotation < 90f) {
+                BackCardContent()
+            } else {
+                // Do inverse rotation to avoid mirror render
+                DailyPleasureCardContent(
+                    modifier = Modifier.graphicsLayer { rotationY = 180f },
+                    pleasure = pleasure
+                )
+            }
+        }
+
+        // Animation Confetti
+        val lottieComposition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(resId = R.raw.confetti))
+        val lottieProgress by animateLottieCompositionAsState(
+            composition = lottieComposition,
+            isPlaying = pleasure.isFlipped,
+            restartOnPlay = false
+        )
+
+        if (rotation == 180f) {
+            LottieAnimation(
+                composition = lottieComposition,
+                progress = { lottieProgress }
             )
         }
     }
@@ -117,7 +143,7 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
 
         Text(
             text = pleasure.title,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
@@ -126,7 +152,7 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
 
         Text(
             text = pleasure.description,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center
         )
@@ -153,6 +179,7 @@ private fun NotFlippedDailyPleasureCardPreview() {
     DailyJoyTheme {
         DailyPleasureCard(
             pleasure = previewDailyPleasure.copy(isFlipped = false),
+            durationRotation = 0,
             flipCard = {}
         )
     }
@@ -164,6 +191,7 @@ private fun FlippedDailyPleasureCardPreview() {
     DailyJoyTheme {
         DailyPleasureCard(
             pleasure = previewDailyPleasure,
+            durationRotation = 0,
             flipCard = {}
         )
     }

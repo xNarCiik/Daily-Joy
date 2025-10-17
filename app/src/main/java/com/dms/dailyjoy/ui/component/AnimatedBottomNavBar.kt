@@ -17,20 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.delay
 
-private const val delayBeforeStart = 200L
-private const val durationAnimation = 700
 
 @Composable
 fun AnimatedBottomNavBar(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    durationAnimation: Int
 ) {
     var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(delayBeforeStart)
         visible = true
     }
 
