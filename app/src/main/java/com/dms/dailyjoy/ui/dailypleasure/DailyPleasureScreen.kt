@@ -52,7 +52,7 @@ private fun DailyPleasureContent(
     dailyPleasure: Pleasure,
     flipCard: () -> Unit
 ) {
-    var showConfettiAnimation by remember { mutableStateOf(false) }
+    var cardIsFlipped by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -79,10 +79,12 @@ private fun DailyPleasureContent(
                 pleasure = dailyPleasure,
                 durationRotation = rotationCardAnimationDuration,
                 flipCard = flipCard,
-                onCardFlipped = {
-                    showConfettiAnimation = true
-                }
+                onCardFlipped = { cardIsFlipped = true }
             )
+
+            Spacer(Modifier.weight(1f))
+
+            InfoText(cardIsFlipped = cardIsFlipped)
 
             Spacer(Modifier.weight(1f))
         }
@@ -95,11 +97,11 @@ private fun DailyPleasureContent(
         )
         val confettiProgress by animateLottieCompositionAsState(
             composition = confettiComposition,
-            isPlaying = showConfettiAnimation,
+            isPlaying = cardIsFlipped,
             restartOnPlay = false
         )
 
-        if (showConfettiAnimation) {
+        if (cardIsFlipped) {
             LottieAnimation(
                 composition = confettiComposition,
                 progress = { confettiProgress }

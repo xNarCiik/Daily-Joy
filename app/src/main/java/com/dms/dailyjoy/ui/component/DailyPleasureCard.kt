@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QuestionMark
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -103,6 +101,26 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
             .padding(vertical = 12.dp, horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(Modifier.weight(1f))
+
+        Text(
+            text = pleasure.title,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(18.dp))
+
+        Text(
+            text = pleasure.description,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.weight(1f))
+
         Box(
             modifier = Modifier
                 .background(
@@ -119,27 +137,6 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
-
-        Spacer(Modifier.weight(1f))
-
-        Text(
-            text = pleasure.title,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        Text(
-            text = pleasure.description,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(Modifier.weight(1f))
-
         /*Button(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(size = 12.dp),

@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -78,7 +77,6 @@ fun BottomNavBar(navController: NavController) {
                 icon = {
                     Icon(
                         imageVector = tabBarItem.icon,
-                        tint = if (isSelected) Color.Black else Color.Gray,
                         contentDescription = null
                     )
                 },
