@@ -1,5 +1,7 @@
 package com.dms.dailyjoy.ui.component
 
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Mood
@@ -9,21 +11,17 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.DailyPleasureRoute
 import com.dms.dailyjoy.ui.HistoryRoute
 import com.dms.dailyjoy.ui.SettingsRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
+import kotlinx.coroutines.launch
 
 data class TabBarItem(
     val title: String,
@@ -33,7 +31,9 @@ data class TabBarItem(
 )
 
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(pagerState: PagerState) {
+    val scope = rememberCoroutineScope()
+
     val homeItem = TabBarItem(
         title = stringResource(R.string.bottom_nav_bar_daily_pleasure_title),
         icon = Icons.Filled.Mood,
@@ -54,24 +54,14 @@ fun BottomNavBar(navController: NavController) {
 
     val tabBarItems = listOf(homeItem, historyItem, settingsItem)
 
-    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-
     NavigationBar(tonalElevation = 4.dp) {
         tabBarItems.forEachIndexed { index, tabBarItem ->
-            val isSelected = selectedTabIndex == index
+            val isSelected = pagerState.currentPage == index
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    if (!isSelected) {
-                        selectedTabIndex = index
-                        navController.navigate(route = tabBarItem.route) {
-                            popUpTo(
-                                route = navController.currentBackStackEntry?.destination?.route
-                                    ?: ""
-                            ) {
-                                inclusive = true
-                            }
-                        }
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
                     }
                 },
                 icon = {
@@ -92,6 +82,6 @@ fun BottomNavBar(navController: NavController) {
 @Composable
 fun BottomNavBarPreview() {
     DailyJoyTheme {
-        BottomNavBar(navController = rememberNavController())
+        BottomNavBar(pagerState = rememberPagerState { 3 })
     }
 }
