@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
@@ -24,6 +24,7 @@ import com.dms.dailyjoy.ui.DailyPleasureRoute
 import com.dms.dailyjoy.ui.HistoryRoute
 import com.dms.dailyjoy.ui.SettingsRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 data class TabBarItem(
     val title: String,
@@ -56,7 +57,7 @@ fun BottomNavBar(navController: NavController) {
 
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    NavigationBar {
+    NavigationBar(tonalElevation = 4.dp) {
         tabBarItems.forEachIndexed { index, tabBarItem ->
             val isSelected = selectedTabIndex == index
             NavigationBarItem(
@@ -89,7 +90,7 @@ fun BottomNavBar(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
 fun BottomNavBarPreview() {
     DailyJoyTheme {

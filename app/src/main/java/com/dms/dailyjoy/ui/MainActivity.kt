@@ -20,17 +20,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.component.BottomNavBar
+import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.history.HistoryScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val navigationDurationAnimation = 700
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -58,7 +59,7 @@ fun MainActivityContent() {
                     TopAppBar(title = { Text(text = stringResource(R.string.app_name)) })
                 },
                 bottomBar = {
-                    BottomNavBar(navController = navController)
+                    AnimatedBottomNavBar(navController = navController)
                 }
             ) { innerPadding ->
                 Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
@@ -67,13 +68,13 @@ fun MainActivityContent() {
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(durationMillis = 700)
+                                    animationSpec = tween(durationMillis = navigationDurationAnimation)
                                 )
                             },
                             exitTransition = {
                                 slideOutOfContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(durationMillis = 700)
+                                    animationSpec = tween(durationMillis = navigationDurationAnimation)
                                 )
                             }
                         ) {
@@ -86,7 +87,7 @@ fun MainActivityContent() {
                                     initialState.destination.route == DailyPleasureRoute::class.qualifiedName
                                 slideIntoContainer(
                                     towards = if (leftTransition) AnimatedContentTransitionScope.SlideDirection.Left else AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(durationMillis = 700)
+                                    animationSpec = tween(durationMillis = navigationDurationAnimation)
                                 )
                             },
                             exitTransition = {
@@ -94,7 +95,7 @@ fun MainActivityContent() {
                                     targetState.destination.route == DailyPleasureRoute::class.qualifiedName
                                 slideOutOfContainer(
                                     towards = if (rightTransition) AnimatedContentTransitionScope.SlideDirection.Right else AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(durationMillis = 700)
+                                    animationSpec = tween(durationMillis = navigationDurationAnimation)
                                 )
                             }
                         ) {
@@ -105,13 +106,13 @@ fun MainActivityContent() {
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(durationMillis = 700)
+                                    animationSpec = tween(durationMillis = navigationDurationAnimation)
                                 )
                             },
                             exitTransition = {
                                 slideOutOfContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(durationMillis = 700)
+                                    animationSpec = tween(durationMillis = navigationDurationAnimation)
                                 )
                             }
                         ) {
@@ -121,13 +122,5 @@ fun MainActivityContent() {
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainActivityContentPreview() {
-    DailyJoyTheme {
-        MainActivityContent()
     }
 }

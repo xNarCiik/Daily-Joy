@@ -27,12 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.data.model.Pleasure
-import com.dms.dailyjoy.data.model.PleasureCategory
-import com.dms.dailyjoy.data.model.PleasureType
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
+import com.dms.dailyjoy.ui.util.previewDailyPleasure
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,36 +147,23 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
 private fun NotFlippedDailyPleasureCardPreview() {
     DailyJoyTheme {
         DailyPleasureCard(
-            pleasure = Pleasure(
-                id = 0,
-                title = "Pleasure Title",
-                description = "Pleasure Description",
-                type = PleasureType.BIG,
-                category = PleasureCategory.CREATIVE
-            ),
+            pleasure = previewDailyPleasure.copy(isFlipped = false),
             flipCard = {}
         )
     }
 }
 
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
 private fun FlippedDailyPleasureCardPreview() {
     DailyJoyTheme {
         DailyPleasureCard(
-            pleasure = Pleasure(
-                id = 0,
-                title = "Pleasure Title",
-                description = "Pleasure Description",
-                type = PleasureType.BIG,
-                category = PleasureCategory.CREATIVE,
-                isFlipped = true
-            ),
+            pleasure = previewDailyPleasure,
             flipCard = {}
         )
     }
