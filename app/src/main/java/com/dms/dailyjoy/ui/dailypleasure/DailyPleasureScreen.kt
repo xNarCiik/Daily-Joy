@@ -10,11 +10,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.PleasureViewModel
 import com.dms.dailyjoy.ui.component.DailyPleasureCard
@@ -44,10 +52,13 @@ private fun DailyPleasureContent(
     dailyPleasure: Pleasure,
     flipCard: () -> Unit
 ) {
+    var showConfettiAnimation by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 12.dp, horizontal = 24.dp)
+            .padding(vertical = 12.dp, horizontal = 24.dp),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -67,10 +78,32 @@ private fun DailyPleasureContent(
             DailyPleasureCard(
                 pleasure = dailyPleasure,
                 durationRotation = rotationCardAnimationDuration,
-                flipCard = flipCard
+                flipCard = flipCard,
+                onCardFlipped = {
+                    showConfettiAnimation = true
+                }
             )
 
             Spacer(Modifier.weight(1f))
+        }
+
+        // Animation Confetti
+        val confettiComposition by rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(
+                resId = R.raw.confetti
+            )
+        )
+        val confettiProgress by animateLottieCompositionAsState(
+            composition = confettiComposition,
+            isPlaying = showConfettiAnimation,
+            restartOnPlay = false
+        )
+
+        if (showConfettiAnimation) {
+            LottieAnimation(
+                composition = confettiComposition,
+                progress = { confettiProgress }
+            )
         }
     }
 }
