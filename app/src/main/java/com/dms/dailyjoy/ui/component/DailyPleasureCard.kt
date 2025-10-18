@@ -22,6 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -38,18 +41,19 @@ fun DailyPleasureCard(
     modifier: Modifier = Modifier,
     pleasure: Pleasure,
     durationRotation: Int,
-    flipCard: () -> Unit,
     onCardFlipped: () -> Unit
 ) {
+    var isFlipped by remember { mutableStateOf(pleasure.isFlipped) }
+
     // Animation Rotation
     val rotation by animateFloatAsState(
-        targetValue = if (pleasure.isFlipped) 180f else 0f,
+        targetValue = if (isFlipped) 180f else 0f,
         animationSpec = tween(durationMillis = durationRotation),
         label = "rotationAnimation"
     )
 
     LaunchedEffect(rotation) {
-        if (rotation == 180f) onCardFlipped()
+        if (rotation == 180f && !pleasure.isFlipped) onCardFlipped()
     }
 
     Card(
@@ -62,7 +66,7 @@ fun DailyPleasureCard(
             },
         shape = RoundedCornerShape(size = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        onClick = { flipCard() }
+        onClick = { isFlipped = true }
     ) {
         if (rotation < 90f) {
             BackCardContent()
@@ -121,33 +125,24 @@ private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pl
 
         Spacer(Modifier.weight(1f))
 
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(size = 12.dp)
+        pleasure.category?.let {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(size = 12.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = "# ${
+                        pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }
+                    }",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
-                .padding(horizontal = 8.dp, vertical = 2.dp)
-        ) {
-            Text(
-                text = "# ${
-                    pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }
-                }",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+            }
         }
-        /*Button(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(size = 12.dp),
-            onClick = { }
-        ) {
-            Text(
-                text = "Plaisir réalisé ?",
-                style = MaterialTheme.typography.titleSmall,
-                textAlign = TextAlign.Center
-            )
-        }*/
     }
 }
 
@@ -158,7 +153,6 @@ private fun NotFlippedDailyPleasureCardPreview() {
         DailyPleasureCard(
             pleasure = previewDailyPleasure.copy(isFlipped = false),
             durationRotation = 0,
-            flipCard = {},
             onCardFlipped = {}
         )
     }
@@ -171,7 +165,6 @@ private fun FlippedDailyPleasureCardPreview() {
         DailyPleasureCard(
             pleasure = previewDailyPleasure,
             durationRotation = 0,
-            flipCard = {},
             onCardFlipped = {}
         )
     }

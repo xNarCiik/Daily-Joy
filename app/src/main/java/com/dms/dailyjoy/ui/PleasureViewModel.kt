@@ -9,8 +9,14 @@ import com.dms.dailyjoy.domain.usecase.GetRandomPleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class DailyPleasureState(
+    val dailyMessage: String = "",
+    val dailyPleasure: Pleasure = Pleasure()
+)
 
 @HiltViewModel
 class PleasureViewModel @Inject constructor(
@@ -19,29 +25,33 @@ class PleasureViewModel @Inject constructor(
     private val getRandomPleasureUseCase: GetRandomPleasureUseCase
 ) : ViewModel() {
 
-    private val _dailyMessage = MutableStateFlow("")
-    val dailyMessage = _dailyMessage.asStateFlow()
-
-    private val _dailyPleasure = MutableStateFlow<Pleasure?>(null)
-    val dailyPleasure = _dailyPleasure.asStateFlow()
-
-    private val _pleasures = MutableStateFlow<List<Pleasure>>(listOf())
-    val pleasures = _pleasures.asStateFlow()
+    private val _state = MutableStateFlow(DailyPleasureState())
+    val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _dailyMessage.emit(value = getRandomDailyMessage())
-            _dailyPleasure.emit(value = getRandomPleasure())
-            _pleasures.emit(value = getPleasures())
+            _state.update {
+                it.copy(
+                    dailyMessage = getRandomDailyMessage(),
+                    dailyPleasure = getRandomPleasure()
+                )
+            }
         }
     }
 
-    fun getRandomDailyMessage(): String = getRandomDailyMessageUseCase.invoke()
-    fun getPleasures(): List<Pleasure> = getPleasuresUseCase.invoke()
+    private fun getRandomDailyMessage(): String = getRandomDailyMessageUseCase.invoke()
 
-    fun getRandomPleasure(): Pleasure = getRandomPleasureUseCase.invoke()
+    private fun getRandomPleasure(): Pleasure = getRandomPleasureUseCase.invoke()
 
-    fun flipDailyCard() = viewModelScope.launch {
-        _dailyPleasure.emit(value = _dailyPleasure.value?.copy(isFlipped = true))
+    fun onDailyCardFlipped() = viewModelScope.launch {
+        _state.update {
+            it.copy(dailyPleasure = it.dailyPleasure.copy(isFlipped = true))
+        }
+    }
+
+    fun markDailyCardAsDone() = viewModelScope.launch {
+        _state.update {
+            it.copy(dailyPleasure = it.dailyPleasure.copy(isDone = true))
+        }
     }
 }
