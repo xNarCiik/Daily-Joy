@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 data class DailyPleasureState(
     val dailyMessage: String = "",
-    val dailyPleasure: Pleasure = Pleasure()
+    val dailyPleasure: Pleasure = Pleasure(),
+    val waitDonePleasure: Boolean = false
 )
 
 @HiltViewModel
@@ -45,13 +46,16 @@ class PleasureViewModel @Inject constructor(
 
     fun onDailyCardFlipped() = viewModelScope.launch {
         _state.update {
-            it.copy(dailyPleasure = it.dailyPleasure.copy(isFlipped = true))
+            it.copy(
+                dailyPleasure = it.dailyPleasure.copy(isFlipped = true),
+                waitDonePleasure = true
+            )
         }
     }
 
     fun markDailyCardAsDone() = viewModelScope.launch {
         _state.update {
-            it.copy(dailyPleasure = it.dailyPleasure.copy(isDone = true))
+            it.copy(dailyPleasure = it.dailyPleasure.copy(isDone = true), waitDonePleasure = false)
         }
     }
 }

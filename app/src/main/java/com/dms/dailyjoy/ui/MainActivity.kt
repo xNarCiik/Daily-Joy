@@ -2,6 +2,8 @@
 
 package com.dms.dailyjoy.ui
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,11 +24,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
 import com.dms.dailyjoy.ui.component.TopAppBar
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
@@ -36,12 +41,15 @@ import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             MainActivityContent()
         }
@@ -65,7 +73,17 @@ fun MainActivityContent() {
                 visible = contentVisible,
                 enter = fadeIn(animationSpec = tween(durationMillis = fadeInContentAnimationDuration))
             ) {
+                val scope = rememberCoroutineScope()
+
                 val pagerState = rememberPagerState { 3 }
+                val navigateToIndex: (Int) -> Unit = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(
+                            page = it,
+                            animationSpec = tween(durationMillis = navigationAnimationDuration)
+                        )
+                    }
+                }
 
                 Scaffold(
                     modifier = Modifier
@@ -87,13 +105,25 @@ fun MainActivityContent() {
                             )
                         )
 
+                        val viewModel: PleasureViewModel = hiltViewModel()
+                        val dailyPleasureState by viewModel.state.collectAsState()
+
                         HorizontalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxSize(),
-                            flingBehavior = flingBehavior
+                            flingBehavior = flingBehavior,
+                            userScrollEnabled = !dailyPleasureState.waitDonePleasure
                         ) { page ->
                             when (page) {
-                                0 -> DailyPleasureScreen()
+                                0 -> DailyPleasureScreen(
+                                    dailyPleasureState = dailyPleasureState,
+                                    onCardFlipped = { viewModel.onDailyCardFlipped() },
+                                    onDonePleasure = {
+                                        viewModel.markDailyCardAsDone()
+                                        navigateToIndex(1)
+                                    }
+                                )
+
                                 1 -> HistoryScreen()
                                 2 -> SettingsScreen()
                             }
