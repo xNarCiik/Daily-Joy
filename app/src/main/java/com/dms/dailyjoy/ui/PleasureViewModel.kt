@@ -30,19 +30,8 @@ class PleasureViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    dailyMessage = getRandomDailyMessage(),
-                    dailyPleasure = getRandomPleasure()
-                )
-            }
-        }
+        resetState()
     }
-
-    private fun getRandomDailyMessage(): String = getRandomDailyMessageUseCase.invoke()
-
-    private fun getRandomPleasure(): Pleasure = getRandomPleasureUseCase.invoke()
 
     fun onDailyCardFlipped() = viewModelScope.launch {
         _state.update {
@@ -58,4 +47,17 @@ class PleasureViewModel @Inject constructor(
             it.copy(dailyPleasure = it.dailyPleasure.copy(isDone = true), waitDonePleasure = false)
         }
     }
+
+    fun resetState() = viewModelScope.launch {
+        _state.update {
+            DailyPleasureState(
+                dailyMessage = getRandomDailyMessage(),
+                dailyPleasure = getRandomPleasure()
+            )
+        }
+    }
+
+    private fun getRandomDailyMessage(): String = getRandomDailyMessageUseCase.invoke()
+
+    private fun getRandomPleasure(): Pleasure = getRandomPleasureUseCase.invoke()
 }

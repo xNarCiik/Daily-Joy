@@ -53,6 +53,7 @@ import kotlin.math.abs
 fun DailyPleasureScreen(
     dailyPleasureState: DailyPleasureState,
     onCardFlipped: () -> Unit,
+    onDraggingCard: (Boolean) -> Unit,
     onDonePleasure: () -> Unit
 ) {
     val isFlipped = dailyPleasureState.dailyPleasure.isFlipped
@@ -141,12 +142,14 @@ fun DailyPleasureScreen(
                             }
                         },
                         onDragStarted = {
+                            onDraggingCard(true)
                             scope.launch {
                                 animatedOffsetX.stop()
                                 animatedRotationZ.stop()
                             }
                         },
                         onDragStopped = {
+                            onDraggingCard(false)
                             scope.launch {
                                 val swipeThreshold = 150f
                                 if (animatedOffsetX.value > swipeThreshold) {
@@ -216,6 +219,7 @@ fun DailyPleasureScreenPreview() {
         DailyPleasureScreen(
             dailyPleasureState = previewDailyPleasureState,
             onCardFlipped = {},
+            onDraggingCard = {},
             onDonePleasure = {}
         )
     }

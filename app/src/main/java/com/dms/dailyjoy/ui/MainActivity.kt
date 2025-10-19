@@ -85,10 +85,15 @@ fun MainActivityContent() {
                     }
                 }
 
+                var pagerEnabled by remember { mutableStateOf(true) }
+
+                val viewModel: PleasureViewModel = hiltViewModel()
+                val dailyPleasureState by viewModel.state.collectAsState()
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize(),
-                    topBar = { TopAppBar() },
+                    topBar = { TopAppBar(resetState = { viewModel.resetState() }) },
                     bottomBar = {
                         AnimatedBottomNavBar(
                             pagerState = pagerState,
@@ -105,19 +110,17 @@ fun MainActivityContent() {
                             )
                         )
 
-                        val viewModel: PleasureViewModel = hiltViewModel()
-                        val dailyPleasureState by viewModel.state.collectAsState()
-
                         HorizontalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxSize(),
                             flingBehavior = flingBehavior,
-                            userScrollEnabled = !dailyPleasureState.waitDonePleasure
+                            userScrollEnabled = pagerEnabled
                         ) { page ->
                             when (page) {
                                 0 -> DailyPleasureScreen(
                                     dailyPleasureState = dailyPleasureState,
                                     onCardFlipped = { viewModel.onDailyCardFlipped() },
+                                    onDraggingCard = { dragging -> pagerEnabled = !dragging },
                                     onDonePleasure = {
                                         viewModel.markDailyCardAsDone()
                                         navigateToIndex(1)

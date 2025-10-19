@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,8 @@ import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,13 +46,32 @@ fun DailyPleasureCard(
     durationRotation: Int,
     onCardFlipped: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+
     var isFlipped by remember { mutableStateOf(pleasure.isFlipped) }
+    var isJumping by remember { mutableStateOf(false) }
 
     // Animation Rotation
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = tween(durationMillis = durationRotation),
+        animationSpec = tween(
+            durationMillis = durationRotation,
+            easing = { it * it * (3 - 2 * it) }
+        ),
         label = "rotationAnimation"
+    )
+
+    // Jump animation (scale + offset)
+    val jumpScale by animateFloatAsState(
+        targetValue = if (isJumping) 1.15f else 1f,
+        animationSpec = tween(2000, easing = { overshootEasing(it, tension = 3f) }),
+        label = "scaleAnimation"
+    )
+
+    val jumpOffset by animateFloatAsState(
+        targetValue = if (isJumping) (-8f) else 0f,
+        animationSpec = tween(2000, easing = { overshootEasing(it, tension = 3f) }),
+        label = "offsetAnimation"
     )
 
     LaunchedEffect(rotation) {
@@ -63,10 +85,21 @@ fun DailyPleasureCard(
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 8 * density // Perspective 3D
+                scaleX = jumpScale
+                scaleY = jumpScale
+                translationY = jumpOffset
             },
         shape = RoundedCornerShape(size = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        onClick = { isFlipped = true }
+        onClick = {
+            scope.launch {
+                isJumping = true
+                delay(250)
+                isFlipped = true
+                delay(100)
+                isJumping = false
+            }
+        }
     ) {
         if (rotation < 90f) {
             BackCardContent()
@@ -78,6 +111,11 @@ fun DailyPleasureCard(
             )
         }
     }
+}
+
+fun overshootEasing(t: Float, tension: Float = 2f): Float {
+    val s = tension
+    return (t - 1).let { it * it * ((s + 1) * it + s) + 1 }
 }
 
 @Composable
