@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.dailypleasure
+package com.dms.dailyjoy.ui.dailypleasure.component
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat

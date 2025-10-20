@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui
+package com.dms.dailyjoy.ui.dailypleasure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

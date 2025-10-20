@@ -3,7 +3,6 @@ package com.dms.dailyjoy.ui.settings
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,7 +29,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,23 +39,29 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.core.net.toUri
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
+import com.dms.dailyjoy.ui.settings.dialog.ThemeDialog
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
+fun SettingsScreen(
+    navController: NavController = rememberNavController(),
+    theme: Theme,
+    onThemeChanged: (Theme) -> Unit
+) {
     val context = LocalContext.current
-    val theme by viewModel.theme.collectAsState()
     var showThemeDialog by remember { mutableStateOf(false) }
 
     if (showThemeDialog) {
         ThemeDialog(
             currentTheme = theme,
             onThemeSelected = { newTheme ->
-                viewModel.onThemeChange(newTheme)
+                onThemeChanged(newTheme)
                 showThemeDialog = false
             },
             onDismiss = { showThemeDialog = false }
@@ -92,7 +96,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
                 icon = Icons.Default.Edit,
                 title = stringResource(id = R.string.settings_manage_pleasures_title),
                 subtitle = stringResource(id = R.string.settings_manage_pleasures_subtitle),
-                onClick = {}
+                onClick = {
+                    navController.navigate(ManagePleasuresRoute)
+                }
             )
         }
         item {
@@ -147,9 +153,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
                 icon = Icons.Default.Shield,
                 title = stringResource(id = R.string.settings_privacy_policy),
                 onClick = {
-                    // TODO: Replace with your privacy policy URL
+                    // TODO: Replace with privacy policy URL
                     val intent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse("https://your-privacy-policy-url.com"))
+                        Intent(Intent.ACTION_VIEW, "https://privacy-policy-url.com".toUri())
                     context.startActivity(intent)
                 },
                 showChevron = false
@@ -161,12 +167,12 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
 private fun rateApp(context: Context) {
     val packageName = context.packageName
     try {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+        val intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri())
         context.startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
+    } catch (_: ActivityNotFoundException) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+            "https://play.google.com/store/apps/details?id=$packageName".toUri()
         )
         context.startActivity(intent)
     }
@@ -291,7 +297,10 @@ private fun SettingsClickableItem(
 fun SettingsScreenPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SettingsScreen()
+            SettingsScreen(
+                theme = Theme.SYSTEM,
+                onThemeChanged = {}
+            )
         }
     }
 }

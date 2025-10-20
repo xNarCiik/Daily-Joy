@@ -30,4 +30,18 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_system">System</string>
     <string name="dialog_close">Close</string>
+
+    <!-- Manage Pleasures Screen -->
+    <string name="manage_pleasures_title">Manage my pleasures</string>
+    <string name="back">Back</string>
+    <string name="add_pleasure">Add a pleasure</string>
+    <string name="small_pleasures">Small Pleasures</string>
+    <string name="big_pleasures">Big Pleasures</string>
+    <string name="pleasures_explanation">Small Pleasures are drawn every day. Big Pleasures are drawn once a week.</string>
+    <string name="delete_pleasure">Delete pleasure</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>

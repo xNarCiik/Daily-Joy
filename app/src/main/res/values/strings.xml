@@ -30,4 +30,18 @@
     <string name="settings_theme_dark">Sombre</string>
     <string name="settings_theme_system">Système</string>
     <string name="dialog_close">Fermer</string>
+
+    <!-- Manage Pleasures Screen -->
+    <string name="manage_pleasures_title">Gérer mes plaisirs</string>
+    <string name="back">Retour</string>
+    <string name="add_pleasure">Ajouter un plaisir</string>
+    <string name="small_pleasures">Petits Plaisirs</string>
+    <string name="big_pleasures">Gros Plaisirs</string>
+    <string name="pleasures_explanation">Les Petits Plaisirs sont tirés chaque jour. Les Gros Plaisirs sont tirés une fois par semaine.</string>
+    <string name="delete_pleasure">Supprimer le plaisir</string>
+    <string name="title">Titre</string>
+    <string name="description">Description</string>
+    <string name="category">Catégorie</string>
+    <string name="save">Sauvegarder</string>
+    <string name="cancel">Annuler</string>
 </resources>

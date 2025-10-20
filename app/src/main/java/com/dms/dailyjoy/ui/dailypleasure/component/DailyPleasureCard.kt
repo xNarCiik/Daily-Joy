@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.component
+package com.dms.dailyjoy.ui.dailypleasure.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

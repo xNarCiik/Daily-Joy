@@ -29,22 +29,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
-import com.dms.dailyjoy.ui.component.TopAppBar
-import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
-import com.dms.dailyjoy.ui.history.HistoryScreen
-import com.dms.dailyjoy.ui.settings.SettingsScreen
+import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureNavigation
+import com.dms.dailyjoy.ui.history.HistoryNavigation
+import com.dms.dailyjoy.ui.settings.SettingsNavigation
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -83,27 +80,12 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                 visible = contentVisible,
                 enter = fadeIn(animationSpec = tween(durationMillis = fadeInContentAnimationDuration))
             ) {
-                val scope = rememberCoroutineScope()
-
                 val pagerState = rememberPagerState { 3 }
-                val navigateToIndex: (Int) -> Unit = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(
-                            page = it,
-                            animationSpec = tween(durationMillis = navigationAnimationDuration)
-                        )
-                    }
-                }
 
                 var pagerEnabled by remember { mutableStateOf(true) }
 
-                val viewModel: PleasureViewModel = hiltViewModel()
-                val dailyPleasureState by viewModel.state.collectAsState()
-
                 Scaffold(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    topBar = { TopAppBar() },
+                    modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         AnimatedBottomNavBar(
                             pagerState = pagerState,
@@ -127,18 +109,12 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                             userScrollEnabled = pagerEnabled
                         ) { page ->
                             when (page) {
-                                0 -> DailyPleasureScreen(
-                                    dailyPleasureState = dailyPleasureState,
-                                    onCardFlipped = viewModel::onDailyCardFlipped,
-                                    onDraggingCard = { dragging -> pagerEnabled = !dragging },
-                                    onDonePleasure = {
-                                        viewModel.markDailyCardAsDone()
-                                        navigateToIndex(1)
-                                    }
+                                0 -> DailyPleasureNavigation(
+                                    onDraggingCard = { dragging -> pagerEnabled = !dragging }
                                 )
 
-                                1 -> HistoryScreen()
-                                2 -> SettingsScreen()
+                                1 -> HistoryNavigation()
+                                2 -> SettingsNavigation()
                             }
                         }
                     }

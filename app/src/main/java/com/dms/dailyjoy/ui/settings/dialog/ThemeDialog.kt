@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.settings
+package com.dms.dailyjoy.ui.settings.dialog
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +31,7 @@ fun ThemeDialog(
         title = { Text(stringResource(R.string.settings_theme_dialog_title)) },
         text = {
             Column(Modifier.selectableGroup()) {
-                Theme.values().forEach { theme ->
+                Theme.entries.forEach { theme ->
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -46,7 +46,7 @@ fun ThemeDialog(
                     ) {
                         RadioButton(
                             selected = (theme == currentTheme),
-                            onClick = null // null recommended for accessibility with screenreaders
+                            onClick = null
                         )
                         Text(
                             text = when (theme) {

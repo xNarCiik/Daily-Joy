@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetPleasuresUseCase @Inject constructor(
     private val repository: PleasureRepository
 ) {
-    suspend fun invoke() = repository.getAllPleasures()
+    operator fun invoke() = repository.getAllPleasures()
 }

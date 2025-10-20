@@ -15,5 +15,6 @@ data class PleasureEntity(
     val category: PleasureCategory?,
     val isFlipped: Boolean = false,
     val isDone: Boolean = false,
-    val isCustom: Boolean = false
+    val isCustom: Boolean = false,
+    val isEnabled: Boolean = true
 )
