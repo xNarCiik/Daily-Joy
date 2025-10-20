@@ -8,14 +8,16 @@ import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.domain.repository.PleasureRepository
 import javax.inject.Inject
 
-class PleasureRepositoryImpl @Inject constructor(private val pleasureDao: PleasureDao) :
-    PleasureRepository {
+class PleasureRepositoryImpl @Inject constructor(
+    private val pleasureDao: PleasureDao,
+    private val localDataSource: LocalPleasureDataSource
+) : PleasureRepository {
 
     override suspend fun getAllPleasures(): List<Pleasure> {
         val pleasures = pleasureDao.getAllPleasures().map { pleasure ->
             pleasure.toDomain()
         }
-        val localPleasures = LocalPleasureDataSource.pleasure
+        val localPleasures = localDataSource.getPleasures()
         return pleasures + localPleasures
     }
 
@@ -24,7 +26,7 @@ class PleasureRepositoryImpl @Inject constructor(private val pleasureDao: Pleasu
         if (pleasureFromDb != null) {
             return pleasureFromDb
         }
-        return LocalPleasureDataSource.pleasure.find { it.id == id }
+        return localDataSource.getPleasures().find { it.id == id }
     }
 
     override suspend fun insert(pleasure: Pleasure) = pleasureDao.insert(pleasure.toEntity())
