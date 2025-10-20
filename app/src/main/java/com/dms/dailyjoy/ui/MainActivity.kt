@@ -12,6 +12,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -32,11 +33,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
 import com.dms.dailyjoy.ui.component.TopAppBar
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.history.HistoryScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
+import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
@@ -51,14 +54,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
-            MainActivityContent()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+            val theme by settingsViewModel.theme.collectAsState()
+            val useDarkTheme = when (theme) {
+                Theme.LIGHT -> false
+                Theme.DARK -> true
+                Theme.SYSTEM -> isSystemInDarkTheme()
+            }
+            MainActivityContent(useDarkTheme = useDarkTheme)
         }
     }
 }
 
 @Composable
-fun MainActivityContent() {
-    DailyJoyTheme {
+fun MainActivityContent(useDarkTheme: Boolean) {
+    DailyJoyTheme(darkTheme = useDarkTheme) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

@@ -1,0 +1,12 @@
+package com.dms.dailyjoy.domain.usecase
+
+import com.dms.dailyjoy.data.repository.SettingsRepository
+import com.dms.dailyjoy.domain.model.Theme
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class GetThemeUseCase @Inject constructor(
+    private val settingsRepository: SettingsRepository
+) {
+    operator fun invoke(): Flow<Theme> = settingsRepository.theme
+}

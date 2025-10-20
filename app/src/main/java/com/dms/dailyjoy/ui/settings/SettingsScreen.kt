@@ -3,6 +3,7 @@ package com.dms.dailyjoy.ui.settings
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,14 +41,28 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     val context = LocalContext.current
+    val theme by viewModel.theme.collectAsState()
+    var showThemeDialog by remember { mutableStateOf(false) }
+
+    if (showThemeDialog) {
+        ThemeDialog(
+            currentTheme = theme,
+            onThemeSelected = { newTheme ->
+                viewModel.onThemeChange(newTheme)
+                showThemeDialog = false
+            },
+            onDismiss = { showThemeDialog = false }
+        )
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -83,11 +99,19 @@ fun SettingsScreen() {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
         item {
+            val themeSubtitle = when (theme) {
+                Theme.LIGHT -> stringResource(R.string.settings_theme_light)
+                Theme.DARK -> stringResource(R.string.settings_theme_dark)
+                Theme.SYSTEM -> stringResource(R.string.settings_theme_system)
+            }
             SettingsClickableItem(
                 icon = Icons.Default.Palette,
                 title = stringResource(id = R.string.settings_appearance_title),
-                subtitle = stringResource(id = R.string.settings_appearance_subtitle),
-                onClick = {}
+                subtitle = stringResource(
+                    id = R.string.settings_appearance_subtitle,
+                    themeSubtitle
+                ),
+                onClick = { showThemeDialog = true }
             )
         }
 
@@ -123,9 +147,9 @@ fun SettingsScreen() {
                 icon = Icons.Default.Shield,
                 title = stringResource(id = R.string.settings_privacy_policy),
                 onClick = {
-                    // TODO: Replace with privacy policy URL
+                    // TODO: Replace with your privacy policy URL
                     val intent =
-                        Intent(Intent.ACTION_VIEW, "https://privacy-policy-url.com".toUri())
+                        Intent(Intent.ACTION_VIEW, Uri.parse("https://your-privacy-policy-url.com"))
                     context.startActivity(intent)
                 },
                 showChevron = false
@@ -137,12 +161,12 @@ fun SettingsScreen() {
 private fun rateApp(context: Context) {
     val packageName = context.packageName
     try {
-        val intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri())
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
         context.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            "https://play.google.com/store/apps/details?id=$packageName".toUri()
+            Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
         )
         context.startActivity(intent)
     }

@@ -1,10 +1,13 @@
 package com.dms.dailyjoy.di
 
+import android.app.Application
 import com.dms.dailyjoy.data.database.dao.PleasureDao
 import com.dms.dailyjoy.data.database.dao.PleasureHistoryDao
 import com.dms.dailyjoy.data.repository.DailyMessageRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureHistoryRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureRepositoryImpl
+import com.dms.dailyjoy.data.repository.SettingsRepository
+import com.dms.dailyjoy.data.repository.SettingsRepositoryImpl
 import com.dms.dailyjoy.domain.repository.DailyMessageRepository
 import com.dms.dailyjoy.domain.repository.PleasureHistoryRepository
 import com.dms.dailyjoy.domain.repository.PleasureRepository
@@ -30,4 +33,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideDailyMessageRepository(): DailyMessageRepository = DailyMessageRepositoryImpl()
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(context: Application): SettingsRepository =
+        SettingsRepositoryImpl(context = context)
 }

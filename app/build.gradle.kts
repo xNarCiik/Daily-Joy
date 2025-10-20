@@ -66,6 +66,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
 
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
+
     // Desugaring
     coreLibraryDesugaring(libs.android.desugar.jdk.libs)
 
