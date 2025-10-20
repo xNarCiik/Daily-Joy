@@ -13,12 +13,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -65,6 +67,8 @@ fun DailyPleasureScreen(
     ) {
         if (dailyPleasureState.isLoading) {
             CircularProgressIndicator()
+        } else if (dailyPleasureState.dailyPleasure.isDone) {
+            DailyPleasureCompletedContent()
         } else {
             DailyPleasureContent(
                 dailyPleasureState = dailyPleasureState,
@@ -103,9 +107,7 @@ fun DailyPleasureContent(
         if (showConfettiAnimation) {
             try {
                 MediaPlayer.create(context, R.raw.done).apply {
-                    setOnCompletionListener {
-                        it.release()
-                    }
+                    setOnCompletionListener { it.release() }
                     setVolume(0.25f, 0.25f)
                     start()
                 }
@@ -232,12 +234,67 @@ fun DailyPleasureContent(
     }
 }
 
+@Composable
+private fun DailyPleasureCompletedContent() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val successComposition by rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(resId = R.raw.checkmark)
+        )
+        val successProgress by animateLottieCompositionAsState(
+            composition = successComposition,
+            isPlaying = true,
+            restartOnPlay = false
+        )
+
+        LottieAnimation(
+            modifier = Modifier.size(200.dp),
+            composition = successComposition,
+            progress = { successProgress }
+        )
+
+        Text(
+            text = "Graine de joie plantée !",
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Text(
+            text = "Super ! Reviens demain pour découvrir ton prochain plaisir.",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp)
+        )
+    }
+}
+
 @LightDarkPreview
 @Composable
-fun DailyPleasureScreenPreview() {
+fun DailyPleasureNotCompletedScreenPreview() {
     DailyJoyTheme {
-        DailyPleasureScreen(
-            dailyPleasureState = previewDailyPleasureState,
+        DailyPleasureContent(
+            dailyPleasureState = previewDailyPleasureState.copy(
+                dailyPleasure = previewDailyPleasureState.dailyPleasure.copy(isDone = false)
+            ),
+            onCardFlipped = {},
+            onDraggingCard = {},
+            onDonePleasure = {}
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun DailyPleasureCompletedScreenPreview() {
+    DailyJoyTheme {
+        DailyPleasureContent(
+            dailyPleasureState = previewDailyPleasureState.copy(
+                dailyPleasure = previewDailyPleasureState.dailyPleasure.copy(isDone = true)
+            ),
             onCardFlipped = {},
             onDraggingCard = {},
             onDonePleasure = {}

@@ -85,13 +85,13 @@ fun DailyPleasureCard(
     // Jump animation (scale + offset)
     val jumpScale by animateFloatAsState(
         targetValue = if (isJumping) 1.15f else 1f,
-        animationSpec = tween(2000, easing = { overshootEasing(it, tension = 3f) }),
+        animationSpec = tween(2000, easing = { overshootEasing(t = it) }),
         label = "scaleAnimation"
     )
 
     val jumpOffset by animateFloatAsState(
         targetValue = if (isJumping) (-8f) else 0f,
-        animationSpec = tween(2000, easing = { overshootEasing(it, tension = 3f) }),
+        animationSpec = tween(2000, easing = { overshootEasing(t = it) }),
         label = "offsetAnimation"
     )
 
@@ -134,10 +134,8 @@ fun DailyPleasureCard(
     }
 }
 
-private fun overshootEasing(t: Float, tension: Float = 2f): Float {
-    val s = tension
-    return (t - 1).let { it * it * ((s + 1) * it + s) + 1 }
-}
+private fun overshootEasing(t: Float, tension: Float = 3f) =
+    (t - 1).let { it * it * ((tension + 1) * it + tension) + 1 }
 
 @Composable
 private fun BackCardContent(modifier: Modifier = Modifier) {

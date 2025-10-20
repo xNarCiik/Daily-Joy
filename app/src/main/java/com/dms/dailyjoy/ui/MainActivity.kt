@@ -119,7 +119,7 @@ fun MainActivityContent() {
                             when (page) {
                                 0 -> DailyPleasureScreen(
                                     dailyPleasureState = dailyPleasureState,
-                                    onCardFlipped = { viewModel.onDailyCardFlipped() },
+                                    onCardFlipped = viewModel::onDailyCardFlipped,
                                     onDraggingCard = { dragging -> pagerEnabled = !dragging },
                                     onDonePleasure = {
                                         viewModel.markDailyCardAsDone()
