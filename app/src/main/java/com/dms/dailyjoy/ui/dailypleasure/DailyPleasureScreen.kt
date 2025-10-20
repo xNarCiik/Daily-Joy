@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,6 +52,32 @@ import kotlin.math.abs
 
 @Composable
 fun DailyPleasureScreen(
+    dailyPleasureState: DailyPleasureState,
+    onCardFlipped: () -> Unit,
+    onDraggingCard: (Boolean) -> Unit,
+    onDonePleasure: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 12.dp, horizontal = 24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (dailyPleasureState.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            DailyPleasureContent(
+                dailyPleasureState = dailyPleasureState,
+                onCardFlipped = onCardFlipped,
+                onDraggingCard = onDraggingCard,
+                onDonePleasure = onDonePleasure
+            )
+        }
+    }
+}
+
+@Composable
+fun DailyPleasureContent(
     dailyPleasureState: DailyPleasureState,
     onCardFlipped: () -> Unit,
     onDraggingCard: (Boolean) -> Unit,
@@ -101,114 +128,107 @@ fun DailyPleasureScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 12.dp, horizontal = 24.dp),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(1f))
 
-            Text(
-                text = dailyPleasureState.dailyMessage,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
+        Text(
+            text = dailyPleasureState.dailyMessage,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
 
-            Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(1f))
 
-            val scope = rememberCoroutineScope()
+        val scope = rememberCoroutineScope()
 
-            val animatedOffsetX = remember { Animatable(0f) }
-            val animatedRotationZ = remember { Animatable(0f) }
+        val animatedOffsetX = remember { Animatable(0f) }
+        val animatedRotationZ = remember { Animatable(0f) }
 
-            DailyPleasureCard(
-                modifier = Modifier
-                    .draggable(
-                        orientation = Orientation.Horizontal,
-                        enabled = isFlipped,
-                        state = rememberDraggableState { delta ->
-                            scope.launch {
-                                val friction = if (delta < 0) 0.2f else 0.5f
-                                val newX = animatedOffsetX.value + (delta * friction)
-                                animatedOffsetX.snapTo(newX)
-                                val newRot = (newX / 18f).coerceIn(-5f, 20f)
-                                animatedRotationZ.snapTo(newRot)
-                            }
-                        },
-                        onDragStarted = {
-                            onDraggingCard(true)
-                            scope.launch {
-                                animatedOffsetX.stop()
-                                animatedRotationZ.stop()
-                            }
-                        },
-                        onDragStopped = {
-                            onDraggingCard(false)
-                            scope.launch {
-                                val swipeThreshold = 150f
-                                if (animatedOffsetX.value > swipeThreshold) {
-                                    val animSpec = tween<Float>(
-                                        durationMillis = 3000,
-                                        easing = LinearOutSlowInEasing
-                                    )
-                                    launch { animatedOffsetX.animateTo(1000f, animSpec) }
-                                    launch { animatedRotationZ.animateTo(20f, animSpec) }
+        DailyPleasureCard(
+            modifier = Modifier
+                .draggable(
+                    orientation = Orientation.Horizontal,
+                    enabled = isFlipped,
+                    state = rememberDraggableState { delta ->
+                        scope.launch {
+                            val friction = if (delta < 0) 0.2f else 0.5f
+                            val newX = animatedOffsetX.value + (delta * friction)
+                            animatedOffsetX.snapTo(newX)
+                            val newRot = (newX / 18f).coerceIn(-5f, 20f)
+                            animatedRotationZ.snapTo(newRot)
+                        }
+                    },
+                    onDragStarted = {
+                        onDraggingCard(true)
+                        scope.launch {
+                            animatedOffsetX.stop()
+                            animatedRotationZ.stop()
+                        }
+                    },
+                    onDragStopped = {
+                        onDraggingCard(false)
+                        scope.launch {
+                            val swipeThreshold = 150f
+                            if (animatedOffsetX.value > swipeThreshold) {
+                                val animSpec = tween<Float>(
+                                    durationMillis = 3000,
+                                    easing = LinearOutSlowInEasing
+                                )
+                                launch { animatedOffsetX.animateTo(1000f, animSpec) }
+                                launch { animatedRotationZ.animateTo(20f, animSpec) }
 
-                                    delay(400)
-                                    onDonePleasure()
-                                } else {
-                                    val springSpec = spring<Float>(dampingRatio = 0.7f)
-                                    launch { animatedOffsetX.animateTo(0f, springSpec) }
-                                    launch { animatedRotationZ.animateTo(0f, springSpec) }
-                                }
+                                delay(400)
+                                onDonePleasure()
+                            } else {
+                                val springSpec = spring<Float>(dampingRatio = 0.7f)
+                                launch { animatedOffsetX.animateTo(0f, springSpec) }
+                                launch { animatedRotationZ.animateTo(0f, springSpec) }
                             }
                         }
-                    )
-                    .offset(x = animatedOffsetX.value.dp)
-                    .graphicsLayer {
-                        rotationZ = animatedRotationZ.value
-                        cameraDistance = 8 * density
-                        alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
-                    },
-                pleasure = dailyPleasureState.dailyPleasure,
-                durationRotation = rotationCardAnimationDuration,
-                onCardFlipped = {
-                    showConfettiAnimation = true
-                    onCardFlipped()
-                }
-            )
-
-            Spacer(Modifier.weight(1f))
-
-            InfoText(cardIsFlipped = isFlipped)
-
-            Spacer(Modifier.weight(1f))
-        }
-
-        // Animation Confetti
-        val confettiComposition by rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(
-                resId = R.raw.confetti
-            )
+                    }
+                )
+                .offset(x = animatedOffsetX.value.dp)
+                .graphicsLayer {
+                    rotationZ = animatedRotationZ.value
+                    cameraDistance = 8 * density
+                    alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
+                },
+            pleasure = dailyPleasureState.dailyPleasure,
+            durationRotation = rotationCardAnimationDuration,
+            onCardFlipped = {
+                showConfettiAnimation = true
+                onCardFlipped()
+            }
         )
-        val confettiProgress by animateLottieCompositionAsState(
+
+        Spacer(Modifier.weight(1f))
+
+        InfoText(cardIsFlipped = isFlipped)
+
+        Spacer(Modifier.weight(1f))
+    }
+
+    // Animation Confetti
+    val confettiComposition by rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(
+            resId = R.raw.confetti
+        )
+    )
+    val confettiProgress by animateLottieCompositionAsState(
+        composition = confettiComposition,
+        isPlaying = showConfettiAnimation,
+        restartOnPlay = false
+    )
+
+    if (showConfettiAnimation) {
+        LottieAnimation(
             composition = confettiComposition,
-            isPlaying = showConfettiAnimation,
-            restartOnPlay = false
+            progress = { confettiProgress }
         )
-
-        if (showConfettiAnimation) {
-            LottieAnimation(
-                composition = confettiComposition,
-                progress = { confettiProgress }
-            )
-        }
     }
 }
 

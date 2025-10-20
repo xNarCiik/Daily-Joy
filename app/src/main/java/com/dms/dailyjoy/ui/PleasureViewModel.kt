@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class DailyPleasureState(
+    val isLoading: Boolean = true,
     val dailyMessage: String = "",
     val dailyPleasure: Pleasure = Pleasure(),
     val waitDonePleasure: Boolean = false
@@ -33,17 +34,6 @@ class PleasureViewModel @Inject constructor(
         loadDailyPleasure()
     }
 
-    fun loadDailyPleasure() = viewModelScope.launch {
-        val pleasure = getPleasureForTodayUseCase() ?: Pleasure()
-        pleasureHistoryRepository.save(pleasure)
-        _state.update {
-            DailyPleasureState(
-                dailyMessage = getRandomDailyMessageUseCase(),
-                dailyPleasure = pleasure
-            )
-        }
-    }
-
     fun onDailyCardFlipped() = viewModelScope.launch {
         val updatedPleasure = _state.value.dailyPleasure.copy(isFlipped = true)
         pleasureHistoryRepository.save(updatedPleasure)
@@ -60,6 +50,21 @@ class PleasureViewModel @Inject constructor(
         pleasureHistoryRepository.save(updatedPleasure)
         _state.update {
             it.copy(dailyPleasure = updatedPleasure, waitDonePleasure = false)
+        }
+    }
+
+    private fun loadDailyPleasure() = viewModelScope.launch {
+        _state.update { it.copy(isLoading = true) }
+
+        val pleasure = getPleasureForTodayUseCase() ?: Pleasure()
+        pleasureHistoryRepository.save(pleasure)
+
+        _state.update {
+            it.copy(
+                isLoading = false,
+                dailyMessage = getRandomDailyMessageUseCase(),
+                dailyPleasure = pleasure
+            )
         }
     }
 }

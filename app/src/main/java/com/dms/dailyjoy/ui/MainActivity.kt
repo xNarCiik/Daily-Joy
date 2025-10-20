@@ -93,7 +93,7 @@ fun MainActivityContent() {
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize(),
-                    topBar = { TopAppBar(resetState = { viewModel.loadDailyPleasure() }) },
+                    topBar = { TopAppBar() },
                     bottomBar = {
                         AnimatedBottomNavBar(
                             pagerState = pagerState,

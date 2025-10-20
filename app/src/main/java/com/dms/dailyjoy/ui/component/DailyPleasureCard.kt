@@ -48,25 +48,37 @@ fun DailyPleasureCard(
 ) {
     val scope = rememberCoroutineScope()
 
-    var isFlipped by remember { mutableStateOf(false) }
+    var isFlipped by remember { mutableStateOf(pleasure.isFlipped) }
     var isJumping by remember { mutableStateOf(false) }
+    var shouldAnimate by remember { mutableStateOf(false) }
 
-    LaunchedEffect(pleasure.isFlipped) {
-        isFlipped = pleasure.isFlipped
+    // Effect to sync the card's state with the external pleasure object without animation
+    LaunchedEffect(pleasure) {
+        if (isFlipped != pleasure.isFlipped) {
+            shouldAnimate = false // Ensure no animation for external changes
+            isFlipped = pleasure.isFlipped
+        }
     }
 
     // Animation Rotation
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = tween(
-            durationMillis = durationRotation,
-            easing = { it * it * (3 - 2 * it) } // Custom easing for a nice bounce effect
-        ),
+        animationSpec = if (shouldAnimate) {
+            // Animate only when requested (i.e., on click)
+            tween(
+                durationMillis = durationRotation,
+                easing = { it * it * (3 - 2 * it) } // Custom easing for a nice bounce effect
+            )
+        } else {
+            // Otherwise, snap instantly to the new state
+            tween(durationMillis = 0)
+        },
         label = "rotationAnimation",
-        finishedListener = {
-            if (it == 180f && !pleasure.isFlipped) {
+        finishedListener = { finalValue ->
+            if (finalValue == 180f && !pleasure.isFlipped) {
                 onCardFlipped()
             }
+            shouldAnimate = false
         }
     )
 
@@ -97,10 +109,12 @@ fun DailyPleasureCard(
         shape = RoundedCornerShape(size = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         onClick = {
-            if (!isFlipped || isJumping) {
+            // Prevent flipping if it's already flipped or an animation is in progress
+            if (!isFlipped && !isJumping) {
                 scope.launch {
                     isJumping = true
                     delay(250)
+                    shouldAnimate = true
                     isFlipped = true
                     delay(100)
                     isJumping = false
@@ -120,7 +134,7 @@ fun DailyPleasureCard(
     }
 }
 
-fun overshootEasing(t: Float, tension: Float = 2f): Float {
+private fun overshootEasing(t: Float, tension: Float = 2f): Float {
     val s = tension
     return (t - 1).let { it * it * ((s + 1) * it + s) + 1 }
 }
