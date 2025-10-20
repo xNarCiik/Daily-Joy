@@ -1,6 +1,7 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.dms.dailyjoy.ui.settings.manage
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,18 +45,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ManagePleasuresScreen(
-    navController: NavController,
-    viewModel: ManagePleasuresViewModel = hiltViewModel()
+    viewModel: ManagePleasuresViewModel = hiltViewModel(),
+    navigateBack: () -> Unit
 ) {
     val pleasures by viewModel.pleasures.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
@@ -67,7 +66,7 @@ fun ManagePleasuresScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.manage_pleasures_title)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = navigateBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.back)

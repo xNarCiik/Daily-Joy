@@ -18,9 +18,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.DailyPleasureRoute
-import com.dms.dailyjoy.ui.HistoryRoute
-import com.dms.dailyjoy.ui.SettingsRoute
+import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
+import com.dms.dailyjoy.ui.navigation.HistoryRoute
+import com.dms.dailyjoy.ui.navigation.SettingsRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 

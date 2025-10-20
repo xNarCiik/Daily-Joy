@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.dms.dailyjoy.ui
 
 import android.annotation.SuppressLint
@@ -15,7 +13,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,14 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
-import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureNavigation
-import com.dms.dailyjoy.ui.history.HistoryNavigation
-import com.dms.dailyjoy.ui.settings.SettingsNavigation
+import com.dms.dailyjoy.ui.component.MainTopAppBar
+import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
+import com.dms.dailyjoy.ui.navigation.HistoryRoute
+import com.dms.dailyjoy.ui.navigation.NavGraph
+import com.dms.dailyjoy.ui.navigation.SettingsRoute
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
@@ -79,30 +77,35 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                 enter = fadeIn(animationSpec = tween(durationMillis = fadeInContentAnimationDuration))
             ) {
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        AnimatedBottomNavBar(
-                            navController = navController,
-                            durationAnimation = fadeInContentAnimationDuration
+                    topBar = {
+                        MainTopAppBar(
+                            currentRoute = currentRoute,
+                            navController = navController
                         )
+                    },
+                    bottomBar = {
+                        AnimatedVisibility(
+                            visible =
+                                currentRoute in listOf(
+                                    DailyPleasureRoute::class.qualifiedName,
+                                    HistoryRoute::class.qualifiedName,
+                                    SettingsRoute::class.qualifiedName
+                                )
+                        ) {
+                            AnimatedBottomNavBar(
+                                navController = navController,
+                                durationAnimation = fadeInContentAnimationDuration
+                            )
+                        }
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = DailyPleasureRoute
-                        ) {
-                            composable<DailyPleasureRoute> {
-                                DailyPleasureNavigation()
-                            }
-                            composable<HistoryRoute> {
-                                HistoryNavigation()
-                            }
-                            composable<SettingsRoute> {
-                                SettingsNavigation()
-                            }
-                        }
+                        NavGraph(navController = navController)
                     }
                 }
             }

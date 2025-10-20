@@ -7,7 +7,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dms.dailyjoy.ui.SettingsRoute
+import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
 
 @Composable
 fun DailyPleasureNavigation() {
@@ -15,8 +15,8 @@ fun DailyPleasureNavigation() {
     val viewModel: PleasureViewModel = hiltViewModel()
     val dailyPleasureState by viewModel.state.collectAsState()
 
-    NavHost(navController = navController, startDestination = SettingsRoute) {
-        composable<SettingsRoute> {
+    NavHost(navController = navController, startDestination = DailyPleasureRoute) {
+        composable<DailyPleasureRoute> {
             DailyPleasureScreen(
                 dailyPleasureState = dailyPleasureState,
                 onCardFlipped = viewModel::onDailyCardFlipped,

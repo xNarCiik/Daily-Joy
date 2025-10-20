@@ -40,8 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.settings.dialog.ThemeDialog
@@ -50,9 +48,9 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun SettingsScreen(
-    navController: NavController = rememberNavController(),
     theme: Theme,
-    onThemeChanged: (Theme) -> Unit
+    onThemeChanged: (Theme) -> Unit,
+    onNavigateToManagePleasures: () -> Unit
 ) {
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -96,9 +94,7 @@ fun SettingsScreen(
                 icon = Icons.Default.Edit,
                 title = stringResource(id = R.string.settings_manage_pleasures_title),
                 subtitle = stringResource(id = R.string.settings_manage_pleasures_subtitle),
-                onClick = {
-                    navController.navigate(ManagePleasuresRoute)
-                }
+                onClick = onNavigateToManagePleasures
             )
         }
         item {
@@ -299,7 +295,8 @@ fun SettingsScreenPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreen(
                 theme = Theme.SYSTEM,
-                onThemeChanged = {}
+                onThemeChanged = {},
+                onNavigateToManagePleasures = {}
             )
         }
     }

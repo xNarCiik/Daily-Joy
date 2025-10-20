@@ -7,7 +7,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dms.dailyjoy.ui.SettingsRoute
+import com.dms.dailyjoy.ui.navigation.SettingsRoute
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
 import kotlinx.serialization.Serializable
 
@@ -23,13 +23,13 @@ fun SettingsNavigation() {
     NavHost(navController = navController, startDestination = SettingsRoute) {
         composable<SettingsRoute> {
             SettingsScreen(
-                navController = navController,
                 theme = theme,
-                onThemeChanged = viewModel::onThemeChange
+                onThemeChanged = viewModel::onThemeChange,
+                onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
             )
         }
         composable<ManagePleasuresRoute> {
-            ManagePleasuresScreen(navController = navController)
+            ManagePleasuresScreen(navigateBack = navController::popBackStack)
         }
     }
 }

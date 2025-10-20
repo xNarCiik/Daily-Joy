@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.dms.dailyjoy.ui.history
 
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +18,8 @@ import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,12 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
@@ -57,71 +48,62 @@ data class WeeklyPleasure(
 )
 
 @Composable
-fun HistoryScreen(navController: NavController = rememberNavController()) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(stringResource(R.string.bottom_nav_bar_history_title)) }
+fun HistoryScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        // État mutable pour le plaisir du jour actuel, pour simuler la validation
+        var isTodayPleasureCompleted by remember { mutableStateOf(false) }
+
+        // Liste placeholder pour la vue de la semaine (ex: aujourd'hui c'est Jeudi)
+        val weeklyPleasures = remember(isTodayPleasureCompleted) {
+            listOf(
+                WeeklyPleasure(
+                    "Lundi",
+                    "Écouter le chant des oiseaux",
+                    DailyPleasureStatus.PAST,
+                    isCompleted = true
+                ),
+                WeeklyPleasure(
+                    "Mardi",
+                    "Boire un café chaud le matin",
+                    DailyPleasureStatus.PAST,
+                    isCompleted = false
+                ),
+                WeeklyPleasure(
+                    "Mercredi",
+                    "Faire une courte promenade",
+                    DailyPleasureStatus.PAST,
+                    isCompleted = true
+                ),
+                WeeklyPleasure(
+                    "Aujourd'hui",
+                    "Lire un chapitre d'un livre",
+                    DailyPleasureStatus.CURRENT,
+                    isCompleted = isTodayPleasureCompleted
+                ),
+                WeeklyPleasure("Vendredi", null, DailyPleasureStatus.FUTURE),
+                WeeklyPleasure("Samedi", null, DailyPleasureStatus.FUTURE),
+                WeeklyPleasure("Dimanche", null, DailyPleasureStatus.FUTURE)
             )
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // État mutable pour le plaisir du jour actuel, pour simuler la validation
-            var isTodayPleasureCompleted by remember { mutableStateOf(false) }
-
-            // Liste placeholder pour la vue de la semaine (ex: aujourd'hui c'est Jeudi)
-            val weeklyPleasures = remember(isTodayPleasureCompleted) {
-                listOf(
-                    WeeklyPleasure(
-                        "Lundi",
-                        "Écouter le chant des oiseaux",
-                        DailyPleasureStatus.PAST,
-                        isCompleted = true
-                    ),
-                    WeeklyPleasure(
-                        "Mardi",
-                        "Boire un café chaud le matin",
-                        DailyPleasureStatus.PAST,
-                        isCompleted = false
-                    ),
-                    WeeklyPleasure(
-                        "Mercredi",
-                        "Faire une courte promenade",
-                        DailyPleasureStatus.PAST,
-                        isCompleted = true
-                    ),
-                    WeeklyPleasure(
-                        "Aujourd'hui",
-                        "Lire un chapitre d'un livre",
-                        DailyPleasureStatus.CURRENT,
-                        isCompleted = isTodayPleasureCompleted
-                    ),
-                    WeeklyPleasure("Vendredi", null, DailyPleasureStatus.FUTURE),
-                    WeeklyPleasure("Samedi", null, DailyPleasureStatus.FUTURE),
-                    WeeklyPleasure("Dimanche", null, DailyPleasureStatus.FUTURE)
-                )
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(weeklyPleasures) { pleasure ->
-                    DailyPleasureCard(
-                        item = pleasure,
-                        onCompleteToday = {
-                            // Ne permet de modifier que le plaisir du jour
-                            if (pleasure.status == DailyPleasureStatus.CURRENT) {
-                                isTodayPleasureCompleted = !isTodayPleasureCompleted
-                            }
+            items(weeklyPleasures) { pleasure ->
+                DailyPleasureCard(
+                    item = pleasure,
+                    onCompleteToday = {
+                        // Ne permet de modifier que le plaisir du jour
+                        if (pleasure.status == DailyPleasureStatus.CURRENT) {
+                            isTodayPleasureCompleted = !isTodayPleasureCompleted
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }
