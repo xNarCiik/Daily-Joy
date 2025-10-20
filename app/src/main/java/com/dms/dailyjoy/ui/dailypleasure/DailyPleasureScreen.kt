@@ -69,7 +69,6 @@ import kotlin.math.abs
 fun DailyPleasureScreen(
     dailyPleasureState: DailyPleasureState,
     onCardFlipped: () -> Unit,
-    onDraggingCard: (Boolean) -> Unit,
     onDonePleasure: () -> Unit
 ) {
     Scaffold(
@@ -107,7 +106,6 @@ fun DailyPleasureScreen(
                 DailyPleasureContent(
                     dailyPleasureState = dailyPleasureState,
                     onCardFlipped = onCardFlipped,
-                    onDraggingCard = onDraggingCard,
                     onDonePleasure = onDonePleasure
                 )
             }
@@ -119,7 +117,6 @@ fun DailyPleasureScreen(
 fun DailyPleasureContent(
     dailyPleasureState: DailyPleasureState,
     onCardFlipped: () -> Unit,
-    onDraggingCard: (Boolean) -> Unit,
     onDonePleasure: () -> Unit
 ) {
     val isFlipped = dailyPleasureState.dailyPleasure.isFlipped
@@ -200,14 +197,12 @@ fun DailyPleasureContent(
                         }
                     },
                     onDragStarted = {
-                        onDraggingCard(true)
                         scope.launch {
                             animatedOffsetX.stop()
                             animatedRotationZ.stop()
                         }
                     },
                     onDragStopped = {
-                        onDraggingCard(false)
                         scope.launch {
                             val swipeThreshold = 150f
                             if (animatedOffsetX.value > swipeThreshold) {
@@ -326,7 +321,6 @@ fun DailyPleasureNotCompletedScreenPreview() {
         DailyPleasureScreen(
             dailyPleasureState = previewDailyPleasureState,
             onCardFlipped = {},
-            onDraggingCard = {},
             onDonePleasure = {}
         )
     }
@@ -341,7 +335,6 @@ fun DailyPleasureCompletedScreenPreview() {
                 dailyPleasure = previewDailyPleasureState.dailyPleasure.copy(isDone = true)
             ),
             onCardFlipped = {},
-            onDraggingCard = {},
             onDonePleasure = {}
         )
     }

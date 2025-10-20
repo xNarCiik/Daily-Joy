@@ -10,7 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.ui.SettingsRoute
 
 @Composable
-fun DailyPleasureNavigation(onDraggingCard: (Boolean) -> Unit) {
+fun DailyPleasureNavigation() {
     val navController = rememberNavController()
     val viewModel: PleasureViewModel = hiltViewModel()
     val dailyPleasureState by viewModel.state.collectAsState()
@@ -19,7 +19,6 @@ fun DailyPleasureNavigation(onDraggingCard: (Boolean) -> Unit) {
         composable<SettingsRoute> {
             DailyPleasureScreen(
                 dailyPleasureState = dailyPleasureState,
-                onDraggingCard = onDraggingCard,
                 onCardFlipped = viewModel::onDailyCardFlipped,
                 onDonePleasure = viewModel::markDailyCardAsDone
             )

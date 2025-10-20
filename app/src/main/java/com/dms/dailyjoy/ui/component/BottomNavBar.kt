@@ -1,8 +1,5 @@
 package com.dms.dailyjoy.ui.component
 
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Mood
@@ -12,18 +9,20 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.DailyPleasureRoute
 import com.dms.dailyjoy.ui.HistoryRoute
 import com.dms.dailyjoy.ui.SettingsRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.navigationAnimationDuration
-import kotlinx.coroutines.launch
 
 data class TabBarItem(
     val title: String,
@@ -33,8 +32,9 @@ data class TabBarItem(
 )
 
 @Composable
-fun BottomNavBar(pagerState: PagerState) {
-    val scope = rememberCoroutineScope()
+fun BottomNavBar(navController: NavHostController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
     val homeItem = TabBarItem(
         title = stringResource(R.string.bottom_nav_bar_daily_pleasure_title),
@@ -57,16 +57,17 @@ fun BottomNavBar(pagerState: PagerState) {
     val tabBarItems = listOf(homeItem, historyItem, settingsItem)
 
     NavigationBar(tonalElevation = 4.dp) {
-        tabBarItems.forEachIndexed { index, tabBarItem ->
-            val isSelected = pagerState.currentPage == index
+        tabBarItems.forEach { tabBarItem ->
+            val isSelected = currentDestination?.route == tabBarItem.route::class.qualifiedName
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(
-                            page = index,
-                            animationSpec = tween(durationMillis = navigationAnimationDuration)
-                        )
+                    navController.navigate(tabBarItem.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 icon = {
@@ -87,6 +88,6 @@ fun BottomNavBar(pagerState: PagerState) {
 @Composable
 fun BottomNavBarPreview() {
     DailyJoyTheme {
-        BottomNavBar(pagerState = rememberPagerState { 3 })
+        BottomNavBar(navController = rememberNavController())
     }
 }

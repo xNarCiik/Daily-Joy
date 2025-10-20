@@ -9,16 +9,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,6 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureNavigation
@@ -40,7 +39,6 @@ import com.dms.dailyjoy.ui.settings.SettingsNavigation
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
-import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -80,41 +78,29 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                 visible = contentVisible,
                 enter = fadeIn(animationSpec = tween(durationMillis = fadeInContentAnimationDuration))
             ) {
-                val pagerState = rememberPagerState { 3 }
-
-                var pagerEnabled by remember { mutableStateOf(true) }
-
+                val navController = rememberNavController()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         AnimatedBottomNavBar(
-                            pagerState = pagerState,
+                            navController = navController,
                             durationAnimation = fadeInContentAnimationDuration
                         )
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
-                        val flingBehavior = PagerDefaults.flingBehavior(
-                            state = pagerState,
-                            snapAnimationSpec = tween(
-                                durationMillis = navigationAnimationDuration,
-                                easing = LinearOutSlowInEasing
-                            )
-                        )
-
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.fillMaxSize(),
-                            flingBehavior = flingBehavior,
-                            userScrollEnabled = pagerEnabled
-                        ) { page ->
-                            when (page) {
-                                0 -> DailyPleasureNavigation(
-                                    onDraggingCard = { dragging -> pagerEnabled = !dragging }
-                                )
-
-                                1 -> HistoryNavigation()
-                                2 -> SettingsNavigation()
+                        NavHost(
+                            navController = navController,
+                            startDestination = DailyPleasureRoute
+                        ) {
+                            composable<DailyPleasureRoute> {
+                                DailyPleasureNavigation()
+                            }
+                            composable<HistoryRoute> {
+                                HistoryNavigation()
+                            }
+                            composable<SettingsRoute> {
+                                SettingsNavigation()
                             }
                         }
                     }

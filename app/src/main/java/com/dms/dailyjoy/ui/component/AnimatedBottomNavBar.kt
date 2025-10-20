@@ -7,7 +7,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,11 +16,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
 fun AnimatedBottomNavBar(
     modifier: Modifier = Modifier,
-    pagerState: PagerState,
+    navController: NavHostController,
     durationAnimation: Int
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -60,6 +60,6 @@ fun AnimatedBottomNavBar(
                 alpha = currentAlpha
             }
     ) {
-        BottomNavBar(pagerState = pagerState)
+        BottomNavBar(navController = navController)
     }
 }
