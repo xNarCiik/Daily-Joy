@@ -1,7 +1,6 @@
 package com.dms.dailyjoy.domain.usecase
 
 import com.dms.dailyjoy.domain.repository.PleasureRepository
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetRandomPleasureUseCase @Inject constructor(
@@ -12,7 +11,5 @@ class GetRandomPleasureUseCase @Inject constructor(
      * It collects all pleasures from the repository and returns a random one.
      * If the list is empty, it returns null.
      */
-    operator fun invoke() = repository.getAllPleasures().map { pleasures ->
-        pleasures.randomOrNull()
-    }
+    suspend operator fun invoke() = repository.getAllPleasures().randomOrNull()
 }

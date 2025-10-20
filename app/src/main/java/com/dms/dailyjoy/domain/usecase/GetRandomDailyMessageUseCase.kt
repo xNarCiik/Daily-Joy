@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetRandomDailyMessageUseCase @Inject constructor(
     private val repository: DailyMessageRepository
 ) {
-    fun invoke() = repository.getRandomDailyMessage()
+    operator fun invoke() = repository.getRandomDailyMessage()
 }

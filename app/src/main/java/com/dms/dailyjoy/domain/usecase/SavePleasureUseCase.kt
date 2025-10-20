@@ -1,10 +1,11 @@
 package com.dms.dailyjoy.domain.usecase
 
+import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.domain.repository.PleasureRepository
 import javax.inject.Inject
 
-class GetPleasuresUseCase @Inject constructor(
+class SavePleasureUseCase @Inject constructor(
     private val repository: PleasureRepository
 ) {
-    suspend fun invoke() = repository.getAllPleasures()
+    suspend operator fun invoke(pleasure: Pleasure) = repository.insert(pleasure)
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.dms.dailyjoy.data.database.AppDatabase
 import com.dms.dailyjoy.data.database.dao.PleasureDao
+import com.dms.dailyjoy.data.database.dao.PleasureHistoryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +27,9 @@ object DatabaseModule {
     }
 
     @Provides
-    fun providePleasureDao(appDatabase: AppDatabase): PleasureDao {
-        return appDatabase.pleasureDao()
-    }
+    fun providePleasureDao(appDatabase: AppDatabase): PleasureDao = appDatabase.pleasureDao()
+
+    @Provides
+    fun providePleasureHistoryDao(appDatabase: AppDatabase): PleasureHistoryDao =
+        appDatabase.pleasureHistoryDao()
 }
