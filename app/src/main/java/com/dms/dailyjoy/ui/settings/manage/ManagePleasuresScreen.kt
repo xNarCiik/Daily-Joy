@@ -44,58 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
-import com.dms.dailyjoy.domain.usecase.AddCustomPleasureUseCase
-import com.dms.dailyjoy.domain.usecase.DeleteCustomPleasureUseCase
-import com.dms.dailyjoy.domain.usecase.GetPleasuresUseCase
-import com.dms.dailyjoy.domain.usecase.UpdatePleasureUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-@HiltViewModel
-class ManagePleasuresViewModel @Inject constructor(
-    getPleasuresUseCase: GetPleasuresUseCase,
-    private val updatePleasureUseCase: UpdatePleasureUseCase,
-    private val addCustomPleasureUseCase: AddCustomPleasureUseCase,
-    private val deleteCustomPleasureUseCase: DeleteCustomPleasureUseCase
-) : ViewModel() {
-
-    val pleasures: StateFlow<List<Pleasure>> = getPleasuresUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    fun updatePleasure(pleasure: Pleasure) {
-        viewModelScope.launch {
-            updatePleasureUseCase(pleasure)
-        }
-    }
-
-    fun addPleasure(
-        title: String,
-        description: String,
-        category: PleasureCategory,
-        type: PleasureType
-    ) {
-        viewModelScope.launch {
-            addCustomPleasureUseCase(title, description, category, type)
-        }
-    }
-
-    fun deletePleasure(pleasure: Pleasure) {
-        viewModelScope.launch {
-            deleteCustomPleasureUseCase(pleasure)
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -137,6 +91,7 @@ fun ManagePleasuresScreen(
                 stringResource(R.string.small_pleasures),
                 stringResource(R.string.big_pleasures)
             )
+
             PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
@@ -146,12 +101,14 @@ fun ManagePleasuresScreen(
                     )
                 }
             }
+
             Box(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(R.string.pleasures_explanation),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+
             HorizontalPager(state = pagerState) { page ->
                 val pleasuresToShow = when (page) {
                     0 -> pleasures.filter { p -> p.type == PleasureType.SMALL }
@@ -238,12 +195,14 @@ private fun AddPleasureDialog(
                     label = { Text(stringResource(R.string.title)) },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 TextField(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text(stringResource(R.string.description)) },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
@@ -258,6 +217,7 @@ private fun AddPleasureDialog(
                             .menuAnchor()
                             .fillMaxWidth()
                     )
+
                     ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
