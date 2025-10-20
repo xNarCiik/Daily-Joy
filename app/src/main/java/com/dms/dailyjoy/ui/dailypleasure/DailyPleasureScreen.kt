@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -256,6 +257,7 @@ private fun DailyPleasureCompletedContent() {
             restartOnPlay = false
         )
 
+        // Once the animation is finished, update the state so it doesn't play again
         LaunchedEffect(successProgress) {
             if (successProgress == 1f) {
                 playAnimation = false
@@ -269,7 +271,7 @@ private fun DailyPleasureCompletedContent() {
         )
 
         Text(
-            text = "Graine de joie plantée !",
+            text = stringResource(id = R.string.pleasure_completed_title),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary
@@ -278,7 +280,7 @@ private fun DailyPleasureCompletedContent() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Super ! Reviens demain pour découvrir ton prochain plaisir.",
+            text = stringResource(id = R.string.pleasure_completed_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )

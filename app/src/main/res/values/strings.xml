@@ -1,6 +1,25 @@
 <resources>
     <string name="app_name">Daily Joy</string>
+    <!-- Bottom Nav Bar -->
     <string name="bottom_nav_bar_daily_pleasure_title">Mon Plaisir</string>
     <string name="bottom_nav_bar_history_title">Ma semaine</string>
     <string name="bottom_nav_bar_settings_title">Paramètres</string>
+
+    <!-- DailyPleasureCompletedContent -->
+    <string name="pleasure_completed_title">Graine de joie plantée !</string>
+    <string name="pleasure_completed_subtitle">Super ! Reviens demain pour découvrir ton prochain plaisir.</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_daily_reminder_title">Rappel quotidien</string>
+    <string name="settings_daily_reminder_subtitle">Recevoir une suggestion de plaisir chaque jour.</string>
+    <string name="settings_personalization_title">Personnalisation</string>
+    <string name="settings_manage_pleasures_title">Gérer mes plaisirs</string>
+    <string name="settings_manage_pleasures_subtitle">Ajouter ou modifier vos plaisirs personnalisés.</string>
+    <string name="settings_appearance_title">Apparence</string>
+    <string name="settings_appearance_subtitle">Thème (Automatique, Clair, Sombre)</string>
+    <string name="settings_about_title">À Propos</string>
+    <string name="settings_rate_app">Noter l\'application</string>
+    <string name="settings_share_app">Partager Daily Joy</string>
+    <string name="settings_privacy_policy">Politique de confidentialité</string>
 </resources>

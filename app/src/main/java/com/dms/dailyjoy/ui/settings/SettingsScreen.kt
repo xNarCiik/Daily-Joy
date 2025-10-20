@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.StarRate
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
@@ -45,14 +46,14 @@ fun SettingsScreen() {
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         item {
-            SettingsSectionTitle(title = "Notifications")
+            SettingsSectionTitle(title = stringResource(id = R.string.settings_notifications_title))
         }
         item {
             var isChecked by remember { mutableStateOf(true) }
             SettingsSwitchItem(
                 icon = Icons.Default.Notifications,
-                title = "Rappel quotidien",
-                subtitle = "Recevoir une suggestion de plaisir chaque jour.",
+                title = stringResource(id = R.string.settings_daily_reminder_title),
+                subtitle = stringResource(id = R.string.settings_daily_reminder_subtitle),
                 checked = isChecked,
                 onCheckedChange = { isChecked = it }
             )
@@ -61,13 +62,13 @@ fun SettingsScreen() {
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item {
-            SettingsSectionTitle(title = "Personnalisation")
+            SettingsSectionTitle(title = stringResource(id = R.string.settings_personalization_title))
         }
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Edit,
-                title = "Gérer mes plaisirs",
-                subtitle = "Ajouter ou modifier vos plaisirs personnalisés.",
+                title = stringResource(id = R.string.settings_manage_pleasures_title),
+                subtitle = stringResource(id = R.string.settings_manage_pleasures_subtitle),
                 onClick = {}
             )
         }
@@ -77,8 +78,8 @@ fun SettingsScreen() {
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Palette,
-                title = "Apparence",
-                subtitle = "Thème (Automatique, Clair, Sombre)",
+                title = stringResource(id = R.string.settings_appearance_title),
+                subtitle = stringResource(id = R.string.settings_appearance_subtitle),
                 onClick = {}
             )
         }
@@ -86,34 +87,34 @@ fun SettingsScreen() {
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item {
-            SettingsSectionTitle(title = "À Propos")
+            SettingsSectionTitle(title = stringResource(id = R.string.settings_about_title))
         }
         item {
             SettingsClickableItem(
                 icon = Icons.Default.StarRate,
-                title = "Noter l'application",
+                title = stringResource(id = R.string.settings_rate_app),
                 onClick = {},
                 showChevron = false
             )
         }
         item {
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Share,
-                title = "Partager Daily Joy",
+                title = stringResource(id = R.string.settings_share_app),
                 onClick = {},
                 showChevron = false
             )
         }
         item {
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Shield,
-                title = "Politique de confidentialité",
+                title = stringResource(id = R.string.settings_privacy_policy),
                 onClick = {},
                 showChevron = false
             )
