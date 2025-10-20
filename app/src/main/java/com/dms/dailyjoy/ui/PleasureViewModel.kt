@@ -9,6 +9,7 @@ import com.dms.dailyjoy.domain.usecase.GetRandomPleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,5 +60,5 @@ class PleasureViewModel @Inject constructor(
 
     private fun getRandomDailyMessage(): String = getRandomDailyMessageUseCase.invoke()
 
-    private fun getRandomPleasure(): Pleasure = getRandomPleasureUseCase.invoke()
+    private suspend fun getRandomPleasure(): Pleasure = getRandomPleasureUseCase.invoke().firstOrNull() ?: Pleasure()
 }
