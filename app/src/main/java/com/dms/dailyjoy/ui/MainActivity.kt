@@ -83,25 +83,19 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        MainTopAppBar(
-                            currentRoute = currentRoute,
-                            navController = navController
-                        )
+                        MainTopAppBar(currentRoute = currentRoute, navController = navController)
                     },
                     bottomBar = {
-                        AnimatedVisibility(
-                            visible =
-                                currentRoute in listOf(
-                                    DailyPleasureRoute::class.qualifiedName,
-                                    HistoryRoute::class.qualifiedName,
-                                    SettingsRoute::class.qualifiedName
-                                )
-                        ) {
-                            AnimatedBottomNavBar(
-                                navController = navController,
-                                durationAnimation = fadeInContentAnimationDuration
-                            )
-                        }
+                        val visible = currentRoute in listOf(
+                            DailyPleasureRoute::class.qualifiedName,
+                            HistoryRoute::class.qualifiedName,
+                            SettingsRoute::class.qualifiedName
+                        )
+
+                        AnimatedBottomNavBar(
+                            navController = navController,
+                            visible = visible
+                        )
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(paddingValues = innerPadding)) {

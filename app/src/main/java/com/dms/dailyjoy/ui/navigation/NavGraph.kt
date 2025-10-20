@@ -1,20 +1,36 @@
 package com.dms.dailyjoy.ui.navigation
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureNavigation
-import com.dms.dailyjoy.ui.history.HistoryNavigation
-import com.dms.dailyjoy.ui.settings.SettingsNavigation
+import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
+import com.dms.dailyjoy.ui.dailypleasure.PleasureViewModel
+import com.dms.dailyjoy.ui.history.HistoryScreen
+import com.dms.dailyjoy.ui.settings.SettingsScreen
+import com.dms.dailyjoy.ui.settings.SettingsViewModel
+import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
+import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import kotlinx.serialization.Serializable
 
 @Serializable
 object DailyPleasureRoute
+
 @Serializable
 object HistoryRoute
+
 @Serializable
 object SettingsRoute
+
+@Serializable
+object ManagePleasuresRoute
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -22,14 +38,56 @@ fun NavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = DailyPleasureRoute
     ) {
-        composable<DailyPleasureRoute>{
-            DailyPleasureNavigation()
+        composable<DailyPleasureRoute> {
+            val viewModel: PleasureViewModel = hiltViewModel()
+            val dailyPleasureState by viewModel.state.collectAsState()
+            DailyPleasureScreen(
+                dailyPleasureState = dailyPleasureState,
+                onCardFlipped = viewModel::onDailyCardFlipped,
+                onDonePleasure = viewModel::markDailyCardAsDone
+            )
         }
+
         composable<HistoryRoute> {
-            HistoryNavigation()
+            HistoryScreen()
         }
+
         composable<SettingsRoute> {
-            SettingsNavigation()
+            val viewModel: SettingsViewModel = hiltViewModel()
+            SettingsScreen(
+                theme = viewModel.theme.collectAsState().value,
+                onThemeChanged = viewModel::onThemeChange,
+                onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
+            )
+        }
+
+        composable<ManagePleasuresRoute>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                )
+            }
+        ) {
+            ManagePleasuresScreen()
         }
     }
 }
