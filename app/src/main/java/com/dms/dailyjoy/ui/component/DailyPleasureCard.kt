@@ -48,17 +48,26 @@ fun DailyPleasureCard(
 ) {
     val scope = rememberCoroutineScope()
 
-    var isFlipped by remember { mutableStateOf(pleasure.isFlipped) }
+    var isFlipped by remember { mutableStateOf(false) }
     var isJumping by remember { mutableStateOf(false) }
+
+    LaunchedEffect(pleasure.isFlipped) {
+        isFlipped = pleasure.isFlipped
+    }
 
     // Animation Rotation
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
         animationSpec = tween(
             durationMillis = durationRotation,
-            easing = { it * it * (3 - 2 * it) }
+            easing = { it * it * (3 - 2 * it) } // Custom easing for a nice bounce effect
         ),
-        label = "rotationAnimation"
+        label = "rotationAnimation",
+        finishedListener = {
+            if (it == 180f && !pleasure.isFlipped) {
+                onCardFlipped()
+            }
+        }
     )
 
     // Jump animation (scale + offset)
@@ -74,10 +83,6 @@ fun DailyPleasureCard(
         label = "offsetAnimation"
     )
 
-    LaunchedEffect(rotation) {
-        if (rotation == 180f && !pleasure.isFlipped) onCardFlipped()
-    }
-
     Card(
         modifier = modifier
             .width(250.dp)
@@ -92,12 +97,14 @@ fun DailyPleasureCard(
         shape = RoundedCornerShape(size = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         onClick = {
-            scope.launch {
-                isJumping = true
-                delay(250)
-                isFlipped = true
-                delay(100)
-                isJumping = false
+            if (!isFlipped || isJumping) {
+                scope.launch {
+                    isJumping = true
+                    delay(250)
+                    isFlipped = true
+                    delay(100)
+                    isJumping = false
+                }
             }
         }
     ) {

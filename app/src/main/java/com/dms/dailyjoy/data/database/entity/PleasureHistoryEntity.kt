@@ -18,5 +18,6 @@ data class PleasureHistoryEntity(
     val description: String,
     val type: PleasureType,
     val category: PleasureCategory?,
+    val isFlipped: Boolean,
     val isDone: Boolean
 )

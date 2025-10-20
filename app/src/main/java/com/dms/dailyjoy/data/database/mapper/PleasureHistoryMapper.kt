@@ -11,6 +11,7 @@ fun PleasureHistoryEntity.toPleasure(): Pleasure = Pleasure(
     type = this.type,
     category = this.category,
     date = this.date,
+    isFlipped = this.isFlipped,
     isDone = this.isDone,
 )
 
@@ -21,5 +22,6 @@ fun Pleasure.toHistoryEntity(): PleasureHistoryEntity = PleasureHistoryEntity(
     description = this.description,
     type = this.type,
     category = this.category,
+    isFlipped = this.isFlipped,
     isDone = this.isDone
 )
