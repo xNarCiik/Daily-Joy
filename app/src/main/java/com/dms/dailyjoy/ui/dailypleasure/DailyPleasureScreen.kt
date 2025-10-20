@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -236,8 +238,12 @@ fun DailyPleasureContent(
 
 @Composable
 private fun DailyPleasureCompletedContent() {
+    var playAnimation by rememberSaveable { mutableStateOf(true) }
+
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -246,14 +252,20 @@ private fun DailyPleasureCompletedContent() {
         )
         val successProgress by animateLottieCompositionAsState(
             composition = successComposition,
-            isPlaying = true,
+            isPlaying = playAnimation,
             restartOnPlay = false
         )
+
+        LaunchedEffect(successProgress) {
+            if (successProgress == 1f) {
+                playAnimation = false
+            }
+        }
 
         LottieAnimation(
             modifier = Modifier.size(200.dp),
             composition = successComposition,
-            progress = { successProgress }
+            progress = { if (playAnimation) successProgress else 1.0f }
         )
 
         Text(
@@ -263,11 +275,12 @@ private fun DailyPleasureCompletedContent() {
             color = MaterialTheme.colorScheme.primary
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Super ! Reviens demain pour découvrir ton prochain plaisir.",
             style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 16.dp, start = 32.dp, end = 32.dp)
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -276,10 +289,8 @@ private fun DailyPleasureCompletedContent() {
 @Composable
 fun DailyPleasureNotCompletedScreenPreview() {
     DailyJoyTheme {
-        DailyPleasureContent(
-            dailyPleasureState = previewDailyPleasureState.copy(
-                dailyPleasure = previewDailyPleasureState.dailyPleasure.copy(isDone = false)
-            ),
+        DailyPleasureScreen(
+            dailyPleasureState = previewDailyPleasureState,
             onCardFlipped = {},
             onDraggingCard = {},
             onDonePleasure = {}
@@ -291,7 +302,7 @@ fun DailyPleasureNotCompletedScreenPreview() {
 @Composable
 fun DailyPleasureCompletedScreenPreview() {
     DailyJoyTheme {
-        DailyPleasureContent(
+        DailyPleasureScreen(
             dailyPleasureState = previewDailyPleasureState.copy(
                 dailyPleasure = previewDailyPleasureState.dailyPleasure.copy(isDone = true)
             ),
