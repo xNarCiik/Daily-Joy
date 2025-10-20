@@ -1,5 +1,8 @@
 package com.dms.dailyjoy.ui.settings
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,14 +36,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun SettingsScreen() {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp)
@@ -93,7 +100,7 @@ fun SettingsScreen() {
             SettingsClickableItem(
                 icon = Icons.Default.StarRate,
                 title = stringResource(id = R.string.settings_rate_app),
-                onClick = {},
+                onClick = { rateApp(context) },
                 showChevron = false
             )
         }
@@ -104,7 +111,7 @@ fun SettingsScreen() {
             SettingsClickableItem(
                 icon = Icons.Default.Share,
                 title = stringResource(id = R.string.settings_share_app),
-                onClick = {},
+                onClick = { shareApp(context) },
                 showChevron = false
             )
         }
@@ -115,12 +122,47 @@ fun SettingsScreen() {
             SettingsClickableItem(
                 icon = Icons.Default.Shield,
                 title = stringResource(id = R.string.settings_privacy_policy),
-                onClick = {},
+                onClick = {
+                    // TODO: Replace with privacy policy URL
+                    val intent =
+                        Intent(Intent.ACTION_VIEW, "https://privacy-policy-url.com".toUri())
+                    context.startActivity(intent)
+                },
                 showChevron = false
             )
         }
     }
 }
+
+private fun rateApp(context: Context) {
+    val packageName = context.packageName
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri())
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            "https://play.google.com/store/apps/details?id=$packageName".toUri()
+        )
+        context.startActivity(intent)
+    }
+}
+
+private fun shareApp(context: Context) {
+    val packageName = context.packageName
+    val shareText = context.getString(R.string.settings_share_text, packageName)
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, shareText)
+    }
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            context.getString(R.string.settings_share_app)
+        )
+    )
+}
+
 
 @Composable
 private fun SettingsSectionTitle(title: String) {

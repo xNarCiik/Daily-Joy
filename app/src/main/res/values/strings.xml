@@ -22,4 +22,5 @@
     <string name="settings_rate_app">Noter l\'application</string>
     <string name="settings_share_app">Partager Daily Joy</string>
     <string name="settings_privacy_policy">Politique de confidentialité</string>
+    <string name="settings_share_text">Découvrez Daily Joy, une application pour vous aider à trouver de la joie au quotidien : https://play.google.com/store/apps/details?id=%1$s</string>
 </resources>
