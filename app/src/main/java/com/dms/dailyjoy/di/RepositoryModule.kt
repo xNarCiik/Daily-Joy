@@ -3,6 +3,7 @@ package com.dms.dailyjoy.di
 import android.app.Application
 import com.dms.dailyjoy.data.database.dao.PleasureDao
 import com.dms.dailyjoy.data.database.dao.PleasureHistoryDao
+import com.dms.dailyjoy.data.local.LocalDailyMessagesDataSource
 import com.dms.dailyjoy.data.repository.DailyMessageRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureHistoryRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureRepositoryImpl
@@ -32,7 +33,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideDailyMessageRepository(): DailyMessageRepository = DailyMessageRepositoryImpl()
+    fun provideDailyMessageRepository(localDataSource: LocalDailyMessagesDataSource): DailyMessageRepository =
+        DailyMessageRepositoryImpl(localDataSource = localDataSource)
 
     @Provides
     @Singleton

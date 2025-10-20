@@ -1,0 +1,32 @@
+<resources>
+    <string-array name="daily_messages">
+        <item>What if today, we took the time to…</item>
+        <item>How about a little break to…</item>
+        <item>Today, I suggest a moment to…</item>
+        <item>A little suggestion to brighten your day…</item>
+        <item>What if we allowed ourselves a moment just to…</item>
+        <item>Today\'s agenda: treat yourself.</item>
+        <item>The idea of the day to recharge your batteries…</item>
+        <item>You\'ve earned a break.</item>
+        <item>Permission granted to take a breather.</item>
+        <item>Forget everything else, this moment is for you.</item>
+        <item>Because you\'re worth it, here is your pleasure of the day.</item>
+        <item>It\'s time for your official (and deserved!) break.</item>
+        <item>No guilt, just a little joy.</item>
+        <item>Your little treat of the day is waiting for you.</item>
+        <item>What does today\'s card have in store for you?</item>
+        <item>Sometimes, chance works in wonderful ways… Find out how!</item>
+        <item>A surprise is hidden right here.</item>
+        <item>So, curious to know?</item>
+        <item>Draw a card and let the magic happen.</item>
+        <item>Let\'s shuffle the cards of your day a bit…</item>
+        <item>Your daily dose of happiness is behind this card.</item>
+        <item>Create your own sunshine today.</item>
+        <item>Happiness is in the little things.</item>
+        <item>Press pause and breathe.</item>
+        <item>A moment for you, just for you.</item>
+        <item>Sow a little seed of joy.</item>
+        <item>The best part of your day starts now.</item>
+        <item>Don\'t forget to take care of yourself.</item>
+    </string-array>
+</resources>
