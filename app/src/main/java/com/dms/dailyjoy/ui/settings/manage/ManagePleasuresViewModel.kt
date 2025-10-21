@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
-import com.dms.dailyjoy.domain.usecase.AddCustomPleasureUseCase
-import com.dms.dailyjoy.domain.usecase.DeleteCustomPleasureUseCase
-import com.dms.dailyjoy.domain.usecase.GetPleasuresUseCase
-import com.dms.dailyjoy.domain.usecase.UpdatePleasureUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.AddCustomPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.DeleteCustomPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasuresUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.UpdatePleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

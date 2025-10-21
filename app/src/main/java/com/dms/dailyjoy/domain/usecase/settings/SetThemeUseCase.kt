@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.domain.usecase
+package com.dms.dailyjoy.domain.usecase.settings
 
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.domain.repository.SettingsRepository

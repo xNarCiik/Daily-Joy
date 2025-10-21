@@ -20,6 +20,9 @@ interface PleasureDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(pleasure: PleasureEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(pleasures: List<PleasureEntity>)
+
     @Update
     suspend fun update(pleasure: PleasureEntity)
 

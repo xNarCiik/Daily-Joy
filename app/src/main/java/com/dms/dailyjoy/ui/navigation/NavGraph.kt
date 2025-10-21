@@ -16,7 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
-import com.dms.dailyjoy.ui.dailypleasure.PleasureViewModel
+import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureViewModel
 import com.dms.dailyjoy.ui.history.HistoryScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
@@ -44,7 +44,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
         startDestination = DailyPleasureRoute
     ) {
         composable<DailyPleasureRoute> {
-            val viewModel: PleasureViewModel = hiltViewModel()
+            val viewModel: DailyPleasureViewModel = hiltViewModel()
             val dailyPleasureState by viewModel.state.collectAsState()
             DailyPleasureScreen(
                 modifier = modifierWithPaddingValues,

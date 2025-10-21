@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.domain.usecase
+package com.dms.dailyjoy.domain.usecase.pleasures
 
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.domain.repository.PleasureRepository

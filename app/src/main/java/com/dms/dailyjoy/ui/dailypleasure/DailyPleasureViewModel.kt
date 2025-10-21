@@ -3,9 +3,10 @@ package com.dms.dailyjoy.ui.dailypleasure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
-import com.dms.dailyjoy.domain.usecase.GenerateWeeklyPleasuresUseCase
-import com.dms.dailyjoy.domain.usecase.GetPleasureForTodayUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.GenerateWeeklyPleasuresUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasureForTodayUseCase
 import com.dms.dailyjoy.domain.usecase.GetRandomDailyMessageUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.UpdatePleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,10 +22,11 @@ data class DailyPleasureState(
 )
 
 @HiltViewModel
-class PleasureViewModel @Inject constructor(
+class DailyPleasureViewModel @Inject constructor(
     private val getRandomDailyMessageUseCase: GetRandomDailyMessageUseCase,
     private val getPleasureForTodayUseCase: GetPleasureForTodayUseCase,
-    private val generateWeeklyPleasuresUseCase: GenerateWeeklyPleasuresUseCase
+    private val generateWeeklyPleasuresUseCase: GenerateWeeklyPleasuresUseCase,
+    private val updatePleasureUseCase: UpdatePleasureUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DailyPleasureState())
@@ -36,7 +38,7 @@ class PleasureViewModel @Inject constructor(
 
     fun onDailyCardFlipped() = viewModelScope.launch {
         val updatedPleasure = _state.value.dailyPleasure.copy(isFlipped = true)
-       // TODO FIX THAT pleasureHistoryRepository.save(updatedPleasure)
+        updatePleasureUseCase(updatedPleasure)
         _state.update {
             it.copy(
                 dailyPleasure = updatedPleasure,
@@ -47,7 +49,7 @@ class PleasureViewModel @Inject constructor(
 
     fun markDailyCardAsDone() = viewModelScope.launch {
         val updatedPleasure = _state.value.dailyPleasure.copy(isDone = true)
-        // TODO FIX THAT pleasureHistoryRepository.save(updatedPleasure)
+        updatePleasureUseCase(updatedPleasure)
         _state.update {
             it.copy(dailyPleasure = updatedPleasure, waitDonePleasure = false)
         }
@@ -56,14 +58,18 @@ class PleasureViewModel @Inject constructor(
     private fun loadDailyPleasure() = viewModelScope.launch {
         _state.update { it.copy(isLoading = true) }
 
-        val pleasure = getPleasureForTodayUseCase() ?: Pleasure()
-        // TODO FIX THAT pleasureHistoryRepository.save(pleasure)
+        var pleasure = getPleasureForTodayUseCase()
+
+        if (pleasure == null) {
+            generateWeeklyPleasuresUseCase()
+            pleasure = getPleasureForTodayUseCase()
+        }
 
         _state.update {
             it.copy(
                 isLoading = false,
                 dailyMessage = getRandomDailyMessageUseCase(),
-                dailyPleasure = pleasure
+                dailyPleasure = pleasure ?: Pleasure()
             )
         }
     }

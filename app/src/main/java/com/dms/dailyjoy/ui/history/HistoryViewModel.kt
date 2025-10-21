@@ -3,7 +3,7 @@ package com.dms.dailyjoy.ui.history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
-import com.dms.dailyjoy.domain.usecase.GetWeeklyPleasuresUseCase
+import com.dms.dailyjoy.domain.usecase.pleasures.GetWeeklyPleasuresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
