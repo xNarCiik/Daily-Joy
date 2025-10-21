@@ -4,7 +4,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import androidx.navigation.compose.composable
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureViewModel
 import com.dms.dailyjoy.ui.history.HistoryScreen
+import com.dms.dailyjoy.ui.history.HistoryViewModel
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
@@ -45,21 +45,24 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     ) {
         composable<DailyPleasureRoute> {
             val viewModel: DailyPleasureViewModel = hiltViewModel()
-            val dailyPleasureState by viewModel.state.collectAsState()
+            val dailyPleasureUiState by viewModel.uiState.collectAsState()
+
             DailyPleasureScreen(
                 modifier = modifierWithPaddingValues,
-                dailyPleasureState = dailyPleasureState,
-                onCardFlipped = viewModel::onDailyCardFlipped,
-                onDonePleasure = viewModel::markDailyCardAsDone
+                uiState = dailyPleasureUiState,
+                onEvent = viewModel::onEvent
             )
         }
 
         composable<HistoryRoute> {
-            Box(modifier = Modifier.padding(paddingValues)) {
-                HistoryScreen(
-                    modifier = modifierWithPaddingValues
-                )
-            }
+            val viewModel: HistoryViewModel = hiltViewModel()
+            val historyState by viewModel.uiState.collectAsState()
+
+            HistoryScreen(
+                modifier = modifierWithPaddingValues,
+                uiState = historyState,
+                onEvent = viewModel::onEvent
+            )
         }
 
         composable<SettingsRoute> {

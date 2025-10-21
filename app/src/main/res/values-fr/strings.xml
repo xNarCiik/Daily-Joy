@@ -9,6 +9,22 @@
     <string name="pleasure_completed_title">Graine de joie plantée !</string>
     <string name="pleasure_completed_subtitle">Super ! Reviens demain pour découvrir ton prochain plaisir.</string>
 
+    <!-- History Screen -->
+    <string name="history_empty">Aucun plaisir trouvé pour cette semaine. Commencez à jouer demain !</string>
+
+    <string name="day_monday">Lun</string>
+    <string name="day_tuesday">Mar</string>
+    <string name="day_wednesday">Mer</string>
+    <string name="day_thursday">Jeu</string>
+    <string name="day_friday">Ven</string>
+    <string name="day_saturday">Sam</string>
+    <string name="day_sunday">Dim</string>
+
+    <string name="status_completed">Réalisé</string>
+    <string name="status_not_completed">Manqué</string>
+    <string name="status_locked">Verrouillé</string>
+    <string name="status_current_day">Aujourd\'hui</string>
+
     <!-- Settings Screen -->
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Rappel quotidien</string>
@@ -48,9 +64,9 @@
 
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>
-    <string name="notification_channel_description">Notification pour vous rappeler de tirer votre plaisir du jour.</string>
+    <string name="notification_channel_description">Notification pour vous rappeler de noter votre plaisir du jour.</string>
     <string name="notification_title">C\'est l\'heure de votre plaisir du jour !</string>
-    <string name="notification_text">N\'oubliez pas de vous faire un petit (ou gros) plaisir ;)</string>
+    <string name="notification_text">N\'oubliez pas de noter votre plaisir du jour.</string>
 
     <!-- Notification Permission Dialog -->
     <string name="notification_permission_dialog_title">Permission requise</string>

@@ -9,6 +9,22 @@
     <string name="pleasure_completed_title">Graine de joie plantée !</string>
     <string name="pleasure_completed_subtitle">Super ! Reviens demain pour découvrir ton prochain plaisir.</string>
 
+    <!-- History Screen -->
+    <string name="history_empty">Aucun plaisir trouvé pour cette semaine. Commencez à jouer demain !</string>
+
+    <string name="day_monday">Lun</string>
+    <string name="day_tuesday">Mar</string>
+    <string name="day_wednesday">Mer</string>
+    <string name="day_thursday">Jeu</string>
+    <string name="day_friday">Ven</string>
+    <string name="day_saturday">Sam</string>
+    <string name="day_sunday">Dim</string>
+
+    <string name="status_completed">Réalisé</string>
+    <string name="status_not_completed">Manqué</string>
+    <string name="status_locked">Verrouillé</string>
+    <string name="status_current_day">Aujourd\'hui</string>
+
     <!-- Settings Screen -->
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Rappel quotidien</string>

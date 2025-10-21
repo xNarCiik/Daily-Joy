@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
-import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureState
+import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureUiState
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -20,7 +20,7 @@ val previewDailyPleasure = Pleasure(
     isFlipped = true
 )
 
-val previewDailyPleasureState = DailyPleasureState(
+val previewDailyPleasureUiState = DailyPleasureUiState(
     isLoading = false,
     dailyMessage = "Et si aujourd'hui, on prenait le temps de...",
     dailyPleasure = previewDailyPleasure

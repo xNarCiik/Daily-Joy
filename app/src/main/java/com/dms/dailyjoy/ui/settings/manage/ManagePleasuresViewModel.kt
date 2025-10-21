@@ -40,6 +40,7 @@ class ManagePleasuresViewModel @Inject constructor(
         addCustomPleasureUseCase(title, description, category, type)
     }
 
+    // TODO call in screen and check (we dont want to edit a pleasure currently use in weekly
     fun deletePleasure(pleasure: Pleasure) = viewModelScope.launch {
         deleteCustomPleasureUseCase(pleasure)
     }

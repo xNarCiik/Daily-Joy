@@ -49,7 +49,7 @@ import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureCard
 import com.dms.dailyjoy.ui.dailypleasure.component.InfoText
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewDailyPleasureState
+import com.dms.dailyjoy.ui.util.previewDailyPleasureUiState
 import com.dms.dailyjoy.ui.util.rotationCardAnimationDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,9 +58,8 @@ import kotlin.math.abs
 @Composable
 fun DailyPleasureScreen(
     modifier: Modifier = Modifier,
-    dailyPleasureState: DailyPleasureState,
-    onCardFlipped: () -> Unit,
-    onDonePleasure: () -> Unit
+    uiState: DailyPleasureUiState,
+    onEvent: (DailyPleasureEvent) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -68,15 +67,14 @@ fun DailyPleasureScreen(
             .padding(vertical = 12.dp, horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (dailyPleasureState.isLoading) {
+        if (uiState.isLoading) {
             CircularProgressIndicator()
-        } else if (dailyPleasureState.dailyPleasure.isDone) {
+        } else if (uiState.dailyPleasure.isDone) {
             DailyPleasureCompletedContent()
         } else {
             DailyPleasureContent(
-                dailyPleasureState = dailyPleasureState,
-                onCardFlipped = onCardFlipped,
-                onDonePleasure = onDonePleasure
+                uiState = uiState,
+                onEvent = onEvent
             )
         }
     }
@@ -84,11 +82,10 @@ fun DailyPleasureScreen(
 
 @Composable
 fun DailyPleasureContent(
-    dailyPleasureState: DailyPleasureState,
-    onCardFlipped: () -> Unit,
-    onDonePleasure: () -> Unit
+    uiState: DailyPleasureUiState,
+    onEvent: (DailyPleasureEvent) -> Unit
 ) {
-    val isFlipped = dailyPleasureState.dailyPleasure.isFlipped
+    val isFlipped = uiState.dailyPleasure.isFlipped
     var showConfettiAnimation by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -138,7 +135,7 @@ fun DailyPleasureContent(
         Spacer(Modifier.weight(1f))
 
         Text(
-            text = dailyPleasureState.dailyMessage,
+            text = uiState.dailyMessage,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
@@ -183,7 +180,8 @@ fun DailyPleasureContent(
                                 launch { animatedRotationZ.animateTo(20f, animSpec) }
 
                                 delay(400)
-                                onDonePleasure()
+
+                                onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
                             } else {
                                 val springSpec = spring<Float>(dampingRatio = 0.7f)
                                 launch { animatedOffsetX.animateTo(0f, springSpec) }
@@ -198,11 +196,12 @@ fun DailyPleasureContent(
                     cameraDistance = 8 * density
                     alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
                 },
-            pleasure = dailyPleasureState.dailyPleasure,
+            pleasure = uiState.dailyPleasure,
             durationRotation = rotationCardAnimationDuration,
             onCardFlipped = {
                 showConfettiAnimation = true
-                onCardFlipped()
+
+                onEvent(DailyPleasureEvent.OnCardFlipped)
             }
         )
 
@@ -288,9 +287,8 @@ private fun DailyPleasureCompletedContent() {
 fun DailyPleasureNotCompletedScreenPreview() {
     DailyJoyTheme {
         DailyPleasureScreen(
-            dailyPleasureState = previewDailyPleasureState,
-            onCardFlipped = {},
-            onDonePleasure = {}
+            uiState = previewDailyPleasureUiState,
+            onEvent = {}
         )
     }
 }
@@ -300,11 +298,10 @@ fun DailyPleasureNotCompletedScreenPreview() {
 fun DailyPleasureCompletedScreenPreview() {
     DailyJoyTheme {
         DailyPleasureScreen(
-            dailyPleasureState = previewDailyPleasureState.copy(
-                dailyPleasure = previewDailyPleasureState.dailyPleasure.copy(isDone = true)
+            uiState = previewDailyPleasureUiState.copy(
+                dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(isDone = true)
             ),
-            onCardFlipped = {},
-            onDonePleasure = {}
+            onEvent = {}
         )
     }
 }

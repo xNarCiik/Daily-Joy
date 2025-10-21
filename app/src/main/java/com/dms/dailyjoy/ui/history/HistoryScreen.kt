@@ -1,50 +1,67 @@
 package com.dms.dailyjoy.ui.history
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureCard
+import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.history.components.HistoryGrid
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
-    viewModel: HistoryViewModel = hiltViewModel()
+    uiState: HistoryUiState,
+    onEvent: (HistoryEvent) -> Unit
 ) {
-    val weeklyPleasures by viewModel.weeklyPleasures.collectAsState()
+    AnimatedContent(
+        targetState = uiState,
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        label = "HistoryScreenAnimation"
+    ) { state ->
+        Box(modifier = modifier.fillMaxSize()) {
+            when {
+                state.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        if (weeklyPleasures.isEmpty()) {
-            CircularProgressIndicator()
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(weeklyPleasures) { pleasure ->
-                    DailyPleasureCard(
-                        pleasure = pleasure,
-                        onCardFlipped = {},
-                        durationRotation = 0
+                state.error != null -> {
+                    // TODO: Implémenter un écran d'erreur avec un bouton 'Réessayer'
+                    Text(
+                        text = "Erreur: ${state.error}",
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                state.isEmpty -> {
+                    Text(
+                        text = stringResource(R.string.history_empty),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(32.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+
+                else -> {
+                    HistoryContent(
+                        items = state.weeklyPleasures,
+                        onEvent = onEvent
                     )
                 }
             }
@@ -52,10 +69,32 @@ fun HistoryScreen(
     }
 }
 
+@Composable
+private fun HistoryContent(
+    modifier: Modifier = Modifier,
+    items: List<WeeklyPleasureItem>,
+    onEvent: (HistoryEvent) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HistoryGrid(
+            items = items,
+            onCardClicked = { item -> onEvent(HistoryEvent.OnCardClicked(item)) }
+        )
+    }
+}
+
 @LightDarkPreview
 @Composable
-private fun HistoryScreenPreview() {
+private fun HistoryPreview() {
     DailyJoyTheme {
-        HistoryScreen()
+        HistoryScreen(
+            uiState = HistoryUiState(),
+            onEvent = {}
+        )
     }
 }
