@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -91,35 +92,38 @@ fun HistoryCard(
                 modifier = Modifier.weight(1f, fill = !isLocked),
                 contentAlignment = Alignment.Center
             ) {
+                val iconModifier = Modifier.size(28.dp)
                 when (item.status) {
                     PleasureStatus.LOCKED -> {
                         Icon(
+                            modifier = iconModifier,
                             imageVector = Icons.Default.Lock,
                             contentDescription = stringResource(R.string.status_locked),
-                            modifier = Modifier.size(28.dp),
                             tint = contentColor
                         )
                     }
 
                     PleasureStatus.PAST_COMPLETED, PleasureStatus.CURRENT_COMPLETED -> {
                         Icon(
+                            modifier = iconModifier,
                             imageVector = Icons.Default.CheckCircle,
                             contentDescription = stringResource(R.string.status_completed),
-                            modifier = Modifier.size(32.dp),
                             tint = contentColor
                         )
                     }
 
                     PleasureStatus.PAST_NOT_COMPLETED -> {
                         Icon(
+                            modifier = iconModifier,
                             imageVector = Icons.Default.HighlightOff,
                             contentDescription = stringResource(R.string.status_not_completed),
-                            modifier = Modifier.size(32.dp),
                             tint = contentColor
                         )
                     }
 
-                    else -> {}
+                    else -> {
+                        CircularProgressIndicator(modifier = iconModifier)
+                    }
                 }
             }
 

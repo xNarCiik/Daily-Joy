@@ -29,6 +29,7 @@ import com.dms.dailyjoy.ui.history.component.PleasureCard
 import com.dms.dailyjoy.ui.history.component.WeeklyProgress
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
+import com.dms.dailyjoy.ui.util.previewHistoryUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,10 +135,21 @@ private fun HistoryContent(
 
 @LightDarkPreview
 @Composable
-private fun HistoryPreview() {
+private fun HistoryEmptyPreview() {
     DailyJoyTheme {
         HistoryScreen(
             uiState = HistoryUiState(),
+            onEvent = {}
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun HistoryPreview() {
+    DailyJoyTheme {
+        HistoryScreen(
+            uiState = previewHistoryUiState,
             onEvent = {}
         )
     }

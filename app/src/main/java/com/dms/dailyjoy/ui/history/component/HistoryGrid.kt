@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.history.PleasureStatus
 import com.dms.dailyjoy.ui.history.WeeklyPleasureItem
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewDailyPleasure
+import com.dms.dailyjoy.ui.util.previewHistoryUiState
 
 @Composable
 fun HistoryGrid(
@@ -66,43 +64,7 @@ fun HistoryGrid(
 private fun HistoryGridPreview() {
     DailyJoyTheme {
         HistoryGrid(
-            items = listOf(
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_monday,
-                    status = PleasureStatus.CURRENT_COMPLETED,
-                    pleasure = previewDailyPleasure
-                ),
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_tuesday,
-                    status = PleasureStatus.LOCKED,
-                    pleasure = previewDailyPleasure
-                ),
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_wednesday,
-                    status = PleasureStatus.PAST_NOT_COMPLETED,
-                    pleasure = previewDailyPleasure
-                ),
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_thursday,
-                    status = PleasureStatus.PAST_COMPLETED,
-                    pleasure = previewDailyPleasure
-                ),
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_friday,
-                    status = PleasureStatus.LOCKED,
-                    pleasure = previewDailyPleasure
-                ),
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_saturday,
-                    status = PleasureStatus.LOCKED,
-                    pleasure = previewDailyPleasure
-                ),
-                WeeklyPleasureItem(
-                    dayNameRes = R.string.day_sunday,
-                    status = PleasureStatus.LOCKED,
-                    pleasure = previewDailyPleasure
-                ),
-            ),
+            items = previewHistoryUiState.weeklyPleasures,
             onCardClicked = {}
         )
     }
