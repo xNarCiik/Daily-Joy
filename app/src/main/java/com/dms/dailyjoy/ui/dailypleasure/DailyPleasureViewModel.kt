@@ -35,7 +35,7 @@ class DailyPleasureViewModel @Inject constructor(
                 onDailyCardFlipped()
             }
 
-            DailyPleasureEvent.OnCardMarkedAsDone -> {
+            is DailyPleasureEvent.OnCardMarkedAsDone -> {
                 markDailyCardAsDone()
             }
         }

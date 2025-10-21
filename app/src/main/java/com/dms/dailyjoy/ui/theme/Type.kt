@@ -15,20 +15,17 @@ private val poppinsFamily = FontFamily(
 val defaultTypography = Typography()
 
 val AppTypography = Typography(
-    // Pour les grands titres (ex: pas utilisé dans ton screenshot)
     displayLarge = defaultTypography.displayLarge.copy(fontFamily = poppinsFamily),
     displayMedium = defaultTypography.displayMedium.copy(fontFamily = poppinsFamily),
     displaySmall = defaultTypography.displaySmall.copy(fontFamily = poppinsFamily),
 
-    // "Sème une petite graine..." pourrait être un headlineSmall
     headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = poppinsFamily),
     headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = poppinsFamily),
     headlineSmall = defaultTypography.headlineSmall.copy(
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.SemiBold // Un peu plus de poids pour l'accroche
+        fontWeight = FontWeight.SemiBold
     ),
 
-    // "Faire un cheat meal XXL" pourrait être un titleLarge
     titleLarge = defaultTypography.titleLarge.copy(
         fontFamily = poppinsFamily,
         fontWeight = FontWeight.SemiBold
@@ -42,10 +39,9 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Medium
     ),
 
-    // "Ton plat préféré..." pourrait être un bodyLarge
     bodyLarge = defaultTypography.bodyLarge.copy(
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Normal // Poids normal pour la lisibilité
+        fontWeight = FontWeight.Normal
     ),
     bodyMedium = defaultTypography.bodyMedium.copy(
         fontFamily = poppinsFamily,
@@ -56,10 +52,9 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Normal
     ),
 
-    // "# Food" et le texte du bouton
     labelLarge = defaultTypography.labelLarge.copy(
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium // Medium pour les boutons/labels
+        fontWeight = FontWeight.Medium
     ),
     labelMedium = defaultTypography.labelMedium.copy(
         fontFamily = poppinsFamily,

@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.history.components
+package com.dms.dailyjoy.ui.history.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,21 +18,21 @@ import com.dms.dailyjoy.ui.util.previewDailyPleasure
 
 @Composable
 fun HistoryGrid(
+    modifier: Modifier = Modifier,
     items: List<WeeklyPleasureItem>,
-    onCardClicked: (WeeklyPleasureItem) -> Unit,
-    modifier: Modifier = Modifier
+    onCardClicked: (WeeklyPleasureItem) -> Unit
 ) {
     if (items.size != 7) return
 
     val (row1, row2) = items.chunked(4)
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             row1.forEach { item ->
-                HistoryCardItem(
+                HistoryCard(
                     modifier = Modifier.weight(1f),
                     item = item,
                     onClick = { onCardClicked(item) }
@@ -40,7 +40,7 @@ fun HistoryGrid(
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(22.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -49,7 +49,7 @@ fun HistoryGrid(
             Spacer(modifier = Modifier.weight(0.5f))
 
             row2.forEach { item ->
-                HistoryCardItem(
+                HistoryCard(
                     modifier = Modifier.weight(1f),
                     item = item,
                     onClick = { onCardClicked(item) }
@@ -71,7 +71,37 @@ private fun HistoryGridPreview() {
                     dayNameRes = R.string.day_monday,
                     status = PleasureStatus.CURRENT_COMPLETED,
                     pleasure = previewDailyPleasure
-                )
+                ),
+                WeeklyPleasureItem(
+                    dayNameRes = R.string.day_tuesday,
+                    status = PleasureStatus.LOCKED,
+                    pleasure = previewDailyPleasure
+                ),
+                WeeklyPleasureItem(
+                    dayNameRes = R.string.day_wednesday,
+                    status = PleasureStatus.PAST_NOT_COMPLETED,
+                    pleasure = previewDailyPleasure
+                ),
+                WeeklyPleasureItem(
+                    dayNameRes = R.string.day_thursday,
+                    status = PleasureStatus.PAST_COMPLETED,
+                    pleasure = previewDailyPleasure
+                ),
+                WeeklyPleasureItem(
+                    dayNameRes = R.string.day_friday,
+                    status = PleasureStatus.LOCKED,
+                    pleasure = previewDailyPleasure
+                ),
+                WeeklyPleasureItem(
+                    dayNameRes = R.string.day_saturday,
+                    status = PleasureStatus.LOCKED,
+                    pleasure = previewDailyPleasure
+                ),
+                WeeklyPleasureItem(
+                    dayNameRes = R.string.day_sunday,
+                    status = PleasureStatus.LOCKED,
+                    pleasure = previewDailyPleasure
+                ),
             ),
             onCardClicked = {}
         )

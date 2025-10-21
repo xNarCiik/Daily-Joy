@@ -11,6 +11,10 @@
 
     <!-- History Screen -->
     <string name="history_empty">No pleasures found for this week. Start playing tomorrow!</string>
+    <plurals name="remaining_pleasures_text">
+        <item quantity="one">Only %d pleasure left this week!</item>
+        <item quantity="other">Only %d pleasures left this week!</item>
+    </plurals>
 
     <string name="day_monday">Mon</string>
     <string name="day_tuesday">Tue</string>
@@ -19,6 +23,14 @@
     <string name="day_friday">Fri</string>
     <string name="day_saturday">Sat</string>
     <string name="day_sunday">Sun</string>
+
+    <string name="full_day_monday">Monday</string>
+    <string name="full_day_tuesday">Tuesday</string>
+    <string name="full_day_wednesday">Wednesday</string>
+    <string name="full_day_thursday">Thursday</string>
+    <string name="full_day_friday">Friday</string>
+    <string name="full_day_saturday">Saturday</string>
+    <string name="full_day_sunday">Sunday</string>
 
     <string name="status_completed">Completed</string>
     <string name="status_not_completed">Missed</string>
@@ -64,9 +76,9 @@
 
     <!-- Notification -->
     <string name="notification_channel_name">Daily Reminder</string>
-    <string name="notification_channel_description">Notification to remind you to rate your pleasure of the day.</string>
+    <string name="notification_channel_description">Notification to remind your pleasure of the day.</string>
     <string name="notification_title">It\'s time for your pleasure of the day!</string>
-    <string name="notification_text">Don\'t forget to rate your pleasure of the day.</string>
+    <string name="notification_text">Don\'t forget your pleasure of the day.</string>
 
     <!-- Notification Permission Dialog -->
     <string name="notification_permission_dialog_title">Permission required</string>

@@ -3,9 +3,12 @@ package com.dms.dailyjoy.ui.history
 import com.dms.dailyjoy.data.model.Pleasure
 
 data class HistoryUiState(
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val weeklyPleasures: List<WeeklyPleasureItem> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val selectedPleasure: Pleasure? = null,
+    val completedPleasuresCount: Int = 0,
+    val remainingPleasuresCount: Int = 0
 ) {
     val isEmpty = !isLoading && weeklyPleasures.isEmpty()
 }
@@ -26,5 +29,6 @@ enum class PleasureStatus {
 
 sealed interface HistoryEvent {
     data class OnCardClicked(val item: WeeklyPleasureItem) : HistoryEvent
+    data object OnBottomSheetDismissed : HistoryEvent
     data object OnRetryClicked : HistoryEvent
 }

@@ -1,10 +1,11 @@
-package com.dms.dailyjoy.ui.history.components
+package com.dms.dailyjoy.ui.history.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,7 +34,7 @@ import com.dms.dailyjoy.ui.util.previewDailyPleasure
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryCardItem(
+fun HistoryCard(
     modifier: Modifier = Modifier,
     item: WeeklyPleasureItem,
     onClick: () -> Unit
@@ -59,7 +60,7 @@ fun HistoryCardItem(
     val isLocked = item.status == PleasureStatus.LOCKED
 
     Card(
-        modifier = modifier.padding(4.dp),
+        modifier = modifier.height(140.dp),
         onClick = { if (!isLocked) onClick() },
         enabled = !isLocked,
         shape = MaterialTheme.shapes.medium,
@@ -71,10 +72,10 @@ fun HistoryCardItem(
     ) {
         Column(
             modifier = Modifier
-                .height(200.dp)
+                .fillMaxSize()
                 .padding(vertical = 12.dp, horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = if (isLocked) Arrangement.Center else Arrangement.SpaceBetween
         ) {
             Text(
                 text = day,
@@ -82,10 +83,12 @@ fun HistoryCardItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(Modifier.height(4.dp))
+            if (isLocked) {
+                Spacer(Modifier.height(8.dp))
+            }
 
             Box(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f, fill = !isLocked),
                 contentAlignment = Alignment.Center
             ) {
                 when (item.status) {
@@ -126,11 +129,11 @@ fun HistoryCardItem(
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 4.dp),
+                    maxLines = 2,
                     minLines = 2
                 )
-            } else {
-                // Espace réservé pour garder la même hauteur de carte
-                Spacer(modifier = Modifier.height(24.dp))
+            } else if (!isLocked) {
+                Spacer(modifier = Modifier.height(30.dp)) // Reserve space to maintain card height
             }
         }
     }
@@ -138,12 +141,12 @@ fun HistoryCardItem(
 
 @LightDarkPreview
 @Composable
-private fun HistoryCardItemPreview() {
+private fun HistoryCardPreview() {
     DailyJoyTheme {
-        HistoryCardItem(
+        HistoryCard(
             item = WeeklyPleasureItem(
-                dayNameRes = R.string.day_monday,
-                status = PleasureStatus.CURRENT_COMPLETED,
+                dayNameRes = R.string.full_day_monday,
+                status = PleasureStatus.LOCKED,
                 pleasure = previewDailyPleasure
             ),
             onClick = {}

@@ -27,39 +27,41 @@ class HistoryViewModel @Inject constructor(
         loadWeeklyHistory()
     }
 
-    private fun loadWeeklyHistory() {
-        viewModelScope.launch {
-            getWeeklyPleasuresUseCase()
-                .onStart { _uiState.update { it.copy(isLoading = true) } }
-                .catch { throwable ->
-                    _uiState.update { it.copy(isLoading = false, error = throwable.message) }
+    private fun loadWeeklyHistory() = viewModelScope.launch {
+        getWeeklyPleasuresUseCase()
+            .onStart { _uiState.update { it.copy(isLoading = true) } }
+            .catch { throwable ->
+                _uiState.update { it.copy(isLoading = false, error = throwable.message) }
+            }
+            .collect { weeklyDetails ->
+                val weeklyItems = buildWeeklyItems(weeklyDetails)
+                val completedCount =
+                    weeklyItems.count { it.status == PleasureStatus.PAST_COMPLETED || it.status == PleasureStatus.CURRENT_COMPLETED }
+                val remainingCount = 7 - completedCount
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        weeklyPleasures = weeklyItems,
+                        completedPleasuresCount = completedCount,
+                        remainingPleasuresCount = remainingCount,
+                        error = null
+                    )
                 }
-                .collect { weeklyDetails ->
-                    val weeklyItems = buildWeeklyItems(weeklyDetails)
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            weeklyPleasures = weeklyItems,
-                            error = null
-                        )
-                    }
-                }
-        }
+            }
     }
 
+
     private fun buildWeeklyItems(details: List<WeeklyPleasureDetails>): List<WeeklyPleasureItem> {
-        // getCurrentDayIndex() est 0-indexé (Lundi=0, Dimanche=6)
-        // dayOfWeek dans la boucle est 1-indexé (1-7)
         val todayIndex = getCurrentDayIndex()
 
         val dayRes = listOf(
-            R.string.day_monday,
-            R.string.day_tuesday,
-            R.string.day_wednesday,
-            R.string.day_thursday,
-            R.string.day_friday,
-            R.string.day_saturday,
-            R.string.day_sunday
+            R.string.full_day_monday,
+            R.string.full_day_tuesday,
+            R.string.full_day_wednesday,
+            R.string.full_day_thursday,
+            R.string.full_day_friday,
+            R.string.full_day_saturday,
+            R.string.full_day_sunday
         )
 
         return (0..6).map { dayOfWeek ->
@@ -83,10 +85,16 @@ class HistoryViewModel @Inject constructor(
     fun onEvent(event: HistoryEvent) {
         when (event) {
             is HistoryEvent.OnCardClicked -> {
-                // TODO Show Card
+                if (event.item.status != PleasureStatus.LOCKED) {
+                    _uiState.update { it.copy(selectedPleasure = event.item.pleasure) }
+                }
             }
 
-            HistoryEvent.OnRetryClicked -> {
+            is HistoryEvent.OnBottomSheetDismissed -> {
+                _uiState.update { it.copy(selectedPleasure = null) }
+            }
+
+            is HistoryEvent.OnRetryClicked -> {
                 loadWeeklyHistory()
             }
         }
