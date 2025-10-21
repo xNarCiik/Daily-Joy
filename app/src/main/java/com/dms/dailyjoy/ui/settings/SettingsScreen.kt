@@ -1,9 +1,13 @@
 package com.dms.dailyjoy.ui.settings
 
+import android.Manifest
 import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -64,6 +68,13 @@ fun SettingsScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            onDailyReminderEnabledChanged(isGranted)
+        }
+    )
+
     if (showThemeDialog) {
         ThemeDialog(
             currentTheme = theme,
@@ -76,7 +87,7 @@ fun SettingsScreen(
     }
 
     if (showTimePicker) {
-        showTimePicker(context, reminderTime, onReminderTimeChanged) {
+        ShowTimePicker(context, reminderTime, onReminderTimeChanged) {
             showTimePicker = false
         }
     }
@@ -94,7 +105,13 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.settings_daily_reminder_title),
                 subtitle = stringResource(id = R.string.settings_daily_reminder_subtitle),
                 checked = dailyReminderEnabled,
-                onCheckedChange = onDailyReminderEnabledChanged
+                onCheckedChange = {
+                    if (it && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        onDailyReminderEnabledChanged(it)
+                    }
+                }
             )
         }
         item {
@@ -185,7 +202,7 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun showTimePicker(
+private fun ShowTimePicker(
     context: Context,
     currentTime: String,
     onTimeSelected: (String) -> Unit,

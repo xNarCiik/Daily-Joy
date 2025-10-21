@@ -45,4 +45,10 @@
     <string name="category">Category</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Rappel quotidien</string>
+    <string name="notification_channel_description">Notification pour vous rappeler de tirer votre plaisir du jour.</string>
+    <string name="notification_title">C\'est l\'heure de votre plaisir du jour !</string>
+    <string name="notification_text">N\'oubliez pas de vous faire un petit (ou gros) plaisir ;)</string>
 </resources>
