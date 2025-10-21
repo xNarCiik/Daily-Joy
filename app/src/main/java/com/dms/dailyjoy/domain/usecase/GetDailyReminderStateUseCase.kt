@@ -1,0 +1,9 @@
+package com.dms.dailyjoy.domain.usecase
+
+import com.dms.dailyjoy.data.repository.SettingsRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class GetDailyReminderStateUseCase @Inject constructor(private val settingsRepository: SettingsRepository) {
+    operator fun invoke(): Flow<Boolean> = settingsRepository.dailyReminderEnabled
+}

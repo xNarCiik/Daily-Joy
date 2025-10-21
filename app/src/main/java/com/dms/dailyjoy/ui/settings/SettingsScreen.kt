@@ -1,8 +1,10 @@
 package com.dms.dailyjoy.ui.settings
 
+import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
@@ -50,11 +53,16 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     theme: Theme,
+    dailyReminderEnabled: Boolean,
+    reminderTime: String,
     onThemeChanged: (Theme) -> Unit,
+    onDailyReminderEnabledChanged: (Boolean) -> Unit,
+    onReminderTimeChanged: (String) -> Unit,
     onNavigateToManagePleasures: () -> Unit
 ) {
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
     if (showThemeDialog) {
         ThemeDialog(
@@ -67,6 +75,12 @@ fun SettingsScreen(
         )
     }
 
+    if (showTimePicker) {
+        showTimePicker(context, reminderTime, onReminderTimeChanged) {
+            showTimePicker = false
+        }
+    }
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp)
@@ -75,14 +89,23 @@ fun SettingsScreen(
             SettingsSectionTitle(title = stringResource(id = R.string.settings_notifications_title))
         }
         item {
-            var isChecked by remember { mutableStateOf(true) }
             SettingsSwitchItem(
                 icon = Icons.Default.Notifications,
                 title = stringResource(id = R.string.settings_daily_reminder_title),
                 subtitle = stringResource(id = R.string.settings_daily_reminder_subtitle),
-                checked = isChecked,
-                onCheckedChange = { isChecked = it }
+                checked = dailyReminderEnabled,
+                onCheckedChange = onDailyReminderEnabledChanged
             )
+        }
+        item {
+            AnimatedVisibility(visible = dailyReminderEnabled) {
+                SettingsClickableItem(
+                    icon = Icons.Default.AccessTime,
+                    title = stringResource(id = R.string.settings_reminder_time_title),
+                    subtitle = reminderTime,
+                    onClick = { showTimePicker = true }
+                )
+            }
         }
 
         item { Spacer(modifier = Modifier.height(24.dp)) }
@@ -158,6 +181,32 @@ fun SettingsScreen(
                 showChevron = false
             )
         }
+    }
+}
+
+@Composable
+private fun showTimePicker(
+    context: Context,
+    currentTime: String,
+    onTimeSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val timeParts = currentTime.split(":")
+    val hour = timeParts.getOrNull(0)?.toIntOrNull() ?: 8
+    val minute = timeParts.getOrNull(1)?.toIntOrNull() ?: 0
+
+    TimePickerDialog(
+        context,
+        { _, newHour, newMinute ->
+            val newTime = String.format("%02d:%02d", newHour, newMinute)
+            onTimeSelected(newTime)
+        },
+        hour,
+        minute,
+        true
+    ).apply {
+        setOnDismissListener { onDismiss() }
+        show()
     }
 }
 
@@ -296,7 +345,11 @@ fun SettingsScreenPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreen(
                 theme = Theme.SYSTEM,
+                dailyReminderEnabled = true,
+                reminderTime = "08:00",
                 onThemeChanged = {},
+                onDailyReminderEnabledChanged = {},
+                onReminderTimeChanged = {},
                 onNavigateToManagePleasures = {}
             )
         }

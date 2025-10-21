@@ -13,6 +13,7 @@
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Rappel quotidien</string>
     <string name="settings_daily_reminder_subtitle">Recevoir une suggestion de plaisir chaque jour.</string>
+    <string name="settings_reminder_time_title">Heure du rappel</string>
     <string name="settings_personalization_title">Personnalisation</string>
     <string name="settings_manage_pleasures_title">Gérer mes plaisirs</string>
     <string name="settings_manage_pleasures_subtitle">Ajouter ou modifier vos plaisirs personnalisés.</string>
