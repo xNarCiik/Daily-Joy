@@ -7,7 +7,7 @@ data class Pleasure(
     val title: String = "",
     val description: String = "",
     val type: PleasureType = PleasureType.SMALL,
-    val category: PleasureCategory? = null,
+    val category: PleasureCategory = PleasureCategory.OTHER,
     val date: LocalDate? = null,
     val isFlipped: Boolean = false,
     val isDone: Boolean = false,

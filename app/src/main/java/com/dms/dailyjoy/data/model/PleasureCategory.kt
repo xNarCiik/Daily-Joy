@@ -6,10 +6,12 @@ enum class PleasureCategory {
     ENTERTAINMENT,
     SPORT,
     SOCIAL,
-    WELLBEING,
     GAME,
     SHOPPING,
     NATURE,
     CREATIVE,
-    CULTURE
+    CULTURE,
+    OUTDOOR,
+    OTHER,
+    WELLNESS
 }

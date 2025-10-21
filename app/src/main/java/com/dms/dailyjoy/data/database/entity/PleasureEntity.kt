@@ -12,7 +12,7 @@ data class PleasureEntity(
     val title: String,
     val description: String,
     val type: PleasureType,
-    val category: PleasureCategory?,
+    val category: PleasureCategory,
     val isFlipped: Boolean = false,
     val isDone: Boolean = false,
     val isCustom: Boolean = false,
