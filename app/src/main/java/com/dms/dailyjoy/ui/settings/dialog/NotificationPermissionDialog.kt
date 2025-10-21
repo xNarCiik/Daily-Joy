@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -22,11 +27,25 @@ fun NotificationPermissionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Notifications,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
         title = {
-            Text(text = stringResource(id = R.string.notification_permission_dialog_title))
+            Text(
+                text = stringResource(id = R.string.notification_permission_dialog_title),
+                fontWeight = FontWeight.Bold
+            )
         },
         text = {
-            Text(text = stringResource(id = R.string.notification_permission_dialog_text))
+            Text(
+                text = stringResource(id = R.string.notification_permission_dialog_text),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         },
         confirmButton = {
             TextButton(
@@ -35,7 +54,10 @@ fun NotificationPermissionDialog(
                     onDismiss()
                 }
             ) {
-                Text(text = stringResource(id = R.string.notification_permission_dialog_settings_button))
+                Text(
+                    text = stringResource(id = R.string.notification_permission_dialog_settings_button),
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         },
         dismissButton = {

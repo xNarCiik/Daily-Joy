@@ -73,6 +73,8 @@
     <string name="category">Category</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="manage_pleasures_filter_by_type_description">Filter by type</string>
+    <string name="manage_pleasures_pleasure_type">Pleasure type</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Daily Reminder</string>

@@ -146,11 +146,12 @@ private fun Theme.getIcon(): ImageVector {
     }
 }
 
+@Composable
 private fun Theme.getDescription(): String {
     return when (this) {
-        Theme.LIGHT -> "Thème clair pour le jour"
-        Theme.DARK -> "Thème sombre pour la nuit"
-        Theme.SYSTEM -> "Suit les paramètres du système"
+        Theme.LIGHT -> stringResource(R.string.settings_theme_light_description)
+        Theme.DARK -> stringResource(R.string.settings_theme_dark_description)
+        Theme.SYSTEM -> stringResource(R.string.settings_theme_system_description)
     }
 }
 

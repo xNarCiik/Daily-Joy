@@ -110,7 +110,7 @@ fun ManagePleasuresScreen(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -118,7 +118,7 @@ fun ManagePleasuresScreen(
                     IconButton(onClick = { showTypeFilterDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.FilterList,
-                            contentDescription = "Filtrer par type"
+                            contentDescription = stringResource(R.string.manage_pleasures_filter_by_type_description)
                         )
                     }
                 },
@@ -140,7 +140,7 @@ fun ManagePleasuresScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Ajouter un plaisir"
+                        contentDescription = stringResource(R.string.add_pleasure)
                     )
                 }
             }
@@ -232,7 +232,7 @@ private fun TypeFilterDialog(
         },
         title = {
             Text(
-                text = "Type de plaisir",
+                text = stringResource(R.string.manage_pleasures_pleasure_type),
                 fontWeight = FontWeight.Bold
             )
         },
@@ -285,7 +285,7 @@ private fun TypeFilterDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Fermer")
+                Text(stringResource(R.string.dialog_close))
             }
         }
     )
@@ -351,8 +351,6 @@ private fun PleasureItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val categoryInfo = pleasure.category.toCategoryInfo()
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -421,7 +419,7 @@ private fun PleasureItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Supprimer",
+                        contentDescription = stringResource(R.string.delete_pleasure),
                         modifier = Modifier.size(22.dp),
                         tint = MaterialTheme.colorScheme.error
                     )
@@ -494,7 +492,7 @@ private fun AddPleasureBottomSheet(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Ajouter un plaisir",
+                text = stringResource(R.string.add_pleasure),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -504,7 +502,7 @@ private fun AddPleasureBottomSheet(
             OutlinedTextField(
                 value = title,
                 onValueChange = onTitleChange,
-                label = { Text("Titre") },
+                label = { Text(stringResource(R.string.title)) },
                 placeholder = { Text("Ex: Boire un bon café") },
                 isError = titleError != null,
                 supportingText = titleError?.let { { Text(it) } },
@@ -520,7 +518,7 @@ private fun AddPleasureBottomSheet(
             OutlinedTextField(
                 value = description,
                 onValueChange = onDescriptionChange,
-                label = { Text("Description") },
+                label = { Text(stringResource(R.string.description)) },
                 placeholder = { Text("Décrivez ce plaisir...") },
                 isError = descriptionError != null,
                 supportingText = descriptionError?.let { { Text(it) } },
@@ -542,7 +540,7 @@ private fun AddPleasureBottomSheet(
                     value = category.getLabel(),
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Catégorie") },
+                    label = { Text(stringResource(R.string.category)) },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     },
@@ -588,7 +586,7 @@ private fun AddPleasureBottomSheet(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "Sauvegarder",
+                    text = stringResource(R.string.save),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -613,7 +611,7 @@ private fun DeleteConfirmationDialog(
         },
         title = {
             Text(
-                "Supprimer le plaisir ?",
+                stringResource(R.string.delete_pleasure),
                 fontWeight = FontWeight.Bold
             )
         },
@@ -626,7 +624,7 @@ private fun DeleteConfirmationDialog(
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(
-                    text = "Supprimer",
+                    text = stringResource(R.string.delete_pleasure),
                     color = MaterialTheme.colorScheme.error,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -634,7 +632,7 @@ private fun DeleteConfirmationDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Annuler")
+                Text(stringResource(R.string.cancel))
             }
         }
     )
@@ -766,9 +764,10 @@ private fun EmptyState(
 }
 
 private val ManagePleasuresTab.displayName: String
+    @Composable
     get() = when (this) {
-        ManagePleasuresTab.SMALL -> "Petits Plaisirs"
-        ManagePleasuresTab.BIG -> "Gros Plaisirs"
+        ManagePleasuresTab.SMALL -> stringResource(R.string.small_pleasures)
+        ManagePleasuresTab.BIG -> stringResource(R.string.big_pleasures)
     }
 
 private val ManagePleasuresTab.description: String
@@ -778,6 +777,7 @@ private val ManagePleasuresTab.description: String
     }
 
 private val ManagePleasuresTab.emptyStateMessage: String
+    @Composable
     get() = when (this) {
         ManagePleasuresTab.SMALL -> "Ajoutez vos petits plaisirs quotidiens"
         ManagePleasuresTab.BIG -> "Ajoutez vos grandes récompenses"
@@ -794,26 +794,32 @@ fun PleasureCategory.toCategoryInfo(): CategoryInfo {
             label = "Nourriture",
             color = Color(0xFFFF9800)
         )
+
         PleasureCategory.ENTERTAINMENT -> CategoryInfo(
             label = "Divertissement",
             color = Color(0xFF9C27B0)
         )
+
         PleasureCategory.SOCIAL -> CategoryInfo(
             label = "Social",
             color = Color(0xFF2196F3)
         )
+
         PleasureCategory.WELLNESS -> CategoryInfo(
             label = "Bien-être",
             color = Color(0xFF4CAF50)
         )
+
         PleasureCategory.CREATIVE -> CategoryInfo(
             label = "Créatif",
             color = Color(0xFFE91E63)
         )
+
         PleasureCategory.OUTDOOR -> CategoryInfo(
             label = "Extérieur",
             color = Color(0xFF009688)
         )
+
         PleasureCategory.OTHER -> CategoryInfo(
             label = "Autre",
             color = Color(0xFF607D8B)

@@ -60,6 +60,9 @@
     <string name="settings_theme_dark">Sombre</string>
     <string name="settings_theme_system">Système</string>
     <string name="dialog_close">Fermer</string>
+    <string name="settings_theme_light_description">Thème clair pour le jour</string>
+    <string name="settings_theme_dark_description">Thème sombre pour la nuit</string>
+    <string name="settings_theme_system_description">Suit les paramètres du système</string>
 
     <!-- Manage Pleasures Screen -->
     <string name="manage_pleasures_title">Gérer mes plaisirs</string>
@@ -74,6 +77,8 @@
     <string name="category">Catégorie</string>
     <string name="save">Sauvegarder</string>
     <string name="cancel">Annuler</string>
+    <string name="manage_pleasures_filter_by_type_description">Filtrer par type</string>
+    <string name="manage_pleasures_pleasure_type">Type de plaisir</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>
