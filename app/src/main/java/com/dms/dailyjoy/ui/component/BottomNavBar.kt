@@ -37,19 +37,19 @@ fun BottomNavBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     val homeItem = TabBarItem(
-        title = stringResource(R.string.bottom_nav_bar_daily_pleasure_title),
+        title = stringResource(R.string.daily_pleasure_title),
         icon = Icons.Filled.Mood,
         route = DailyPleasureRoute
     )
     val historyItem =
         TabBarItem(
-            title = stringResource(R.string.bottom_nav_bar_history_title),
+            title = stringResource(R.string.history_title),
             icon = Icons.Filled.DateRange,
             route = HistoryRoute
         )
     val settingsItem =
         TabBarItem(
-            title = stringResource(R.string.bottom_nav_bar_settings_title),
+            title = stringResource(R.string.settings_title),
             icon = Icons.Filled.Settings,
             route = SettingsRoute
         )

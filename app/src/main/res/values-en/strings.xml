@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Daily Joy</string>
     <!-- Bottom Nav Bar -->
-    <string name="bottom_nav_bar_daily_pleasure_title">My Pleasure</string>
-    <string name="bottom_nav_bar_history_title">My week</string>
-    <string name="bottom_nav_bar_settings_title">Settings</string>
+    <string name="daily_pleasure_title">My Pleasure</string>
+    <string name="history_title">This week</string>
+    <string name="settings_title">Settings</string>
 
     <!-- DailyPleasureCompletedContent -->
     <string name="pleasure_completed_title">Seed of joy planted!</string>
@@ -15,14 +15,6 @@
         <item quantity="one">Only %d pleasure left this week!</item>
         <item quantity="other">Only %d pleasures left this week!</item>
     </plurals>
-
-    <string name="day_monday">Mon</string>
-    <string name="day_tuesday">Tue</string>
-    <string name="day_wednesday">Wed</string>
-    <string name="day_thursday">Thu</string>
-    <string name="day_friday">Fri</string>
-    <string name="day_saturday">Sat</string>
-    <string name="day_sunday">Sun</string>
 
     <string name="full_day_monday">Monday</string>
     <string name="full_day_tuesday">Tuesday</string>
@@ -36,6 +28,7 @@
     <string name="status_not_completed">Missed</string>
     <string name="status_locked">Locked</string>
     <string name="status_current_day">Today</string>
+    <string name="label_to_discover">To discover</string>
 
     <!-- Settings Screen -->
     <string name="settings_notifications_title">Notifications</string>

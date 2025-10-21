@@ -34,37 +34,37 @@ val previewHistoryUiState = HistoryUiState(
     isLoading = false,
     weeklyPleasures = listOf(
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_monday,
+            dayNameRes = R.string.full_day_monday,
             status = PleasureStatus.PAST_NOT_COMPLETED,
             pleasure = previewDailyPleasure
         ),
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_tuesday,
+            dayNameRes = R.string.full_day_tuesday,
             status = PleasureStatus.PAST_COMPLETED,
             pleasure = previewDailyPleasure
         ),
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_wednesday,
+            dayNameRes = R.string.full_day_wednesday,
             status = PleasureStatus.CURRENT_COMPLETED,
             pleasure = previewDailyPleasure
         ),
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_thursday,
+            dayNameRes = R.string.full_day_thursday,
             status = PleasureStatus.CURRENT_REVEALED,
             pleasure = previewDailyPleasure
         ),
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_friday,
+            dayNameRes = R.string.full_day_friday,
             status = PleasureStatus.LOCKED,
             pleasure = previewDailyPleasure
         ),
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_saturday,
+            dayNameRes = R.string.full_day_saturday,
             status = PleasureStatus.LOCKED,
             pleasure = previewDailyPleasure
         ),
         WeeklyPleasureItem(
-            dayNameRes = R.string.day_sunday,
+            dayNameRes = R.string.full_day_sunday,
             status = PleasureStatus.LOCKED,
             pleasure = previewDailyPleasure
         )
