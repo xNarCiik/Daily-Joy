@@ -10,7 +10,11 @@
     <string name="pleasure_completed_subtitle">Great! Come back tomorrow to discover your next pleasure.</string>
 
     <!-- History Screen -->
-    <string name="history_empty">No pleasures found for this week. Start playing tomorrow!</string>
+    <string name="history_empty">No pleasures found for this week.</string>
+    <string name="error_message">Error: %1$s</string>
+    <string name="start_today">Start today!</string>
+    <string name="weekly_progress">Weekly progress</string>
+    <string name="pleasures_completed">pleasures completed</string>
     <plurals name="remaining_pleasures_text">
         <item quantity="one">Only %d pleasure left this week!</item>
         <item quantity="other">Only %d pleasures left this week!</item>
@@ -29,6 +33,9 @@
     <string name="status_locked">Locked</string>
     <string name="status_current_day">Today</string>
     <string name="label_to_discover">To discover</string>
+    <string name="status_done_checked">Done ✓</string>
+    <string name="status_missed">Missed</string>
+    <string name="status_in_progress">In progress</string>
 
     <!-- Settings Screen -->
     <string name="settings_notifications_title">Notifications</string>

@@ -60,7 +60,7 @@ fun HistoryScreen(
 
             uiState.error != null -> {
                 Text(
-                    text = "Erreur: ${uiState.error}",
+                    text = stringResource(R.string.error_message, uiState.error),
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
@@ -109,7 +109,7 @@ private fun EmptyHistoryState(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Commence dès aujourd'hui !",
+            text = stringResource(R.string.start_today),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -213,7 +213,7 @@ private fun WeeklyStatsCard(
                     Spacer(modifier = Modifier.size(12.dp))
 
                     Text(
-                        text = "Progression hebdomadaire",
+                        text = stringResource(R.string.weekly_progress),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -248,7 +248,7 @@ private fun WeeklyStatsCard(
                     }
 
                     Text(
-                        text = "plaisirs complétés",
+                        text = stringResource(R.string.pleasures_completed),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

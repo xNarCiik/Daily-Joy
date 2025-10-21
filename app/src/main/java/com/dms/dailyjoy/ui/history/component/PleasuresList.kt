@@ -228,13 +228,13 @@ private fun StatusBadge(
 ) {
     val (text, color) = when (status) {
         PleasureStatus.PAST_COMPLETED, PleasureStatus.CURRENT_COMPLETED ->
-            "Fait ✓" to MaterialTheme.colorScheme.primary
+            stringResource(R.string.status_done_checked) to MaterialTheme.colorScheme.primary
 
         PleasureStatus.PAST_NOT_COMPLETED ->
-            "Raté" to MaterialTheme.colorScheme.error
+            stringResource(R.string.status_missed) to MaterialTheme.colorScheme.error
 
         PleasureStatus.CURRENT_REVEALED ->
-            "En cours" to MaterialTheme.colorScheme.secondary
+            stringResource(R.string.status_in_progress) to MaterialTheme.colorScheme.secondary
 
         else -> return
     }
