@@ -1,10 +1,5 @@
 package com.dms.dailyjoy.ui.history
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.history.component.HistoryGrid
-import com.dms.dailyjoy.ui.history.component.PleasureCard
+import com.dms.dailyjoy.ui.history.component.ModalPleasureCard
 import com.dms.dailyjoy.ui.history.component.WeeklyProgress
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -67,24 +62,11 @@ fun HistoryScreen(
                 )
             }
         }
-    }
 
-    AnimatedVisibility(
-        visible = uiState.selectedPleasure != null,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f))
-                .clickable { onEvent(HistoryEvent.OnBottomSheetDismissed) },
-            contentAlignment = Alignment.Center
-        ) {
-            uiState.selectedPleasure?.let {
-                PleasureCard(modifier = Modifier.clickable(enabled = false) {}, pleasure = it)
-            }
-        }
+        ModalPleasureCard(
+            pleasure = uiState.selectedPleasure,
+            onDismiss = { onEvent(HistoryEvent.OnBottomSheetDismissed) }
+        )
     }
 }
 
