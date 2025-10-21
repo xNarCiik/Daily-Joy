@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.dms.dailyjoy.data.database.AppDatabase
 import com.dms.dailyjoy.data.database.dao.PleasureDao
-import com.dms.dailyjoy.data.database.dao.PleasureHistoryDao
+import com.dms.dailyjoy.data.database.dao.WeeklyPleasureDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,18 +18,17 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             "daily_joy_database"
         ).build()
-    }
 
     @Provides
     fun providePleasureDao(appDatabase: AppDatabase): PleasureDao = appDatabase.pleasureDao()
 
     @Provides
-    fun providePleasureHistoryDao(appDatabase: AppDatabase): PleasureHistoryDao =
-        appDatabase.pleasureHistoryDao()
+    fun provideWeeklyPleasureDao(appDatabase: AppDatabase): WeeklyPleasureDao =
+        appDatabase.weeklyPleasureDao()
 }

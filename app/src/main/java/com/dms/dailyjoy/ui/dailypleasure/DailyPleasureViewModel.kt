@@ -3,7 +3,7 @@ package com.dms.dailyjoy.ui.dailypleasure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
-import com.dms.dailyjoy.domain.repository.PleasureHistoryRepository
+import com.dms.dailyjoy.domain.usecase.GenerateWeeklyPleasuresUseCase
 import com.dms.dailyjoy.domain.usecase.GetPleasureForTodayUseCase
 import com.dms.dailyjoy.domain.usecase.GetRandomDailyMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,7 @@ data class DailyPleasureState(
 class PleasureViewModel @Inject constructor(
     private val getRandomDailyMessageUseCase: GetRandomDailyMessageUseCase,
     private val getPleasureForTodayUseCase: GetPleasureForTodayUseCase,
-    private val pleasureHistoryRepository: PleasureHistoryRepository
+    private val generateWeeklyPleasuresUseCase: GenerateWeeklyPleasuresUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DailyPleasureState())
@@ -36,7 +36,7 @@ class PleasureViewModel @Inject constructor(
 
     fun onDailyCardFlipped() = viewModelScope.launch {
         val updatedPleasure = _state.value.dailyPleasure.copy(isFlipped = true)
-        pleasureHistoryRepository.save(updatedPleasure)
+       // TODO FIX THAT pleasureHistoryRepository.save(updatedPleasure)
         _state.update {
             it.copy(
                 dailyPleasure = updatedPleasure,
@@ -47,7 +47,7 @@ class PleasureViewModel @Inject constructor(
 
     fun markDailyCardAsDone() = viewModelScope.launch {
         val updatedPleasure = _state.value.dailyPleasure.copy(isDone = true)
-        pleasureHistoryRepository.save(updatedPleasure)
+        // TODO FIX THAT pleasureHistoryRepository.save(updatedPleasure)
         _state.update {
             it.copy(dailyPleasure = updatedPleasure, waitDonePleasure = false)
         }
@@ -57,7 +57,7 @@ class PleasureViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true) }
 
         val pleasure = getPleasureForTodayUseCase() ?: Pleasure()
-        pleasureHistoryRepository.save(pleasure)
+        // TODO FIX THAT pleasureHistoryRepository.save(pleasure)
 
         _state.update {
             it.copy(

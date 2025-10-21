@@ -28,7 +28,7 @@ class PleasureRepositoryImpl @Inject constructor(
         if (pleasureFromDb != null) {
             return pleasureFromDb
         }
-        return localDataSource.getPleasures().find { it.id == id }
+        return localDataSource.getPleasures().find { it.id == id } // TODO Probably a bug
     }
 
     override suspend fun insert(pleasure: Pleasure) = pleasureDao.insert(pleasure.toEntity())

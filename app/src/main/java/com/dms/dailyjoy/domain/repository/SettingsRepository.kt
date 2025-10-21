@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.data.repository
+package com.dms.dailyjoy.domain.repository
 
 import com.dms.dailyjoy.domain.model.Theme
 import kotlinx.coroutines.flow.Flow

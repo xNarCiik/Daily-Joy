@@ -2,20 +2,13 @@ package com.dms.dailyjoy.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.dms.dailyjoy.data.database.converter.DateConverter
 import com.dms.dailyjoy.data.database.dao.PleasureDao
-import com.dms.dailyjoy.data.database.dao.PleasureHistoryDao
+import com.dms.dailyjoy.data.database.dao.WeeklyPleasureDao
 import com.dms.dailyjoy.data.database.entity.PleasureEntity
-import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntity
+import com.dms.dailyjoy.data.database.entity.WeeklyPleasureEntity
 
-@Database(
-    entities = [PleasureEntity::class, PleasureHistoryEntity::class],
-    version = 1,
-    exportSchema = false
-)
-@TypeConverters(DateConverter::class)
+@Database(entities = [PleasureEntity::class, WeeklyPleasureEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun pleasureDao(): PleasureDao
-    abstract fun pleasureHistoryDao(): PleasureHistoryDao
+    abstract fun weeklyPleasureDao(): WeeklyPleasureDao
 }

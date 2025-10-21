@@ -1,6 +1,6 @@
 package com.dms.dailyjoy.domain.usecase
 
-import com.dms.dailyjoy.data.repository.SettingsRepository
+import com.dms.dailyjoy.domain.repository.SettingsRepository
 import javax.inject.Inject
 
 class SetDailyReminderStateUseCase @Inject constructor(private val settingsRepository: SettingsRepository) {

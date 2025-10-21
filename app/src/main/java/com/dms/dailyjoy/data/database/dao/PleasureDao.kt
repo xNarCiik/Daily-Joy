@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PleasureDao {
+    @Query("SELECT * FROM pleasure")
+    fun getAllPleasures(): Flow<List<PleasureEntity>>
+
+    @Query("SELECT * FROM pleasure WHERE id = :id")
+    suspend fun getPleasureById(id: Int): PleasureEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(pleasure: PleasureEntity)
@@ -20,10 +25,4 @@ interface PleasureDao {
 
     @Delete
     suspend fun delete(pleasure: PleasureEntity)
-
-    @Query("SELECT * FROM pleasure")
-    fun getAllPleasures(): Flow<List<PleasureEntity>>
-
-    @Query("SELECT * FROM pleasure WHERE id = :id")
-    suspend fun getPleasureById(id: Int): PleasureEntity?
 }
