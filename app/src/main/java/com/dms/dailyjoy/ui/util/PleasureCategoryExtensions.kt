@@ -38,7 +38,23 @@ fun PleasureCategory.toCategoryInfo(): CategoryInfo {
             label = stringResource(R.string.category_outdoor),
             color = Color(0xFF009688)
         )
-        else -> CategoryInfo( // TODO FILL OTHER PLEASURE
+        PleasureCategory.SPORT -> CategoryInfo(
+            label = stringResource(R.string.category_sport),
+            color = Color(0xFFF44336)
+        )
+        PleasureCategory.SHOPPING -> CategoryInfo(
+            label = stringResource(R.string.category_shopping),
+            color = Color(0xFF795548)
+        )
+        PleasureCategory.CULTURE -> CategoryInfo(
+            label = stringResource(R.string.category_culture),
+            color = Color(0xFF673AB7)
+        )
+        PleasureCategory.LEARNING -> CategoryInfo(
+            label = stringResource(R.string.category_learning),
+            color = Color(0xFF3F51B5)
+        )
+        PleasureCategory.OTHER -> CategoryInfo(
             label = stringResource(R.string.category_other),
             color = Color(0xFF607D8B)
         )

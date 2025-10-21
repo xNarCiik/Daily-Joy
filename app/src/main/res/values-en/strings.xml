@@ -79,7 +79,7 @@
     <string name="manage_pleasures_filter_by_type_description">Filter by type</string>
     <string name="manage_pleasures_pleasure_type">Pleasure type</string>
     <string name="manage_pleasures_add_pleasure_placeholder_title">Ex: Drink a good coffee</string>
-    <string name="manage_pleasures_add_pleasure_placeholder_description">Describe this pleasure...</string>
+    <string name="manage_pleasures_add_pleasure_placeholder_description">Describe this pleasure…</string>
     <string name="manage_pleasures_delete_confirmation_title">Delete pleasure?</string>
     <string name="manage_pleasures_delete_confirmation_message">Are you sure you want to delete "%1$s"? This action is irreversible.</string>
     <string name="loading">Loading…</string>
@@ -97,6 +97,10 @@
     <string name="category_wellness">Wellness</string>
     <string name="category_creative">Creative</string>
     <string name="category_outdoor">Outdoor</string>
+    <string name="category_sport">Sport</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_culture">Culture</string>
+    <string name="category_learning">Learning</string>
     <string name="category_other">Other</string>
 
     <!-- Notification -->

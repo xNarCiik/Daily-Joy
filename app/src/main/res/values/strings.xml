@@ -80,7 +80,7 @@
     <string name="manage_pleasures_filter_by_type_description">Filtrer par type</string>
     <string name="manage_pleasures_pleasure_type">Type de plaisir</string>
     <string name="manage_pleasures_add_pleasure_placeholder_title">Ex: Boire un bon café</string>
-    <string name="manage_pleasures_add_pleasure_placeholder_description">Décrivez ce plaisir...</string>
+    <string name="manage_pleasures_add_pleasure_placeholder_description">Décrivez ce plaisir…</string>
     <string name="manage_pleasures_delete_confirmation_title">Supprimer le plaisir ?</string>
     <string name="manage_pleasures_delete_confirmation_message">Êtes-vous sûr de vouloir supprimer "%1$s" ? Cette action est irréversible.</string>
     <string name="loading">Chargement…</string>
@@ -98,6 +98,10 @@
     <string name="category_wellness">Bien-être</string>
     <string name="category_creative">Créatif</string>
     <string name="category_outdoor">Extérieur</string>
+    <string name="category_sport">Sport</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_culture">Culture</string>
+    <string name="category_learning">Apprentissage</string>
     <string name="category_other">Autre</string>
 
     <!-- Notification -->

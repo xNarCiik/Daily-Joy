@@ -16,7 +16,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_1_title),
             description = resources.getString(R.string.pleasure_relax_1_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 2,
@@ -30,7 +30,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_3_title),
             description = resources.getString(R.string.pleasure_relax_3_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 4,
@@ -58,21 +58,21 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_7_title),
             description = resources.getString(R.string.pleasure_relax_7_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 8,
             title = resources.getString(R.string.pleasure_game_8_title),
             description = resources.getString(R.string.pleasure_game_8_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.GAME
+            category = PleasureCategory.ENTERTAINMENT
         ),
         Pleasure(
             id = 9,
             title = resources.getString(R.string.pleasure_nature_9_title),
             description = resources.getString(R.string.pleasure_nature_9_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.NATURE
+            category = PleasureCategory.OUTDOOR
         ),
         Pleasure(
             id = 10,
@@ -93,14 +93,14 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_12_title),
             description = resources.getString(R.string.pleasure_relax_12_description),
             type = PleasureType.BIG,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 13,
             title = resources.getString(R.string.pleasure_nature_13_title),
             description = resources.getString(R.string.pleasure_nature_13_description),
             type = PleasureType.BIG,
-            category = PleasureCategory.NATURE
+            category = PleasureCategory.OUTDOOR
         ),
         Pleasure(
             id = 14,
@@ -128,7 +128,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_17_title),
             description = resources.getString(R.string.pleasure_relax_17_description),
             type = PleasureType.BIG,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 18,
@@ -156,7 +156,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_21_title),
             description = resources.getString(R.string.pleasure_relax_21_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 22,
@@ -170,7 +170,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_nature_23_title),
             description = resources.getString(R.string.pleasure_nature_23_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.NATURE
+            category = PleasureCategory.OUTDOOR
         ),
         Pleasure(
             id = 24,
@@ -212,14 +212,14 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_nature_29_title),
             description = resources.getString(R.string.pleasure_nature_29_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.NATURE
+            category = PleasureCategory.OUTDOOR
         ),
         Pleasure(
             id = 30,
             title = resources.getString(R.string.pleasure_relax_30_title),
             description = resources.getString(R.string.pleasure_relax_30_description),
             type = PleasureType.SMALL,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 31,
@@ -233,7 +233,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_nature_32_title),
             description = resources.getString(R.string.pleasure_nature_32_description),
             type = PleasureType.BIG,
-            category = PleasureCategory.NATURE
+            category = PleasureCategory.OUTDOOR
         ),
         Pleasure(
             id = 33,
@@ -254,7 +254,7 @@ class LocalPleasureDataSource @Inject constructor(
             title = resources.getString(R.string.pleasure_relax_35_title),
             description = resources.getString(R.string.pleasure_relax_35_description),
             type = PleasureType.BIG,
-            category = PleasureCategory.RELAX
+            category = PleasureCategory.WELLNESS
         ),
         Pleasure(
             id = 36,
