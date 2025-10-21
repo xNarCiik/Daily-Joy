@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
+import com.dms.dailyjoy.ui.settings.dialog.NotificationPermissionDialog
 import com.dms.dailyjoy.ui.settings.dialog.ThemeDialog
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -67,10 +68,14 @@ fun SettingsScreen(
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
+    var showNotificationPermissionDialog by remember { mutableStateOf(false) }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
+            if (!isGranted) {
+                showNotificationPermissionDialog = true
+            }
             onDailyReminderEnabledChanged(isGranted)
         }
     )
@@ -87,9 +92,15 @@ fun SettingsScreen(
     }
 
     if (showTimePicker) {
-        ShowTimePicker(context, reminderTime, onReminderTimeChanged) {
+        showTimePicker(context, reminderTime, onReminderTimeChanged) {
             showTimePicker = false
         }
+    }
+
+    if (showNotificationPermissionDialog) {
+        NotificationPermissionDialog(
+            onDismiss = { showNotificationPermissionDialog = false }
+        )
     }
 
     LazyColumn(
@@ -202,7 +213,7 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun ShowTimePicker(
+private fun showTimePicker(
     context: Context,
     currentTime: String,
     onTimeSelected: (String) -> Unit,

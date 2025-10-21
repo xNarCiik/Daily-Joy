@@ -51,4 +51,9 @@
     <string name="notification_channel_description">Notification pour vous rappeler de noter votre plaisir du jour.</string>
     <string name="notification_title">C\'est l\'heure de votre plaisir du jour !</string>
     <string name="notification_text">N\'oubliez pas de noter votre plaisir du jour.</string>
+
+    <!-- Notification Permission Dialog -->
+    <string name="notification_permission_dialog_title">Permission requise</string>
+    <string name="notification_permission_dialog_text">Pour recevoir des rappels quotidiens, vous devez autoriser les notifications dans les paramètres de l\'application.</string>
+    <string name="notification_permission_dialog_settings_button">Ouvrir les paramètres</string>
 </resources>

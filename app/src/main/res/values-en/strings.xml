@@ -47,8 +47,13 @@
     <string name="cancel">Cancel</string>
 
     <!-- Notification -->
-    <string name="notification_channel_name">Rappel quotidien</string>
-    <string name="notification_channel_description">Notification pour vous rappeler de tirer votre plaisir du jour.</string>
-    <string name="notification_title">C\'est l\'heure de votre plaisir du jour !</string>
-    <string name="notification_text">N\'oubliez pas de vous faire un petit (ou gros) plaisir ;)</string>
+    <string name="notification_channel_name">Daily Reminder</string>
+    <string name="notification_channel_description">Notification to remind you to rate your pleasure of the day.</string>
+    <string name="notification_title">It\'s time for your pleasure of the day!</string>
+    <string name="notification_text">Don\'t forget to rate your pleasure of the day.</string>
+
+    <!-- Notification Permission Dialog -->
+    <string name="notification_permission_dialog_title">Permission required</string>
+    <string name="notification_permission_dialog_text">To receive daily reminders, you must allow notifications in the application settings.</string>
+    <string name="notification_permission_dialog_settings_button">Open settings</string>
 </resources>

@@ -35,10 +35,10 @@ class SettingsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Theme.SYSTEM)
 
     val dailyReminderEnabled: StateFlow<Boolean> = getDailyReminderStateUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     val reminderTime: StateFlow<String> = getReminderTimeUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "08:00")
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "11:00")
 
     fun onThemeChange(theme: Theme) = viewModelScope.launch {
         setThemeUseCase(theme)

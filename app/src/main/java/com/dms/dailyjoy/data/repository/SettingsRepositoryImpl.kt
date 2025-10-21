@@ -39,7 +39,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override val dailyReminderEnabled: Flow<Boolean> = context.dataStore.data
         .map {
-            it[PreferencesKeys.DAILY_REMINDER_ENABLED] ?: true
+            it[PreferencesKeys.DAILY_REMINDER_ENABLED] ?: false
         }
 
     override suspend fun setDailyReminderEnabled(enabled: Boolean) {
@@ -50,7 +50,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override val reminderTime: Flow<String> = context.dataStore.data
         .map {
-            it[PreferencesKeys.REMINDER_TIME] ?: "08:00"
+            it[PreferencesKeys.REMINDER_TIME] ?: "11:00"
         }
 
     override suspend fun setReminderTime(time: String) {

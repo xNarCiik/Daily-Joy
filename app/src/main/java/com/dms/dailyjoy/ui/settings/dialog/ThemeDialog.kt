@@ -19,6 +19,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
+import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun ThemeDialog(
@@ -66,4 +68,12 @@ fun ThemeDialog(
             }
         }
     )
+}
+
+@LightDarkPreview
+@Composable
+private fun ThemeDialogPreview() {
+    DailyJoyTheme {
+        ThemeDialog(currentTheme = Theme.SYSTEM, onThemeSelected = {}, onDismiss = {})
+    }
 }
