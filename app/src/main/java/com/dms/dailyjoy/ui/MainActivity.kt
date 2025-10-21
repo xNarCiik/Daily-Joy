@@ -56,8 +56,8 @@ class MainActivity : ComponentActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val settingsViewModel: SettingsViewModel = hiltViewModel()
-            val theme by settingsViewModel.theme.collectAsState()
-            val useDarkTheme = when (theme) {
+            val settingsUiState by settingsViewModel.uiState.collectAsState()
+            val useDarkTheme = when (settingsUiState.theme) {
                 Theme.LIGHT -> false
                 Theme.DARK -> true
                 Theme.SYSTEM -> isSystemInDarkTheme()

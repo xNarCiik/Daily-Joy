@@ -68,18 +68,12 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
 
         composable<SettingsRoute> {
             val viewModel: SettingsViewModel = hiltViewModel()
-            val theme by viewModel.theme.collectAsState()
-            val dailyReminderEnabled by viewModel.dailyReminderEnabled.collectAsState()
-            val reminderTime by viewModel.reminderTime.collectAsState()
+            val settingsState by viewModel.uiState.collectAsState()
 
             SettingsScreen(
                 modifier = modifierWithPaddingValues,
-                theme = theme,
-                dailyReminderEnabled = dailyReminderEnabled,
-                reminderTime = reminderTime,
-                onThemeChanged = viewModel::onThemeChange,
-                onDailyReminderEnabledChanged = viewModel::onDailyReminderEnabledChange,
-                onReminderTimeChanged = viewModel::onReminderTimeChange,
+                uiState = settingsState,
+                onEvent = viewModel::onEvent,
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
             )
         }

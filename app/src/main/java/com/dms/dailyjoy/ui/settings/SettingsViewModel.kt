@@ -12,48 +12,73 @@ import com.dms.dailyjoy.domain.usecase.settings.SetReminderTimeUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetThemeUseCase
 import com.dms.dailyjoy.notification.DailyReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     application: Application,
-    getThemeUseCase: GetThemeUseCase,
+    private val getThemeUseCase: GetThemeUseCase,
     private val setThemeUseCase: SetThemeUseCase,
-    getDailyReminderStateUseCase: GetDailyReminderStateUseCase,
+    private val getDailyReminderStateUseCase: GetDailyReminderStateUseCase,
     private val setDailyReminderStateUseCase: SetDailyReminderStateUseCase,
-    getReminderTimeUseCase: GetReminderTimeUseCase,
+    private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val setReminderTimeUseCase: SetReminderTimeUseCase
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState = _uiState.asStateFlow()
+
     private val dailyReminderManager = DailyReminderManager(application)
 
-    val theme: StateFlow<Theme> = getThemeUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Theme.SYSTEM)
+    init {
+        loadSettings()
+    }
 
-    val dailyReminderEnabled: StateFlow<Boolean> = getDailyReminderStateUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    private fun loadSettings() {
+        viewModelScope.launch {
+            combine(
+                getThemeUseCase(),
+                getDailyReminderStateUseCase(),
+                getReminderTimeUseCase()
+            ) { theme, dailyReminderEnabled, reminderTime ->
+                SettingsUiState(
+                    theme = theme,
+                    dailyReminderEnabled = dailyReminderEnabled,
+                    reminderTime = reminderTime
+                )
+            }.collect { combinedState ->
+                _uiState.value = combinedState
+            }
+        }
+    }
 
-    val reminderTime: StateFlow<String> = getReminderTimeUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "11:00")
+    fun onEvent(event: SettingsEvent) {
+        when (event) {
+            is SettingsEvent.OnThemeChanged -> onThemeChange(event.theme)
+            is SettingsEvent.OnDailyReminderEnabledChanged -> onDailyReminderEnabledChange(event.enabled)
+            is SettingsEvent.OnReminderTimeChanged -> onReminderTimeChange(event.time)
+        }
+    }
 
-    fun onThemeChange(theme: Theme) = viewModelScope.launch {
+    private fun onThemeChange(theme: Theme) = viewModelScope.launch {
         setThemeUseCase(theme)
     }
 
-    fun onDailyReminderEnabledChange(enabled: Boolean) = viewModelScope.launch {
+    private fun onDailyReminderEnabledChange(enabled: Boolean) = viewModelScope.launch {
         setDailyReminderStateUseCase(enabled)
         if (enabled) {
-            dailyReminderManager.schedule(reminderTime.value)
+            dailyReminderManager.schedule(uiState.value.reminderTime)
         } else {
             dailyReminderManager.cancel()
         }
     }
 
-    fun onReminderTimeChange(time: String) = viewModelScope.launch {
+    private fun onReminderTimeChange(time: String) = viewModelScope.launch {
         setReminderTimeUseCase(time)
         dailyReminderManager.schedule(time)
     }

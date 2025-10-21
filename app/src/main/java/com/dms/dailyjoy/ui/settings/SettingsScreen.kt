@@ -48,12 +48,8 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    theme: Theme,
-    dailyReminderEnabled: Boolean,
-    reminderTime: String,
-    onThemeChanged: (Theme) -> Unit,
-    onDailyReminderEnabledChanged: (Boolean) -> Unit,
-    onReminderTimeChanged: (String) -> Unit,
+    uiState: SettingsUiState,
+    onEvent: (SettingsEvent) -> Unit,
     onNavigateToManagePleasures: () -> Unit
 ) {
     val context = LocalContext.current
@@ -67,15 +63,15 @@ fun SettingsScreen(
             if (!isGranted) {
                 showNotificationPermissionDialog = true
             }
-            onDailyReminderEnabledChanged(isGranted)
+            onEvent(SettingsEvent.OnDailyReminderEnabledChanged(isGranted))
         }
     )
 
     if (showThemeDialog) {
         ThemeDialog(
-            currentTheme = theme,
+            currentTheme = uiState.theme,
             onThemeSelected = { newTheme ->
-                onThemeChanged(newTheme)
+                onEvent(SettingsEvent.OnThemeChanged(newTheme))
                 showThemeDialog = false
             },
             onDismiss = { showThemeDialog = false }
@@ -83,7 +79,9 @@ fun SettingsScreen(
     }
 
     if (showTimePicker) {
-        ShowTimePicker(context, reminderTime, onReminderTimeChanged) {
+        ShowTimePicker(context, uiState.reminderTime, {
+            onEvent(SettingsEvent.OnReminderTimeChanged(it))
+        }) {
             showTimePicker = false
         }
     }
@@ -98,30 +96,28 @@ fun SettingsScreen(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        item {
-            SettingsSectionTitle(title = stringResource(id = R.string.settings_notifications_title))
-        }
+        item { SettingsSectionTitle(title = stringResource(id = R.string.settings_notifications_title)) }
         item {
             SettingsSwitchItem(
                 icon = Icons.Default.Notifications,
                 title = stringResource(id = R.string.settings_daily_reminder_title),
                 subtitle = stringResource(id = R.string.settings_daily_reminder_subtitle),
-                checked = dailyReminderEnabled,
+                checked = uiState.dailyReminderEnabled,
                 onCheckedChange = {
                     if (it && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     } else {
-                        onDailyReminderEnabledChanged(it)
+                        onEvent(SettingsEvent.OnDailyReminderEnabledChanged(it))
                     }
                 }
             )
         }
         item {
-            AnimatedVisibility(visible = dailyReminderEnabled) {
+            AnimatedVisibility(visible = uiState.dailyReminderEnabled) {
                 SettingsClickableItem(
                     icon = Icons.Default.AccessTime,
                     title = stringResource(id = R.string.settings_reminder_time_title),
-                    subtitle = reminderTime,
+                    subtitle = uiState.reminderTime,
                     onClick = { showTimePicker = true }
                 )
             }
@@ -129,9 +125,7 @@ fun SettingsScreen(
 
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
-        item {
-            SettingsSectionTitle(title = stringResource(id = R.string.settings_personalization_title))
-        }
+        item { SettingsSectionTitle(title = stringResource(id = R.string.settings_personalization_title)) }
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Edit,
@@ -144,7 +138,7 @@ fun SettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
         item {
-            val themeSubtitle = when (theme) {
+            val themeSubtitle = when (uiState.theme) {
                 Theme.LIGHT -> stringResource(R.string.settings_theme_light)
                 Theme.DARK -> stringResource(R.string.settings_theme_dark)
                 Theme.SYSTEM -> stringResource(R.string.settings_theme_system)
@@ -162,9 +156,7 @@ fun SettingsScreen(
 
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
-        item {
-            SettingsSectionTitle(title = stringResource(id = R.string.settings_about_title))
-        }
+        item { SettingsSectionTitle(title = stringResource(id = R.string.settings_about_title)) }
         item {
             SettingsClickableItem(
                 icon = Icons.Default.StarRate,
@@ -264,12 +256,8 @@ fun SettingsScreenPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreen(
-                theme = Theme.SYSTEM,
-                dailyReminderEnabled = true,
-                reminderTime = "08:00",
-                onThemeChanged = {},
-                onDailyReminderEnabledChanged = {},
-                onReminderTimeChanged = {},
+                uiState = SettingsUiState(),
+                onEvent = {},
                 onNavigateToManagePleasures = {}
             )
         }
