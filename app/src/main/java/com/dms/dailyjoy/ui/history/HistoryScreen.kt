@@ -1,9 +1,10 @@
 package com.dms.dailyjoy.ui.history
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,62 +29,60 @@ import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewHistoryUiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
     uiState: HistoryUiState,
     onEvent: (HistoryEvent) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    Box(modifier = modifier.fillMaxSize()) {
+        when {
+            uiState.isLoading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
 
-    if (uiState.selectedPleasure != null) {
-        ModalBottomSheet(
-            onDismissRequest = { onEvent(HistoryEvent.OnBottomSheetDismissed) },
-            sheetState = sheetState
-        ) {
-            Box(modifier = Modifier.padding(16.dp)) {
-                PleasureCard(pleasure = uiState.selectedPleasure)
+            uiState.error != null -> {
+                // TODO: Implémenter un écran d'erreur avec un bouton 'Réessayer'
+                Text(
+                    text = "Erreur: ${uiState.error}",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            uiState.isEmpty -> {
+                Text(
+                    text = stringResource(R.string.history_empty),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(32.dp)
+                        .align(Alignment.Center)
+                )
+            }
+
+            else -> {
+                HistoryContent(
+                    uiState = uiState,
+                    onEvent = onEvent
+                )
             }
         }
     }
 
-    AnimatedContent(
-        targetState = uiState,
-        transitionSpec = { fadeIn() togetherWith fadeOut() },
-        label = "HistoryScreenAnimation"
-    ) { state ->
-        Box(modifier = modifier.fillMaxSize()) {
-            when {
-                state.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-
-                state.error != null -> {
-                    // TODO: Implémenter un écran d'erreur avec un bouton 'Réessayer'
-                    Text(
-                        text = "Erreur: ${state.error}",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                state.isEmpty -> {
-                    Text(
-                        text = stringResource(R.string.history_empty),
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(32.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-
-                else -> {
-                    HistoryContent(
-                        uiState = state,
-                        onEvent = onEvent
-                    )
-                }
+    AnimatedVisibility(
+        visible = uiState.selectedPleasure != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f))
+                .clickable { onEvent(HistoryEvent.OnBottomSheetDismissed) },
+            contentAlignment = Alignment.Center
+        ) {
+            uiState.selectedPleasure?.let {
+                PleasureCard(modifier = Modifier.clickable(enabled = false) {}, pleasure = it)
             }
         }
     }
