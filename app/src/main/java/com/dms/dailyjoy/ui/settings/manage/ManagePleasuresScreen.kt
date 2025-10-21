@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -37,7 +38,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,20 +46,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
+import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ManagePleasuresScreen(
-    viewModel: ManagePleasuresViewModel = hiltViewModel(),
+    uiState: ManagePleasuresUiState,
+    onEvent: (ManagePleasuresEvent) -> Unit,
     navigateBack: () -> Unit
 ) {
-    val pleasures by viewModel.pleasures.collectAsState()
+    val pleasures = uiState.pleasures
     var showAddPleasureSheet by remember { mutableStateOf(false) }
     var isDeleteMode by remember { mutableStateOf(false) }
     var selectedPleasures by remember { mutableStateOf(emptySet<Pleasure>()) }
@@ -119,9 +121,10 @@ fun ManagePleasuresScreen(
                     1 -> pleasures.filter { p -> p.type == PleasureType.BIG }
                     else -> emptyList()
                 }
+
                 PleasuresList(
                     pleasures = pleasuresToShow,
-                    viewModel = viewModel,
+                    onEvent = onEvent,
                     isDeleteMode = isDeleteMode,
                     selectedPleasures = selectedPleasures,
                     onPleasureSelected = { pleasure, isSelected ->
@@ -146,7 +149,7 @@ fun ManagePleasuresScreen(
                 onSave = { title, description, category ->
                     val type =
                         if (pagerState.currentPage == 0) PleasureType.SMALL else PleasureType.BIG
-                    viewModel.addPleasure(title, description, category, type)
+                    // TODO viewModel.addPleasure(title, description, category, type)
                     scope.launch {
                         sheetState.hide()
                         showAddPleasureSheet = false
@@ -210,7 +213,7 @@ private fun ManagePleasuresTopAppBar(
 @Composable
 private fun PleasuresList(
     pleasures: List<Pleasure>,
-    viewModel: ManagePleasuresViewModel,
+    onEvent: (ManagePleasuresEvent) -> Unit,
     isDeleteMode: Boolean,
     selectedPleasures: Set<Pleasure>,
     onPleasureSelected: (Pleasure, Boolean) -> Unit
@@ -221,7 +224,8 @@ private fun PleasuresList(
                 pleasure = pleasure,
                 isDeleteMode = isDeleteMode,
                 isSelected = selectedPleasures.contains(pleasure),
-                onToggle = { isEnabled -> viewModel.updatePleasure(pleasure.copy(isEnabled = isEnabled)) },
+                // TODO onToggle = { isEnabled -> viewModel.updatePleasure(pleasure.copy(isEnabled = isEnabled)) },
+                onToggle = { isEnabled -> },
                 onSelect = { onPleasureSelected(pleasure, it) }
             )
         }
@@ -317,6 +321,19 @@ private fun AddPleasureSheet(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save))
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun ManagePleasuresScreenPreview() {
+    DailyJoyTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            ManagePleasuresScreen(
+                uiState = ManagePleasuresUiState(),
+                onEvent = {},
+                navigateBack = {})
         }
     }
 }

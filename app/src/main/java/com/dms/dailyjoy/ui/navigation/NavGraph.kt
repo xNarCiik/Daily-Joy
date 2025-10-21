@@ -21,6 +21,7 @@ import com.dms.dailyjoy.ui.history.HistoryViewModel
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
+import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresViewModel
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import kotlinx.serialization.Serializable
 
@@ -121,7 +122,14 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 )
             }
         ) {
-            ManagePleasuresScreen(navigateBack = navController::popBackStack)
+            val viewModel: ManagePleasuresViewModel = hiltViewModel()
+            val managePleasuresUiState by viewModel.uiState.collectAsState()
+
+            ManagePleasuresScreen(
+                uiState = managePleasuresUiState,
+                onEvent = viewModel::onEvent,
+                navigateBack = navController::popBackStack
+            )
         }
     }
 }
