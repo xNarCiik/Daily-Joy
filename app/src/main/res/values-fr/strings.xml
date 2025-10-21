@@ -79,6 +79,26 @@
     <string name="cancel">Annuler</string>
     <string name="manage_pleasures_filter_by_type_description">Filtrer par type</string>
     <string name="manage_pleasures_pleasure_type">Type de plaisir</string>
+    <string name="manage_pleasures_add_pleasure_placeholder_title">Ex: Boire un bon café</string>
+    <string name="manage_pleasures_add_pleasure_placeholder_description">Décrivez ce plaisir...</string>
+    <string name="manage_pleasures_delete_confirmation_title">Supprimer le plaisir ?</string>
+    <string name="manage_pleasures_delete_confirmation_message">Êtes-vous sûr de vouloir supprimer "%1$s" ? Cette action est irréversible.</string>
+    <string name="loading">Chargement…</string>
+    <string name="error_title">Une erreur est survenue</string>
+    <string name="retry">Réessayer</string>
+    <string name="empty_state_title">Aucun plaisir</string>
+    <string name="empty_state_subtitle">Cliquez sur + pour commencer</string>
+    <string name="small_pleasures_description">Plaisirs rapides du quotidien</string>
+    <string name="big_pleasures_description">Grandes récompenses</string>
+    <string name="small_pleasures_empty_state_message">Ajoutez vos petits plaisirs quotidiens</string>
+    <string name="big_pleasures_empty_state_message">Ajoutez vos grandes récompenses</string>
+    <string name="category_food">Nourriture</string>
+    <string name="category_entertainment">Divertissement</string>
+    <string name="category_social">Social</string>
+    <string name="category_wellness">Bien-être</string>
+    <string name="category_creative">Créatif</string>
+    <string name="category_outdoor">Extérieur</string>
+    <string name="category_other">Autre</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>

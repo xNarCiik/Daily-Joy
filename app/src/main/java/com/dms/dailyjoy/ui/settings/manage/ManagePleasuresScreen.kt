@@ -503,7 +503,7 @@ private fun AddPleasureBottomSheet(
                 value = title,
                 onValueChange = onTitleChange,
                 label = { Text(stringResource(R.string.title)) },
-                placeholder = { Text("Ex: Boire un bon café") },
+                placeholder = { Text(stringResource(R.string.manage_pleasures_add_pleasure_placeholder_title)) },
                 isError = titleError != null,
                 supportingText = titleError?.let { { Text(it) } },
                 modifier = Modifier.fillMaxWidth(),
@@ -519,7 +519,7 @@ private fun AddPleasureBottomSheet(
                 value = description,
                 onValueChange = onDescriptionChange,
                 label = { Text(stringResource(R.string.description)) },
-                placeholder = { Text("Décrivez ce plaisir...") },
+                placeholder = { Text(stringResource(R.string.manage_pleasures_add_pleasure_placeholder_description)) },
                 isError = descriptionError != null,
                 supportingText = descriptionError?.let { { Text(it) } },
                 modifier = Modifier.fillMaxWidth(),
@@ -611,14 +611,13 @@ private fun DeleteConfirmationDialog(
         },
         title = {
             Text(
-                stringResource(R.string.delete_pleasure),
+                stringResource(R.string.manage_pleasures_delete_confirmation_title),
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
             Text(
-                text = "Êtes-vous sûr de vouloir supprimer \"${pleasure?.title}\" ? " +
-                        "Cette action est irréversible."
+                text = stringResource(R.string.manage_pleasures_delete_confirmation_message, pleasure?.title ?: "")
             )
         },
         confirmButton = {
@@ -650,7 +649,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
         ) {
             CircularProgressIndicator(modifier = Modifier.size(48.dp))
             Text(
-                text = "Chargement...",
+                text = stringResource(R.string.loading),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -681,7 +680,7 @@ private fun ErrorState(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Une erreur est survenue",
+            text = stringResource(R.string.error_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -708,7 +707,7 @@ private fun ErrorState(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Réessayer")
+            Text(stringResource(R.string.retry))
         }
     }
 }
@@ -739,7 +738,7 @@ private fun EmptyState(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Aucun plaisir",
+            text = stringResource(R.string.empty_state_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
@@ -756,7 +755,7 @@ private fun EmptyState(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Cliquez sur + pour commencer",
+            text = stringResource(R.string.empty_state_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
@@ -771,16 +770,17 @@ private val ManagePleasuresTab.displayName: String
     }
 
 private val ManagePleasuresTab.description: String
+    @Composable
     get() = when (this) {
-        ManagePleasuresTab.SMALL -> "Plaisirs rapides du quotidien"
-        ManagePleasuresTab.BIG -> "Grandes récompenses"
+        ManagePleasuresTab.SMALL -> stringResource(R.string.small_pleasures_description)
+        ManagePleasuresTab.BIG -> stringResource(R.string.big_pleasures_description)
     }
 
 private val ManagePleasuresTab.emptyStateMessage: String
     @Composable
     get() = when (this) {
-        ManagePleasuresTab.SMALL -> "Ajoutez vos petits plaisirs quotidiens"
-        ManagePleasuresTab.BIG -> "Ajoutez vos grandes récompenses"
+        ManagePleasuresTab.SMALL -> stringResource(R.string.small_pleasures_empty_state_message)
+        ManagePleasuresTab.BIG -> stringResource(R.string.big_pleasures_empty_state_message)
     }
 
 data class CategoryInfo(
@@ -788,48 +788,44 @@ data class CategoryInfo(
     val color: Color
 )
 
+@Composable
 fun PleasureCategory.toCategoryInfo(): CategoryInfo {
     return when (this) {
         PleasureCategory.FOOD -> CategoryInfo(
-            label = "Nourriture",
+            label = stringResource(R.string.category_food),
             color = Color(0xFFFF9800)
         )
-
         PleasureCategory.ENTERTAINMENT -> CategoryInfo(
-            label = "Divertissement",
+            label = stringResource(R.string.category_entertainment),
             color = Color(0xFF9C27B0)
         )
-
         PleasureCategory.SOCIAL -> CategoryInfo(
-            label = "Social",
+            label = stringResource(R.string.category_social),
             color = Color(0xFF2196F3)
         )
-
         PleasureCategory.WELLNESS -> CategoryInfo(
-            label = "Bien-être",
+            label = stringResource(R.string.category_wellness),
             color = Color(0xFF4CAF50)
         )
-
         PleasureCategory.CREATIVE -> CategoryInfo(
-            label = "Créatif",
+            label = stringResource(R.string.category_creative),
             color = Color(0xFFE91E63)
         )
-
         PleasureCategory.OUTDOOR -> CategoryInfo(
-            label = "Extérieur",
+            label = stringResource(R.string.category_outdoor),
             color = Color(0xFF009688)
         )
-
         PleasureCategory.OTHER -> CategoryInfo(
-            label = "Autre",
+            label = stringResource(R.string.category_other),
             color = Color(0xFF607D8B)
         )
 
         else -> CategoryInfo(
-            label = "Autre",
+            label = stringResource(R.string.category_other),
             color = Color(0xFF607D8B)
         )
     }
 }
 
+@Composable
 fun PleasureCategory.getLabel(): String = this.toCategoryInfo().label

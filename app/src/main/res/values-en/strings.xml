@@ -59,6 +59,9 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_system">System</string>
     <string name="dialog_close">Close</string>
+    <string name="settings_theme_light_description">Light theme for the day</string>
+    <string name="settings_theme_dark_description">Dark theme for the night</string>
+    <string name="settings_theme_system_description">Follows system settings</string>
 
     <!-- Manage Pleasures Screen -->
     <string name="manage_pleasures_title">Manage my pleasures</string>
@@ -75,6 +78,26 @@
     <string name="cancel">Cancel</string>
     <string name="manage_pleasures_filter_by_type_description">Filter by type</string>
     <string name="manage_pleasures_pleasure_type">Pleasure type</string>
+    <string name="manage_pleasures_add_pleasure_placeholder_title">Ex: Drink a good coffee</string>
+    <string name="manage_pleasures_add_pleasure_placeholder_description">Describe this pleasure...</string>
+    <string name="manage_pleasures_delete_confirmation_title">Delete pleasure?</string>
+    <string name="manage_pleasures_delete_confirmation_message">Are you sure you want to delete "%1$s"? This action is irreversible.</string>
+    <string name="loading">Loading…</string>
+    <string name="error_title">An error has occurred</string>
+    <string name="retry">Retry</string>
+    <string name="empty_state_title">No pleasures</string>
+    <string name="empty_state_subtitle">Click on + to start</string>
+    <string name="small_pleasures_description">Quick daily pleasures</string>
+    <string name="big_pleasures_description">Great rewards</string>
+    <string name="small_pleasures_empty_state_message">Add your small daily pleasures</string>
+    <string name="big_pleasures_empty_state_message">Add your great rewards</string>
+    <string name="category_food">Food</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_social">Social</string>
+    <string name="category_wellness">Wellness</string>
+    <string name="category_creative">Creative</string>
+    <string name="category_outdoor">Outdoor</string>
+    <string name="category_other">Other</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Daily Reminder</string>
