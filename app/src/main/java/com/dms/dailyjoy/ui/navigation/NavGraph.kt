@@ -4,9 +4,13 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -33,7 +37,8 @@ object SettingsRoute
 object ManagePleasuresRoute
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
+    val modifierWithPaddingValues = Modifier.padding(paddingValues)
     NavHost(
         navController = navController,
         startDestination = DailyPleasureRoute
@@ -42,6 +47,7 @@ fun NavGraph(navController: NavHostController) {
             val viewModel: PleasureViewModel = hiltViewModel()
             val dailyPleasureState by viewModel.state.collectAsState()
             DailyPleasureScreen(
+                modifier = modifierWithPaddingValues,
                 dailyPleasureState = dailyPleasureState,
                 onCardFlipped = viewModel::onDailyCardFlipped,
                 onDonePleasure = viewModel::markDailyCardAsDone
@@ -49,12 +55,17 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable<HistoryRoute> {
-            HistoryScreen()
+            Box(modifier = Modifier.padding(paddingValues)) {
+                HistoryScreen(
+                    modifier = modifierWithPaddingValues
+                )
+            }
         }
 
         composable<SettingsRoute> {
             val viewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
+                modifier = modifierWithPaddingValues,
                 theme = viewModel.theme.collectAsState().value,
                 onThemeChanged = viewModel::onThemeChange,
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
@@ -65,29 +76,41 @@ fun NavGraph(navController: NavHostController) {
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                    animationSpec = tween(
+                        durationMillis = navigationAnimationDuration,
+                        easing = LinearOutSlowInEasing
+                    )
                 )
             },
             exitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                    animationSpec = tween(
+                        durationMillis = navigationAnimationDuration,
+                        easing = LinearOutSlowInEasing
+                    )
                 )
             },
             popEnterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                    animationSpec = tween(
+                        durationMillis = navigationAnimationDuration,
+                        easing = LinearOutSlowInEasing
+                    )
                 )
             },
             popExitTransition = {
                 slideOutHorizontally(
                     targetOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(durationMillis = navigationAnimationDuration, easing = LinearOutSlowInEasing)
+                    animationSpec = tween(
+                        durationMillis = navigationAnimationDuration,
+                        easing = LinearOutSlowInEasing
+                    )
                 )
             }
         ) {
-            ManagePleasuresScreen()
+            ManagePleasuresScreen(navigateBack = navController::popBackStack)
         }
     }
 }

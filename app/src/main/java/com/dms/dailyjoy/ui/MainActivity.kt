@@ -10,9 +10,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -83,7 +81,7 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        MainTopAppBar(currentRoute = currentRoute, navController = navController)
+                        MainTopAppBar(currentRoute = currentRoute)
                     },
                     bottomBar = {
                         val visible = currentRoute in listOf(
@@ -98,9 +96,7 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                         )
                     }
                 ) { innerPadding ->
-                    Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
-                        NavGraph(navController = navController)
-                    }
+                    NavGraph(navController = navController, paddingValues = innerPadding)
                 }
             }
         }

@@ -48,9 +48,9 @@ data class WeeklyPleasure(
 )
 
 @Composable
-fun HistoryScreen() {
+fun HistoryScreen(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         // État mutable pour le plaisir du jour actuel, pour simuler la validation

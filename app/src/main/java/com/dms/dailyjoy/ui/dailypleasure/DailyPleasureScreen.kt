@@ -57,12 +57,13 @@ import kotlin.math.abs
 
 @Composable
 fun DailyPleasureScreen(
+    modifier: Modifier = Modifier,
     dailyPleasureState: DailyPleasureState,
     onCardFlipped: () -> Unit,
     onDonePleasure: () -> Unit
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(vertical = 12.dp, horizontal = 24.dp),
         contentAlignment = Alignment.Center

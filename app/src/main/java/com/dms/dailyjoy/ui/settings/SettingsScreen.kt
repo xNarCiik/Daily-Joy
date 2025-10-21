@@ -48,6 +48,7 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun SettingsScreen(
+    modifier: Modifier = Modifier,
     theme: Theme,
     onThemeChanged: (Theme) -> Unit,
     onNavigateToManagePleasures: () -> Unit
@@ -67,7 +68,7 @@ fun SettingsScreen(
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         item {
