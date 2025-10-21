@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.data.model.Pleasure
+import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
@@ -68,7 +69,9 @@ fun ModalPleasureCard(
                         modifier = Modifier
                             .offset(y = 40.dp)
                             .clickable(enabled = false) {},
-                        pleasure = it
+                        pleasure = it.copy(isFlipped = true),
+                        durationRotation = 0,
+                        onCardFlipped = {}
                     )
                 }
             }

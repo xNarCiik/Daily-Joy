@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.dailypleasure.component
+package com.dms.dailyjoy.ui.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -11,12 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +37,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DailyPleasureCard(
+fun PleasureCard(
     modifier: Modifier = Modifier,
     pleasure: Pleasure,
     durationRotation: Int,
@@ -123,10 +120,10 @@ fun DailyPleasureCard(
         }
     ) {
         if (rotation < 90f) {
-            BackCardContent()
+            PleasureBackgroundCard()
         } else {
             // Do inverse rotation to avoid mirror render
-            DailyPleasureCardContent(
+            PleasureCardContent(
                 modifier = Modifier.graphicsLayer { rotationY = 180f },
                 pleasure = pleasure
             )
@@ -138,76 +135,62 @@ private fun overshootEasing(t: Float, tension: Float = 3f) =
     (t - 1).let { it * it * ((tension + 1) * it + tension) + 1 }
 
 @Composable
-private fun BackCardContent(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.primaryContainer)
-            .padding(all = 24.dp)
-    ) {
-        Icon(
-            modifier = Modifier.fillMaxSize(),
-            imageVector = Icons.Default.QuestionMark,
-            tint = MaterialTheme.colorScheme.primary,
-            contentDescription = null
-        )
-    }
-}
+private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasure) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        PleasureBackgroundCard()
 
-@Composable
-private fun DailyPleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasure) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(vertical = 12.dp, horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.weight(1f))
-
-        Text(
-            text = pleasure.title,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(Modifier.height(18.dp))
-
-        Text(
-            text = pleasure.description,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        pleasure.category?.let {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(size = 12.dp)
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(vertical = 12.dp, horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            pleasure.category?.let {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(size = 12.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "# ${
+                            pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }
+                        }",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-            ) {
-                Text(
-                    text = "# ${
-                        pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }
-                    }",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             }
+            Spacer(Modifier.weight(1f))
+
+            Text(
+                text = pleasure.title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.height(18.dp))
+
+            Text(
+                text = pleasure.description,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.weight(1f))
         }
     }
 }
 
 @LightDarkPreview
 @Composable
-private fun NotFlippedDailyPleasureCardPreview() {
+private fun NotFlippedPleasureCardPreview() {
     DailyJoyTheme {
-        DailyPleasureCard(
+        PleasureCard(
             pleasure = previewDailyPleasure.copy(isFlipped = false),
             durationRotation = 0,
             onCardFlipped = {}
@@ -217,9 +200,9 @@ private fun NotFlippedDailyPleasureCardPreview() {
 
 @LightDarkPreview
 @Composable
-private fun FlippedDailyPleasureCardPreview() {
+private fun FlippedPleasureCardPreview() {
     DailyJoyTheme {
-        DailyPleasureCard(
+        PleasureCard(
             pleasure = previewDailyPleasure,
             durationRotation = 0,
             onCardFlipped = {}

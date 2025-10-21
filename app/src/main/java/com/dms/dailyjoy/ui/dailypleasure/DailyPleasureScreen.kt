@@ -45,7 +45,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureCard
+import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.dailypleasure.component.InfoText
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -148,7 +148,7 @@ fun DailyPleasureContent(
         val animatedOffsetX = remember { Animatable(0f) }
         val animatedRotationZ = remember { Animatable(0f) }
 
-        DailyPleasureCard(
+        PleasureCard(
             modifier = Modifier
                 .draggable(
                     orientation = Orientation.Horizontal,
