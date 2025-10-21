@@ -1,6 +1,5 @@
 package com.dms.dailyjoy.ui.settings.manage
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
@@ -13,6 +12,7 @@ import com.dms.dailyjoy.domain.usecase.pleasures.UpdatePleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,20 +29,21 @@ class ManagePleasuresViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        loadPleasures()
+        loadAndFilterPleasures()
     }
 
-    private fun loadPleasures() = viewModelScope.launch {
+    private fun loadAndFilterPleasures() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
         try {
-            getPleasuresUseCase().collect { pleasures ->
+            getPleasuresUseCase().collectLatest { pleasures ->
                 _uiState.update {
                     it.copy(
+                        allPleasures = pleasures,
                         isLoading = false,
-                        pleasures = pleasures,
                         error = null
                     )
                 }
+                updateFilteredPleasures()
             }
         } catch (e: Exception) {
             _uiState.update {
@@ -54,81 +55,66 @@ class ManagePleasuresViewModel @Inject constructor(
         }
     }
 
+    private fun updateFilteredPleasures() {
+        _uiState.update { state ->
+            val filtered = state.allPleasures.filter { pleasure ->
+                val typeMatches = when (state.selectedTab) {
+                    ManagePleasuresTab.SMALL -> pleasure.type == PleasureType.SMALL
+                    ManagePleasuresTab.BIG -> pleasure.type == PleasureType.BIG
+                }
+                val categoryMatches = state.selectedCategories.contains(pleasure.category)
+                typeMatches && categoryMatches
+            }
+            state.copy(filteredPleasures = filtered)
+        }
+    }
+
     fun onEvent(event: ManagePleasuresEvent) {
         when (event) {
-            is ManagePleasuresEvent.OnPleasureToggled -> {
-                togglePleasure(event.pleasure)
+            is ManagePleasuresEvent.OnPleasureToggled -> togglePleasure(event.pleasure)
+            is ManagePleasuresEvent.OnAddPleasureClicked -> _uiState.update { it.copy(showAddDialog = true) }
+            is ManagePleasuresEvent.OnBottomSheetDismissed -> dismissBottomSheet()
+            is ManagePleasuresEvent.OnTitleChanged -> _uiState.update {
+                it.copy(
+                    newPleasureTitle = event.title,
+                    titleError = null
+                )
             }
-            is ManagePleasuresEvent.OnAddPleasureClicked -> {
-                _uiState.update { it.copy(showAddDialog = true) }
+
+            is ManagePleasuresEvent.OnDescriptionChanged -> _uiState.update {
+                it.copy(
+                    newPleasureDescription = event.description,
+                    descriptionError = null
+                )
             }
-            is ManagePleasuresEvent.OnBottomSheetDismissed -> {
-                _uiState.update {
-                    it.copy(
-                        showAddDialog = false,
-                        newPleasureTitle = "",
-                        newPleasureDescription = "",
-                        newPleasureCategory = PleasureCategory.FOOD,
-                        titleError = null,
-                        descriptionError = null
-                    )
-                }
+
+            is ManagePleasuresEvent.OnCategoryChanged -> _uiState.update {
+                it.copy(
+                    newPleasureCategory = event.category
+                )
             }
-            is ManagePleasuresEvent.OnTitleChanged -> {
-                _uiState.update {
-                    it.copy(
-                        newPleasureTitle = event.title,
-                        titleError = null
-                    )
-                }
+
+            is ManagePleasuresEvent.OnSavePleasureClicked -> savePleasure()
+            is ManagePleasuresEvent.OnDeletePleasureClicked -> _uiState.update {
+                it.copy(
+                    pleasureToDelete = event.pleasure,
+                    showDeleteConfirmation = true
+                )
             }
-            is ManagePleasuresEvent.OnDescriptionChanged -> {
-                _uiState.update {
-                    it.copy(
-                        newPleasureDescription = event.description,
-                        descriptionError = null
-                    )
-                }
-            }
-            is ManagePleasuresEvent.OnCategoryChanged -> {
-                _uiState.update { it.copy(newPleasureCategory = event.category) }
-            }
-            is ManagePleasuresEvent.OnSavePleasureClicked -> {
-                savePleasure()
-            }
-            is ManagePleasuresEvent.OnDeletePleasureClicked -> {
-                _uiState.update {
-                    it.copy(
-                        pleasureToDelete = event.pleasure,
-                        showDeleteConfirmation = true
-                    )
-                }
-            }
-            is ManagePleasuresEvent.OnDeleteConfirmed -> {
-                _uiState.value.pleasureToDelete?.let { pleasure ->
-                    deletePleasure(pleasure)
-                }
-                _uiState.update {
-                    it.copy(
-                        showDeleteConfirmation = false,
-                        pleasureToDelete = null
-                    )
-                }
-            }
-            is ManagePleasuresEvent.OnDeleteCancelled -> {
-                _uiState.update {
-                    it.copy(
-                        showDeleteConfirmation = false,
-                        pleasureToDelete = null
-                    )
-                }
-            }
+
+            is ManagePleasuresEvent.OnDeleteConfirmed -> confirmDelete()
+            is ManagePleasuresEvent.OnDeleteCancelled -> cancelDelete()
             is ManagePleasuresEvent.OnTabSelected -> {
                 _uiState.update { it.copy(selectedTab = event.tab) }
+                updateFilteredPleasures()
             }
-            is ManagePleasuresEvent.OnRetryClicked -> {
-                loadPleasures()
+
+            is ManagePleasuresEvent.OnCategoryFilterChanged -> {
+                toggleCategoryFilter(event.category)
+                updateFilteredPleasures()
             }
+
+            is ManagePleasuresEvent.OnRetryClicked -> loadAndFilterPleasures()
         }
     }
 
@@ -138,6 +124,19 @@ class ManagePleasuresViewModel @Inject constructor(
             updatePleasureUseCase(updatedPleasure)
         } catch (e: Exception) {
             _uiState.update { it.copy(error = e.message ?: "Erreur lors de la mise à jour") }
+        }
+    }
+
+    private fun dismissBottomSheet() {
+        _uiState.update {
+            it.copy(
+                showAddDialog = false,
+                newPleasureTitle = "",
+                newPleasureDescription = "",
+                newPleasureCategory = PleasureCategory.FOOD,
+                titleError = null,
+                descriptionError = null
+            )
         }
     }
 
@@ -170,92 +169,43 @@ class ManagePleasuresViewModel @Inject constructor(
                     category = state.newPleasureCategory,
                     type = type
                 )
-                _uiState.update {
-                    it.copy(
-                        showAddDialog = false,
-                        newPleasureTitle = "",
-                        newPleasureDescription = "",
-                        newPleasureCategory = PleasureCategory.FOOD,
-                        titleError = null,
-                        descriptionError = null
-                    )
-                }
+                dismissBottomSheet()
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(error = e.message ?: "Erreur lors de l'ajout")
+                _uiState.update { it.copy(error = e.message ?: "Erreur lors de l'ajout") }
+            }
+        }
+    }
+
+    private fun confirmDelete() {
+        _uiState.value.pleasureToDelete?.let { pleasure ->
+            viewModelScope.launch {
+                try {
+                    deleteCustomPleasureUseCase(pleasure)
+                } catch (e: Exception) {
+                    _uiState.update {
+                        it.copy(
+                            error = e.message ?: "Erreur lors de la suppression"
+                        )
+                    }
                 }
             }
         }
+        cancelDelete()
     }
 
-    private fun deletePleasure(pleasure: Pleasure) = viewModelScope.launch {
-        try {
-            deleteCustomPleasureUseCase(pleasure)
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(error = e.message ?: "Erreur lors de la suppression")
+    private fun cancelDelete() {
+        _uiState.update { it.copy(showDeleteConfirmation = false, pleasureToDelete = null) }
+    }
+
+    private fun toggleCategoryFilter(category: PleasureCategory) {
+        _uiState.update { state ->
+            val updatedCategories = state.selectedCategories.toMutableSet()
+            if (category in updatedCategories) {
+                updatedCategories.remove(category)
+            } else {
+                updatedCategories.add(category)
             }
+            state.copy(selectedCategories = updatedCategories)
         }
-    }
-}
-
-/**
- * Extension functions and utilities for PleasureCategory
- */
-
-data class CategoryInfo(
-    val label: String,
-    val color: Color
-)
-
-fun PleasureCategory.toCategoryInfo(): CategoryInfo {
-    return when (this) {
-        PleasureCategory.FOOD -> CategoryInfo(
-            label = "Nourriture",
-            color = Color(0xFFFF9800)
-        )
-        PleasureCategory.ENTERTAINMENT -> CategoryInfo(
-            label = "Divertissement",
-            color = Color(0xFF9C27B0)
-        )
-        PleasureCategory.SOCIAL -> CategoryInfo(
-            label = "Social",
-            color = Color(0xFF2196F3)
-        )
-        PleasureCategory.WELLNESS -> CategoryInfo(
-            label = "Bien-être",
-            color = Color(0xFF4CAF50)
-        )
-        PleasureCategory.CREATIVE -> CategoryInfo(
-            label = "Créatif",
-            color = Color(0xFFE91E63)
-        )
-        PleasureCategory.OUTDOOR -> CategoryInfo(
-            label = "Extérieur",
-            color = Color(0xFF009688)
-        )
-        PleasureCategory.OTHER -> CategoryInfo(
-            label = "Autre",
-            color = Color(0xFF607D8B)
-        )
-
-        // TODO
-        else -> CategoryInfo(
-            label = "Autre",
-            color = Color(0xFF607D8B)
-        )
-    }
-}
-
-fun PleasureCategory.getLabel(): String = this.toCategoryInfo().label
-
-fun PleasureCategory.getColor(): Color = this.toCategoryInfo().color
-
-/**
- * Get all categories with their display information
- */
-fun getAllCategoriesInfo(): List<Pair<PleasureCategory, CategoryInfo>> {
-    return PleasureCategory.entries.map { category ->
-        category to category.toCategoryInfo()
     }
 }

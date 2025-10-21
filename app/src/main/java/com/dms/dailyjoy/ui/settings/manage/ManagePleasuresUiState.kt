@@ -2,12 +2,13 @@ package com.dms.dailyjoy.ui.settings.manage
 
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
-import com.dms.dailyjoy.data.model.PleasureType
 
 data class ManagePleasuresUiState(
     val isLoading: Boolean = false,
-    val pleasures: List<Pleasure> = emptyList(),
+    val allPleasures: List<Pleasure> = emptyList(),
+    val filteredPleasures: List<Pleasure> = emptyList(),
     val selectedTab: ManagePleasuresTab = ManagePleasuresTab.SMALL,
+    val selectedCategories: Set<PleasureCategory> = PleasureCategory.entries.toSet(), // Default to all selected
     val showAddDialog: Boolean = false,
     val newPleasureTitle: String = "",
     val newPleasureDescription: String = "",
@@ -17,15 +18,7 @@ data class ManagePleasuresUiState(
     val showDeleteConfirmation: Boolean = false,
     val pleasureToDelete: Pleasure? = null,
     val error: String? = null
-) {
-    val filteredPleasures: List<Pleasure>
-        get() = pleasures.filter {
-            when (selectedTab) {
-                ManagePleasuresTab.SMALL -> it.type == PleasureType.SMALL
-                ManagePleasuresTab.BIG -> it.type == PleasureType.BIG
-            }
-        }
-}
+)
 
 enum class ManagePleasuresTab {
     SMALL, BIG
@@ -43,5 +36,6 @@ sealed interface ManagePleasuresEvent {
     data object OnDeleteConfirmed : ManagePleasuresEvent
     data object OnDeleteCancelled : ManagePleasuresEvent
     data class OnTabSelected(val tab: ManagePleasuresTab) : ManagePleasuresEvent
+    data class OnCategoryFilterChanged(val category: PleasureCategory) : ManagePleasuresEvent
     data object OnRetryClicked : ManagePleasuresEvent
 }
