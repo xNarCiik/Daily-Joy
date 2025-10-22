@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Settings
@@ -35,6 +37,7 @@ import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
 import com.dms.dailyjoy.ui.navigation.HistoryRoute
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
+import com.dms.dailyjoy.ui.navigation.SocialRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
@@ -66,6 +69,12 @@ fun BottomNavBar(
         unselectedIcon = Icons.Outlined.DateRange,
         route = HistoryRoute
     )
+    val socialItem = TabBarItem(
+        title = "Vos amis", // TODO
+        selectedIcon = Icons.Filled.AccountCircle,
+        unselectedIcon = Icons.Outlined.AccountCircle,
+        route = SocialRoute
+    )
     val settingsItem = TabBarItem(
         title = stringResource(R.string.settings_title),
         selectedIcon = Icons.Filled.Settings,
@@ -73,7 +82,7 @@ fun BottomNavBar(
         route = SettingsRoute
     )
 
-    val tabBarItems = listOf(homeItem, historyItem, settingsItem)
+    val tabBarItems = listOf(homeItem, historyItem, socialItem, settingsItem)
 
     NavigationBar(
         modifier = modifier,

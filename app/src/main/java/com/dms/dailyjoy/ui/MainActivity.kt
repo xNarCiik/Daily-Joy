@@ -34,6 +34,7 @@ import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
 import com.dms.dailyjoy.ui.navigation.HistoryRoute
 import com.dms.dailyjoy.ui.navigation.NavGraph
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
+import com.dms.dailyjoy.ui.navigation.SocialRoute
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
@@ -43,6 +44,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -97,6 +99,7 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                         val visible = currentRoute in listOf(
                             DailyPleasureRoute::class.qualifiedName,
                             HistoryRoute::class.qualifiedName,
+                            SocialRoute::class.qualifiedName,
                             SettingsRoute::class.qualifiedName
                         )
 

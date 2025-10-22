@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.settings.stastistics
+package com.dms.dailyjoy.ui.settings.statistics
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
