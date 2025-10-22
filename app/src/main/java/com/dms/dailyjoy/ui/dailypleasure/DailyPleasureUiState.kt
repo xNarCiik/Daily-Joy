@@ -4,9 +4,8 @@ import com.dms.dailyjoy.data.model.Pleasure
 
 data class DailyPleasureUiState(
     val isLoading: Boolean = true,
-    val dailyMessage: String = "",
-    val dailyPleasure: Pleasure = Pleasure(),
-    val waitDonePleasure: Boolean = false
+    val headerMessage: String = "",
+    val dailyPleasure: Pleasure = Pleasure()
 )
 
 sealed interface DailyPleasureEvent {

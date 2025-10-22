@@ -51,7 +51,6 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.component.ScreenHeader
-import com.dms.dailyjoy.ui.dailypleasure.component.InfoText
 import com.dms.dailyjoy.ui.settings.manage.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -78,7 +77,7 @@ fun DailyPleasureScreen(
         // Header
         ScreenHeader(
             title = stringResource(R.string.daily_pleasure_title),
-            description = uiState.dailyMessage,
+            description = uiState.headerMessage,
             icon = Icons.Default.EmojiEvents
         )
 
@@ -225,8 +224,6 @@ fun DailyPleasureContent(
                 onEvent(DailyPleasureEvent.OnCardFlipped)
             }
         )
-
-        InfoText(cardIsFlipped = isFlipped)
     }
 
     // Animation Confetti

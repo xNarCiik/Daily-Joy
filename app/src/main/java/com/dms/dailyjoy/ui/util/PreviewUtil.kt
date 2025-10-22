@@ -28,7 +28,7 @@ val previewDailyPleasure = Pleasure(
 
 val previewDailyPleasureUiState = DailyPleasureUiState(
     isLoading = false,
-    dailyMessage = "Et si aujourd'hui, on prenait le temps de...",
+    headerMessage = "Et si aujourd'hui, on prenait le temps de...",
     dailyPleasure = previewDailyPleasure
 )
 

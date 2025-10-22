@@ -54,10 +54,16 @@ class DailyPleasureViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                dailyMessage = getRandomDailyMessageUseCase(),
+                headerMessage = getHeaderMessage(pleasure = pleasure),
                 dailyPleasure = pleasure ?: Pleasure()
             )
         }
+    }
+
+    private fun getHeaderMessage(pleasure: Pleasure?) = when {
+        pleasure?.isDone == true -> "Et si on allez voir ceux des autres en attendant ?"
+        pleasure?.isFlipped == true -> "Swipper vers la droite une fois le plaisir réalisé !" // TODO STRING
+        else -> getRandomDailyMessageUseCase()
     }
 
     private fun onDailyCardFlipped() = viewModelScope.launch {
@@ -66,7 +72,7 @@ class DailyPleasureViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 dailyPleasure = updatedPleasure,
-                waitDonePleasure = true
+                headerMessage = getHeaderMessage(pleasure = updatedPleasure)
             )
         }
     }
@@ -75,7 +81,10 @@ class DailyPleasureViewModel @Inject constructor(
         val updatedPleasure = _uiState.value.dailyPleasure.copy(isDone = true)
         updatePleasureUseCase(updatedPleasure)
         _uiState.update {
-            it.copy(dailyPleasure = updatedPleasure, waitDonePleasure = false)
+            it.copy(
+                dailyPleasure = updatedPleasure,
+                headerMessage = getHeaderMessage(pleasure = updatedPleasure)
+            )
         }
     }
 }
