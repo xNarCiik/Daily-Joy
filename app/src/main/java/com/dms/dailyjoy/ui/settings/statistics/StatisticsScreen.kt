@@ -59,6 +59,8 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
+    uiState: StatisticsUiState = StatisticsUiState(),
+    onEvent: (StatisticsEvent) -> Unit = {},
     onNavigateBack: () -> Unit = {},
 ) {
     Scaffold(
@@ -92,6 +94,7 @@ fun StatisticsScreen(
                 .padding(paddingValues)
                 .padding(all = 16.dp)
         ) {
+            // TODO STRINGS
             ScreenHeader(
                 title = "Votre parcours",
                 description = "Continuez à cultiver vos petits plaisirs quotidiens",
@@ -108,7 +111,7 @@ fun StatisticsScreen(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.EmojiEvents,
                     title = stringResource(R.string.statistics_total_pleasures_title),
-                    value = "142",
+                    value = uiState.totalPleasures.toString(),
                     subtitle = stringResource(R.string.statistics_pleasures_subtitle),
                     gradient = listOf(
                         MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
@@ -121,7 +124,7 @@ fun StatisticsScreen(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.LocalFireDepartment,
                     title = stringResource(R.string.statistics_streak_title),
-                    value = "12",
+                    value = uiState.currentStreak.toString(),
                     subtitle = stringResource(R.string.statistics_days_subtitle),
                     gradient = listOf(
                         MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
@@ -139,9 +142,9 @@ fun StatisticsScreen(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    icon = Icons.Default.TrendingUp,
+                    icon = Icons.Default.TrendingUp, // TODO ICONE & Strings
                     title = "Moyenne/jour",
-                    value = "4.2",
+                    value = uiState.averagePerDay.toString(),
                     subtitle = "ce mois",
                     gradient = listOf(
                         MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
@@ -154,7 +157,7 @@ fun StatisticsScreen(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.CalendarMonth,
                     title = "Jours actifs",
-                    value = "89",
+                    value = uiState.activeDays.toString(),
                     subtitle = "au total",
                     gradient = listOf(
                         Color(0xFF4CAF50).copy(alpha = 0.15f),
@@ -166,15 +169,15 @@ fun StatisticsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            MonthlyProgressCard()
+            MonthlyProgressCard(uiState.monthlyProgress)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CategoryStatsCard()
+            CategoryStatsCard(uiState.favoriteCategories)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            DetailedStatsCard()
+            DetailedStatsCard(uiState.detailedStats)
         }
     }
 }
@@ -258,8 +261,8 @@ private fun StatCard(
 }
 
 @Composable
-private fun MonthlyProgressCard() {
-    val progress = 0.68f
+private fun MonthlyProgressCard(monthlyProgress: MonthlyProgress) {
+    val progress = if (monthlyProgress.total > 0) monthlyProgress.completed.toFloat() / monthlyProgress.total else 0f
     var animatedProgress by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(progress) {
@@ -324,13 +327,13 @@ private fun MonthlyProgressCard() {
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "21",
+                            text = monthlyProgress.completed.toString(),
                             style = MaterialTheme.typography.displayMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "/ 31",
+                            text = "/ ${monthlyProgress.total}",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(bottom = 6.dp)
@@ -375,7 +378,8 @@ private fun MonthlyProgressCard() {
 }
 
 @Composable
-private fun CategoryStatsCard() {
+private fun CategoryStatsCard(categories: List<CategoryStat>) {
+    val total = categories.sumOf { it.count } 
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -488,7 +492,7 @@ private fun CategoryBar(
 }
 
 @Composable
-private fun DetailedStatsCard() {
+private fun DetailedStatsCard(detailedStats: DetailedStats) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -533,25 +537,25 @@ private fun DetailedStatsCard() {
 
             StatRow(
                 label = stringResource(R.string.statistics_best_streak),
-                value = "18 jours",
+                value = "${detailedStats.bestStreak} jours",
                 icon = Icons.Default.LocalFireDepartment,
                 iconTint = Color(0xFFFF6B6B)
             )
             StatRow(
                 label = stringResource(R.string.statistics_this_week),
-                value = "5 / 7 jours",
+                value = detailedStats.weekProgress,
                 icon = Icons.Default.CalendarMonth,
                 iconTint = MaterialTheme.colorScheme.primary
             )
             StatRow(
                 label = "Moyenne hebdo.",
-                value = "28 plaisirs",
+                value = detailedStats.weeklyAverage,
                 icon = Icons.Default.TrendingUp,
                 iconTint = MaterialTheme.colorScheme.secondary
             )
             StatRow(
                 label = stringResource(R.string.statistics_last_pleasure),
-                value = "Il y a 2h",
+                value = detailedStats.lastPleasure,
                 icon = Icons.Default.Favorite,
                 iconTint = Color(0xFFE91E63),
                 isLast = true

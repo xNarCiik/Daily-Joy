@@ -18,11 +18,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +50,9 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.component.PleasureCard
+import com.dms.dailyjoy.ui.component.ScreenHeader
 import com.dms.dailyjoy.ui.dailypleasure.component.InfoText
+import com.dms.dailyjoy.ui.settings.manage.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasureUiState
@@ -61,22 +67,46 @@ fun DailyPleasureScreen(
     uiState: DailyPleasureUiState,
     onEvent: (DailyPleasureEvent) -> Unit
 ) {
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(vertical = 12.dp, horizontal = 24.dp),
-        contentAlignment = Alignment.Center
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
     ) {
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
-        } else if (uiState.dailyPleasure.isDone) {
-            DailyPleasureCompletedContent()
-        } else {
-            DailyPleasureContent(
-                uiState = uiState,
-                onEvent = onEvent
-            )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Header
+        ScreenHeader(
+            title = stringResource(R.string.daily_pleasure_title),
+            description = uiState.dailyMessage,
+            icon = Icons.Default.EmojiEvents
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                uiState.isLoading -> {
+                    LoadingState()
+                }
+                uiState.dailyPleasure.isDone -> {
+                    DailyPleasureCompletedContent()
+                }
+                else -> {
+                    DailyPleasureContent(
+                        uiState = uiState,
+                        onEvent = onEvent
+                    )
+                }
+            }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -129,20 +159,12 @@ fun DailyPleasureContent(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Spacer(Modifier.weight(1f))
-
-        Text(
-            text = uiState.dailyMessage,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(Modifier.weight(1f))
-
         val scope = rememberCoroutineScope()
 
         val animatedOffsetX = remember { Animatable(0f) }
@@ -200,23 +222,16 @@ fun DailyPleasureContent(
             durationRotation = rotationCardAnimationDuration,
             onCardFlipped = {
                 showConfettiAnimation = true
-
                 onEvent(DailyPleasureEvent.OnCardFlipped)
             }
         )
 
-        Spacer(Modifier.weight(1f))
-
         InfoText(cardIsFlipped = isFlipped)
-
-        Spacer(Modifier.weight(1f))
     }
 
     // Animation Confetti
     val confettiComposition by rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(
-            resId = R.raw.confetti
-        )
+        spec = LottieCompositionSpec.RawRes(resId = R.raw.confetti)
     )
     val confettiProgress by animateLottieCompositionAsState(
         composition = confettiComposition,
@@ -225,10 +240,12 @@ fun DailyPleasureContent(
     )
 
     if (showConfettiAnimation) {
-        LottieAnimation(
-            composition = confettiComposition,
-            progress = { confettiProgress }
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            LottieAnimation(
+                composition = confettiComposition,
+                progress = { confettiProgress }
+            )
+        }
     }
 }
 
@@ -304,4 +321,5 @@ fun DailyPleasureCompletedScreenPreview() {
             onEvent = {}
         )
     }
+
 }

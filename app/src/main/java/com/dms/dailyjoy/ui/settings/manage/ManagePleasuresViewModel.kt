@@ -47,6 +47,7 @@ class ManagePleasuresViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             _uiState.update {
+                // TODO STRING HERE
                 it.copy(
                     isLoading = false,
                     error = e.message ?: "Une erreur est survenue"

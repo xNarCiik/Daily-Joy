@@ -23,6 +23,7 @@ import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresViewModel
 import com.dms.dailyjoy.ui.settings.statistics.StatisticsScreen
+import com.dms.dailyjoy.ui.settings.statistics.StatisticsViewModel
 import com.dms.dailyjoy.ui.social.SocialScreen
 import com.dms.dailyjoy.ui.social.SocialViewModel
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
@@ -148,7 +149,14 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
         }
 
         composable<StatisticsRoute> {
-            StatisticsScreen(onNavigateBack = navController::popBackStack)
+            val viewModel: StatisticsViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsState()
+
+            StatisticsScreen(
+                uiState = uiState,
+                onEvent = viewModel::onEvent,
+                onNavigateBack = navController::popBackStack
+            )
         }
     }
 }

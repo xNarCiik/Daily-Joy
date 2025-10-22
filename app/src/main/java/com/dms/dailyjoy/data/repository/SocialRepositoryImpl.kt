@@ -1,10 +1,8 @@
-
 package com.dms.dailyjoy.data.repository
 
 import com.dms.dailyjoy.domain.repository.SocialRepository
 import com.dms.dailyjoy.ui.social.Friend
-import com.dms.dailyjoy.ui.social.FriendPleasure
-import com.dms.dailyjoy.ui.social.PleasureStatus
+import com.dms.dailyjoy.ui.util.previewFriends
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +11,7 @@ import javax.inject.Inject
 
 class SocialRepositoryImpl @Inject constructor() : SocialRepository {
 
-    private val friends = MutableStateFlow(
-        listOf(
-            Friend("1", "ami1", 10, FriendPleasure("Faire du sport", PleasureStatus.COMPLETED)),
-            Friend("2", "ami2", 5, FriendPleasure("Lire un livre", PleasureStatus.IN_PROGRESS)),
-        )
-    )
+    private val friends = MutableStateFlow(previewFriends)
 
     override fun getFriends(): Flow<List<Friend>> = friends
 

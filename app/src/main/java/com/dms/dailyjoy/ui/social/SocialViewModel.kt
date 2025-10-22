@@ -44,7 +44,7 @@ class SocialViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    error = R.string.social_error_generic
+                    error = R.string.generic_error_message
                 )
             }
         }

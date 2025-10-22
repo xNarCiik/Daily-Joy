@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -108,7 +109,7 @@ fun BottomNavBar(
                         if (isSelected) {
                             Box(
                                 modifier = Modifier
-                                    .size(56.dp)
+                                    .size(48.dp)
                                     .clip(CircleShape)
                                     .background(
                                         MaterialTheme.colorScheme.primaryContainer.copy(
@@ -121,7 +122,7 @@ fun BottomNavBar(
                         Icon(
                             imageVector = if (isSelected) tabBarItem.selectedIcon else tabBarItem.unselectedIcon,
                             contentDescription = tabBarItem.title,
-                            modifier = Modifier.size(26.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 },
@@ -129,8 +130,9 @@ fun BottomNavBar(
                     if (isSelected) {
                         Text(
                             text = tabBarItem.title,
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }

@@ -29,7 +29,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
-import com.dms.dailyjoy.ui.component.MainTopAppBar
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
 import com.dms.dailyjoy.ui.navigation.HistoryRoute
 import com.dms.dailyjoy.ui.navigation.NavGraph
@@ -92,9 +91,6 @@ fun MainActivityContent(useDarkTheme: Boolean) {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        MainTopAppBar(currentRoute = currentRoute)
-                    },
                     bottomBar = {
                         val visible = currentRoute in listOf(
                             DailyPleasureRoute::class.qualifiedName,

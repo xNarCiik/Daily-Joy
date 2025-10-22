@@ -81,7 +81,7 @@ val previewFriends = listOf(
         username = "Dams",
         streak = 8,
         currentPleasure = FriendPleasure(
-            title = "Sortie au restaurant",
+            title = "Roule un pet (ou 2...)",
             status = com.dms.dailyjoy.ui.social.PleasureStatus.COMPLETED
         )
     ),

@@ -3,18 +3,27 @@ package com.dms.dailyjoy.ui.component
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,9 +34,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -49,25 +63,21 @@ fun PleasureCard(
     var isJumping by remember { mutableStateOf(false) }
     var shouldAnimate by remember { mutableStateOf(false) }
 
-    // Effect to sync the card's state with the external pleasure object without animation
     LaunchedEffect(pleasure) {
         if (isFlipped != pleasure.isFlipped) {
-            shouldAnimate = false // Ensure no animation for external changes
+            shouldAnimate = false
             isFlipped = pleasure.isFlipped
         }
     }
 
-    // Animation Rotation
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
         animationSpec = if (shouldAnimate) {
-            // Animate only when requested (i.e., on click)
             tween(
                 durationMillis = durationRotation,
-                easing = { it * it * (3 - 2 * it) } // Custom easing for a nice bounce effect
+                easing = { it * it * (3 - 2 * it) }
             )
         } else {
-            // Otherwise, snap instantly to the new state
             tween(durationMillis = 0)
         },
         label = "rotationAnimation",
@@ -79,7 +89,6 @@ fun PleasureCard(
         }
     )
 
-    // Jump animation (scale + offset)
     val jumpScale by animateFloatAsState(
         targetValue = if (isJumping) 1.15f else 1f,
         animationSpec = tween(2000, easing = { overshootEasing(t = it) }),
@@ -94,19 +103,21 @@ fun PleasureCard(
 
     Card(
         modifier = modifier
-            .width(250.dp)
-            .height(400.dp)
+            .width(300.dp)
+            .height(440.dp)
             .graphicsLayer {
                 rotationY = rotation
-                cameraDistance = 8 * density // Perspective 3D
+                cameraDistance = 8 * density
                 scaleX = jumpScale
                 scaleY = jumpScale
                 translationY = jumpOffset
             },
-        shape = RoundedCornerShape(size = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(size = 32.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         onClick = {
-            // Prevent flipping if it's already flipped or an animation is in progress
             if (!isFlipped && !isJumping) {
                 scope.launch {
                     isJumping = true
@@ -120,9 +131,8 @@ fun PleasureCard(
         }
     ) {
         if (rotation < 90f) {
-            PleasureBackgroundCard()
+            PleasureBackCard()
         } else {
-            // Do inverse rotation to avoid mirror render
             PleasureCardContent(
                 modifier = Modifier.graphicsLayer { rotationY = 180f },
                 pleasure = pleasure
@@ -135,54 +145,295 @@ private fun overshootEasing(t: Float, tension: Float = 3f) =
     (t - 1).let { it * it * ((tension + 1) * it + tension) + 1 }
 
 @Composable
-private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasure) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        PleasureBackgroundCard()
+private fun PleasureBackCard() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF6366F1), // TODO EXPORT THEME ?
+                        Color(0xFF8B5CF6),
+                        Color(0xFFEC4899)
+                    )
+                )
+            )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            repeat(3) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    repeat(3) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.1f))
+                        )
+                    }
+                }
+            }
+        }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 12.dp, horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            pleasure.category?.let {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(size = 12.dp)
+            // Icon with light effect
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.3f),
+                                Color.White.copy(alpha = 0.1f),
+                                Color.Transparent
+                            )
                         )
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "# ${
-                            pleasure.category.name.lowercase().replaceFirstChar { it.uppercase() }
-                        }",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.TouchApp,
+                    contentDescription = null,
+                    modifier = Modifier.size(60.dp),
+                    tint = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "✨ Touchez la carte ✨",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "pour découvrir votre plaisir",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                color = Color.White.copy(alpha = 0.9f),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Animation dots
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(3) { index ->
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.6f))
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasure) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
+                    )
+                )
+            )
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Category badge with emoji
+            val categoryInfo = pleasure.category.toCategoryInfo()
+
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = categoryInfo.color.copy(alpha = 0.25f)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = categoryInfo.emoji,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = categoryInfo.label,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = categoryInfo.color
+                    )
+                }
+            }
+
             Spacer(Modifier.weight(1f))
 
+            // Decorative emoji circle
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "🎉",
+                    fontSize = 48.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Title
             Text(
                 text = pleasure.title,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                lineHeight = 32.sp
             )
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
+            // Description
             Text(
                 text = pleasure.description,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary,
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                lineHeight = 24.sp
             )
 
             Spacer(Modifier.weight(1f))
+
+            // Bottom section with card number
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Decorative dots
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    repeat(5) { index ->
+                        Box(
+                            modifier = Modifier
+                                .size(if (index == 2) 10.dp else 6.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    MaterialTheme.colorScheme.primary.copy(
+                                        alpha = if (index == 2) 0.6f else 0.3f
+                                    )
+                                )
+                        )
+                    }
+                }
+
+                // Card number
+                Text(
+                    text = "Plaisir #${pleasure.id}",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    letterSpacing = 1.5.sp
+                )
+            }
         }
+    }
+}
+
+// Category info avec emojis
+data class CategoryInfo(
+    val label: String,
+    val emoji: String,
+    val color: Color
+)
+
+fun com.dms.dailyjoy.data.model.PleasureCategory.toCategoryInfo(): CategoryInfo {
+    return when (this) {
+        com.dms.dailyjoy.data.model.PleasureCategory.FOOD -> CategoryInfo(
+            label = "Nourriture",
+            emoji = "🍽️",
+            color = Color(0xFFFF9800)
+        )
+
+        com.dms.dailyjoy.data.model.PleasureCategory.ENTERTAINMENT -> CategoryInfo(
+            label = "Divertissement",
+            emoji = "🎬",
+            color = Color(0xFF9C27B0)
+        )
+
+        com.dms.dailyjoy.data.model.PleasureCategory.SOCIAL -> CategoryInfo(
+            label = "Social",
+            emoji = "👥",
+            color = Color(0xFF2196F3)
+        )
+
+        com.dms.dailyjoy.data.model.PleasureCategory.WELLNESS -> CategoryInfo(
+            label = "Bien-être",
+            emoji = "🧘",
+            color = Color(0xFF4CAF50)
+        )
+
+        com.dms.dailyjoy.data.model.PleasureCategory.CREATIVE -> CategoryInfo(
+            label = "Créatif",
+            emoji = "🎨",
+            color = Color(0xFFE91E63)
+        )
+
+        com.dms.dailyjoy.data.model.PleasureCategory.OUTDOOR -> CategoryInfo(
+            label = "Extérieur",
+            emoji = "🌳",
+            color = Color(0xFF009688)
+        )
+
+        else -> CategoryInfo( // TODO OTHERS CATEGORIES
+            label = "Autre",
+            emoji = "✨",
+            color = Color(0xFF607D8B)
+        )
     }
 }
 

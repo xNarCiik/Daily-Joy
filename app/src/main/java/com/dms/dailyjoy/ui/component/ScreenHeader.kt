@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -39,7 +40,7 @@ fun ScreenHeader(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(28.dp))
             .background(
                 Brush.horizontalGradient(
@@ -52,7 +53,7 @@ fun ScreenHeader(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -65,13 +66,17 @@ fun ScreenHeader(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -101,6 +106,20 @@ private fun ScreenHeaderPreview() {
             ScreenHeader(
                 title = "Header Screen Title",
                 description = "This is an description for the header screen.",
+                icon = Icons.Default.Favorite
+            )
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun ScreenHeaderLongTextPreview() {
+    DailyJoyTheme {
+        Surface {
+            ScreenHeader(
+                title = "Un très long titre qui pourrait être coupé sur plusieurs lignes",
+                description = "Une description très longue qui devrait s'adapter automatiquement à la hauteur disponible sans être coupée sur les petits écrans comme Xiaomi",
                 icon = Icons.Default.Favorite
             )
         }

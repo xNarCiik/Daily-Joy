@@ -60,7 +60,7 @@ fun HistoryScreen(
 
             uiState.error != null -> {
                 Text(
-                    text = stringResource(R.string.error_message, uiState.error),
+                    text = stringResource(R.string.generic_error_message, uiState.error),
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
