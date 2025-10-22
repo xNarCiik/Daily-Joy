@@ -155,8 +155,8 @@ fun SettingsScreen(
         item {
             SettingsClickableItem(
                 icon = Icons.Default.BarChart,
-                title = "Statistiques",
-                subtitle = "Consultez votre progression",
+                title = stringResource(R.string.settings_statistics_title),
+                subtitle = stringResource(R.string.settings_statistics_subtitle),
                 onClick = onNavigateToStatistics
             )
         }
@@ -221,9 +221,8 @@ fun SettingsScreen(
                 icon = Icons.Default.Shield,
                 title = stringResource(id = R.string.settings_privacy_policy),
                 onClick = {
-                    // TODO: Replace with privacy policy URL
                     val intent =
-                        Intent(Intent.ACTION_VIEW, "https://privacy-policy-url.com".toUri())
+                        Intent(Intent.ACTION_VIEW, context.getString(R.string.privacy_policy_url).toUri())
                     context.startActivity(intent)
                 },
                 showChevron = false
@@ -262,7 +261,7 @@ private fun SettingsHeader() {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Paramètres",
+                    text = stringResource(R.string.settings_title),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -271,7 +270,7 @@ private fun SettingsHeader() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Personnalisez votre expérience Daily Joy",
+                    text = stringResource(R.string.settings_header_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -324,35 +323,37 @@ private fun ShowTimePicker(
 private fun rateApp(context: Context) {
     val packageName = context.packageName
     try {
-        val intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri())
-        context.startActivity(intent)
-    } catch (_: ActivityNotFoundException) {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            "https://play.google.com/store/apps/details?id=$packageName".toUri()
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                "market://details?id=$packageName".toUri()
+            )
         )
-        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                "https://play.google.com/store/apps/details?id=$packageName".toUri()
+            )
+        )
     }
 }
 
 private fun shareApp(context: Context) {
     val packageName = context.packageName
-    val shareText = context.getString(R.string.settings_share_text, packageName)
-    val intent = Intent(Intent.ACTION_SEND).apply {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, context.getString(R.string.settings_share_text, packageName))
         type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, shareText)
     }
-    context.startActivity(
-        Intent.createChooser(
-            intent,
-            context.getString(R.string.settings_share_app)
-        )
-    )
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    context.startActivity(shareIntent)
 }
+
 
 @LightDarkPreview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreen(

@@ -38,8 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
@@ -53,12 +55,10 @@ fun StatisticsScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        // Header avec gradient
         StatisticsHeader()
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Stats principales
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -66,9 +66,9 @@ fun StatisticsScreen(
             StatCard(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Default.EmojiEvents,
-                title = "Total",
+                title = stringResource(R.string.statistics_total_pleasures_title),
                 value = "142",
-                subtitle = "plaisirs",
+                subtitle = stringResource(R.string.statistics_pleasures_subtitle),
                 iconBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
                 iconTint = MaterialTheme.colorScheme.primary
             )
@@ -76,9 +76,9 @@ fun StatisticsScreen(
             StatCard(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Default.LocalFireDepartment,
-                title = "Série",
+                title = stringResource(R.string.statistics_streak_title),
                 value = "12",
-                subtitle = "jours",
+                subtitle = stringResource(R.string.statistics_days_subtitle),
                 iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
                 iconTint = MaterialTheme.colorScheme.tertiary
             )
@@ -86,12 +86,10 @@ fun StatisticsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Progression mensuelle
         MonthlyProgressCard()
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Statistiques détaillées
         DetailedStatsCard()
     }
 }
@@ -137,14 +135,14 @@ private fun StatisticsHeader() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Vos Statistiques",
+                text = stringResource(R.string.statistics_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
-                text = "Suivez votre progression quotidienne",
+                text = stringResource(R.string.statistics_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -244,7 +242,7 @@ private fun MonthlyProgressCard() {
                 .padding(20.dp)
         ) {
             Text(
-                text = "Progression du mois",
+                text = stringResource(R.string.statistics_monthly_progress),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -277,7 +275,7 @@ private fun MonthlyProgressCard() {
                     }
 
                     Text(
-                        text = "jours complétés",
+                        text = stringResource(R.string.statistics_days_completed),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -342,7 +340,7 @@ private fun DetailedStatsCard() {
                 .padding(20.dp)
         ) {
             Text(
-                text = "Statistiques détaillées",
+                text = stringResource(R.string.statistics_detailed_stats),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -350,9 +348,9 @@ private fun DetailedStatsCard() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            StatRow(label = "Meilleure série", value = "18 jours")
-            StatRow(label = "Cette semaine", value = "5 / 7 jours")
-            StatRow(label = "Dernier plaisir", value = "Il y a 2h", isLast = true)
+            StatRow(label = stringResource(R.string.statistics_best_streak), value = "18 jours")
+            StatRow(label = stringResource(R.string.statistics_this_week), value = "5 / 7 jours")
+            StatRow(label = stringResource(R.string.statistics_last_pleasure), value = "Il y a 2h", isLast = true)
         }
     }
 }

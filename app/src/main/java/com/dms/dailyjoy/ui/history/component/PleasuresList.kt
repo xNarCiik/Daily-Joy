@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -125,38 +126,38 @@ private fun AnimatedPleasureCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            StatusIcon(status = item.status)
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
             ) {
-                StatusIcon(status = item.status)
+                Text(
+                    text = day,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
-                Column(modifier = Modifier.weight(1f, fill = false)) {
+                item.pleasure?.let { pleasure ->
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     Text(
-                        text = day,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = if (isLocked) stringResource(R.string.label_to_discover) else pleasure.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (isLocked) {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
-
-                    item.pleasure?.let { pleasure ->
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(
-                            text = if (isLocked) stringResource(R.string.label_to_discover) else pleasure.title,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (isLocked) {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            },
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
                 }
             }
 

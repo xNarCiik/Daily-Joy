@@ -53,6 +53,10 @@
     <string name="settings_share_app">Partager Daily Joy</string>
     <string name="settings_privacy_policy">Politique de confidentialité</string>
     <string name="settings_share_text">Découvrez Daily Joy, une application pour vous aider à trouver de la joie au quotidien : https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="settings_statistics_title">Statistiques</string>
+    <string name="settings_statistics_subtitle">Consultez votre progression</string>
+    <string name="settings_header_subtitle">Personnalisez votre expérience Daily Joy</string>
+    <string name="privacy_policy_url" translatable="false">https://privacy-policy-url.com</string>
 
     <!-- Theme Dialog -->
     <string name="settings_theme_dialog_title">Choisir un thème</string>
@@ -103,6 +107,20 @@
     <string name="category_culture">Culture</string>
     <string name="category_learning">Apprentissage</string>
     <string name="category_other">Autre</string>
+
+    <!-- Statistics Screen -->
+    <string name="statistics_title">Vos Statistiques</string>
+    <string name="statistics_subtitle">Suivez votre progression quotidienne</string>
+    <string name="statistics_total_pleasures_title">Total</string>
+    <string name="statistics_pleasures_subtitle">plaisirs</string>
+    <string name="statistics_streak_title">Série</string>
+    <string name="statistics_days_subtitle">jours</string>
+    <string name="statistics_monthly_progress">Progression du mois</string>
+    <string name="statistics_days_completed">jours complétés</string>
+    <string name="statistics_detailed_stats">Statistiques détaillées</string>
+    <string name="statistics_best_streak">Meilleure série</string>
+    <string name="statistics_last_pleasure">Dernier plaisir</string>
+    <string name="statistics_this_week">Cette semaine</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>

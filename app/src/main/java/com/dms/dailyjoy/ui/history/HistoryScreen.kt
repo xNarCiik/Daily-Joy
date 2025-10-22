@@ -174,6 +174,7 @@ private fun WeeklyStatsCard(
         label = "progress"
     )
 
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -261,7 +262,7 @@ private fun WeeklyStatsCard(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "${(progress * 100).toInt()}%",
+                        text = "${(animatedProgressValue * 100).toInt()}%",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary
