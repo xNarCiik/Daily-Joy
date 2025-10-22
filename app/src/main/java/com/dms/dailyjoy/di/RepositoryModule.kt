@@ -7,10 +7,12 @@ import com.dms.dailyjoy.data.local.LocalDailyMessagesDataSource
 import com.dms.dailyjoy.data.repository.DailyMessageRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureRepositoryImpl
 import com.dms.dailyjoy.data.repository.SettingsRepositoryImpl
+import com.dms.dailyjoy.data.repository.SocialRepositoryImpl
 import com.dms.dailyjoy.data.repository.WeeklyPleasureRepositoryImpl
 import com.dms.dailyjoy.domain.repository.DailyMessageRepository
 import com.dms.dailyjoy.domain.repository.PleasureRepository
 import com.dms.dailyjoy.domain.repository.SettingsRepository
+import com.dms.dailyjoy.domain.repository.SocialRepository
 import com.dms.dailyjoy.domain.repository.WeeklyPleasureRepository
 import dagger.Module
 import dagger.Provides
@@ -40,4 +42,8 @@ object RepositoryModule {
     @Singleton
     fun provideSettingsRepository(context: Application): SettingsRepository =
         SettingsRepositoryImpl(context = context)
+
+    @Provides
+    @Singleton
+    fun provideSocialRepository(): SocialRepository = SocialRepositoryImpl()
 }

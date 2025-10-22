@@ -24,9 +24,8 @@ import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresViewModel
 import com.dms.dailyjoy.ui.settings.statistics.StatisticsScreen
 import com.dms.dailyjoy.ui.social.SocialScreen
-import com.dms.dailyjoy.ui.social.SocialUiState
+import com.dms.dailyjoy.ui.social.SocialViewModel
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
-import com.dms.dailyjoy.ui.util.previewFriends
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -77,13 +76,13 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
         }
 
         composable<SocialRoute> {
-            // TODO VIEW MODEL
+            val viewModel: SocialViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsState()
+
             SocialScreen(
                 modifier = modifierWithPaddingValues,
-                uiState = SocialUiState(
-                    friends = previewFriends
-                ),
-                onEvent = { }
+                uiState = uiState,
+                onEvent = viewModel::onEvent
             )
         }
 
