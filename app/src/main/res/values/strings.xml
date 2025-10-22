@@ -122,6 +122,19 @@
     <string name="statistics_last_pleasure">Dernier plaisir</string>
     <string name="statistics_this_week">Cette semaine</string>
 
+    <!-- Social Screen -->
+    <string name="social_title">Amis</string>
+    <string name="social_header_title">Vos amis</string>
+    <string name="social_header_subtitle">Partagez votre motivation</string>
+    <string name="social_add_friend_label">Ajouter un ami</string>
+    <string name="social_username_placeholder">Nom d\'utilisateur</string>
+    <string name="social_add_friend_button">Ajouter</string>
+    <string name="social_no_pleasure_today">Aucun plaisir aujourd\'hui</string>
+    <string name="social_empty_state_title">Aucun ami pour le moment</string>
+    <string name="social_empty_state_subtitle">Ajoutez votre premier ami pour voir ses progrès !</string>
+    <string name="social_friend_options_view_stats">Voir les stats</string>
+    <string name="social_friend_options_remove">Supprimer l\'ami</string>
+
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>
     <string name="notification_channel_description">Notification pour vous rappeler votre plaisir du jour.</string>

@@ -86,10 +86,10 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                     friends = listOf(
                         Friend(
                             id = "0",
-                            username = "Damien",
+                            username = "Dams",
                             streak = 8,
                             currentPleasure = FriendPleasure(
-                                title = "Fumer un join (ou deux)",
+                                title = "Sortie au restaurant",
                                 status = PleasureStatus.COMPLETED
                             )
                         ),
@@ -126,6 +126,15 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                             streak = 33,
                             currentPleasure = FriendPleasure(
                                 title = "PARTIR EN TEUFFF",
+                                status = PleasureStatus.IN_PROGRESS
+                            )
+                        ),
+                        Friend(
+                            id = "5",
+                            username = "Mikaka",
+                            streak = 10,
+                            currentPleasure = FriendPleasure(
+                                title = "Ce soir : La maison",
                                 status = PleasureStatus.IN_PROGRESS
                             )
                         )

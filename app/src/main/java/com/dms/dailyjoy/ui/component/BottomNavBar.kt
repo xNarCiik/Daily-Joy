@@ -70,7 +70,7 @@ fun BottomNavBar(
         route = HistoryRoute
     )
     val socialItem = TabBarItem(
-        title = "Vos amis", // TODO
+        title = stringResource(R.string.social_title),
         selectedIcon = Icons.Filled.AccountCircle,
         unselectedIcon = Icons.Outlined.AccountCircle,
         route = SocialRoute
