@@ -10,6 +10,8 @@ import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureUiState
 import com.dms.dailyjoy.ui.history.HistoryUiState
 import com.dms.dailyjoy.ui.history.PleasureStatus
 import com.dms.dailyjoy.ui.history.WeeklyPleasureItem
+import com.dms.dailyjoy.ui.social.Friend
+import com.dms.dailyjoy.ui.social.FriendPleasure
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -71,4 +73,43 @@ val previewHistoryUiState = HistoryUiState(
     ),
     completedPleasuresCount = 2,
     remainingPleasuresCount = 5
+)
+
+val previewFriends = listOf(
+    Friend(
+        id = "1",
+        username = "Dams",
+        streak = 8,
+        currentPleasure = FriendPleasure(
+            title = "Sortie au restaurant",
+            status = com.dms.dailyjoy.ui.social.PleasureStatus.COMPLETED
+        )
+    ),
+    Friend(
+        id = "2",
+        username = "Emma",
+        streak = 326,
+        currentPleasure = FriendPleasure(
+            title = "Baiser Hugo",
+            status = com.dms.dailyjoy.ui.social.PleasureStatus.IN_PROGRESS
+        )
+    ),
+    Friend(
+        id = "3",
+        username = "Alisson",
+        streak = 2,
+        currentPleasure = FriendPleasure(
+            title = "Faire une bouffe XXL",
+            status = com.dms.dailyjoy.ui.social.PleasureStatus.IN_PROGRESS
+        )
+    ),
+    Friend(
+        id = "4",
+        username = "Lilou la fripouille",
+        streak = 33,
+        currentPleasure = FriendPleasure(
+            title = "Appeler mon petit frère",
+            status = com.dms.dailyjoy.ui.social.PleasureStatus.COMPLETED
+        )
+    )
 )

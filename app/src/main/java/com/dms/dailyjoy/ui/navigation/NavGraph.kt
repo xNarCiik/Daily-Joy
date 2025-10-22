@@ -23,12 +23,10 @@ import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresViewModel
 import com.dms.dailyjoy.ui.settings.statistics.StatisticsScreen
-import com.dms.dailyjoy.ui.social.Friend
-import com.dms.dailyjoy.ui.social.FriendPleasure
-import com.dms.dailyjoy.ui.social.PleasureStatus
 import com.dms.dailyjoy.ui.social.SocialScreen
 import com.dms.dailyjoy.ui.social.SocialUiState
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
+import com.dms.dailyjoy.ui.util.previewFriends
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -83,62 +81,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
             SocialScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = SocialUiState(
-                    friends = listOf(
-                        Friend(
-                            id = "0",
-                            username = "Dams",
-                            streak = 8,
-                            currentPleasure = FriendPleasure(
-                                title = "Sortie au restaurant",
-                                status = PleasureStatus.COMPLETED
-                            )
-                        ),
-                        Friend(
-                            id = "1",
-                            username = "Emma",
-                            streak = 326,
-                            currentPleasure = FriendPleasure(
-                                title = "Baiser Hugo",
-                                status = PleasureStatus.IN_PROGRESS
-                            )
-                        ),
-                        Friend(
-                            id = "2",
-                            username = "Alisson",
-                            streak = 2,
-                            currentPleasure = FriendPleasure(
-                                title = "Faire une bouffe XXL",
-                                status = PleasureStatus.IN_PROGRESS
-                            )
-                        ),
-                        Friend(
-                            id = "3",
-                            username = "Lilou la fripouille",
-                            streak = 33,
-                            currentPleasure = FriendPleasure(
-                                title = "Appeler mon petit frère",
-                                status = PleasureStatus.COMPLETED
-                            )
-                        ),
-                        Friend(
-                            id = "4",
-                            username = "Antho le dozo",
-                            streak = 33,
-                            currentPleasure = FriendPleasure(
-                                title = "PARTIR EN TEUFFF",
-                                status = PleasureStatus.IN_PROGRESS
-                            )
-                        ),
-                        Friend(
-                            id = "5",
-                            username = "Mikaka",
-                            streak = 10,
-                            currentPleasure = FriendPleasure(
-                                title = "Ce soir : La maison",
-                                status = PleasureStatus.IN_PROGRESS
-                            )
-                        )
-                    )
+                    friends = previewFriends
                 ),
                 onEvent = { }
             )
