@@ -14,20 +14,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,115 +46,135 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.ScreenHeader
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
-    modifier: Modifier = Modifier
+    onNavigateBack: () -> Unit = {},
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    ) {
-        StatisticsHeader()
+    Scaffold(
+        topBar = {
+            TopAppBar(
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            StatCard(
-                modifier = Modifier.weight(1f),
-                icon = Icons.Default.EmojiEvents,
-                title = stringResource(R.string.statistics_total_pleasures_title),
-                value = "142",
-                subtitle = stringResource(R.string.statistics_pleasures_subtitle),
-                iconBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                iconTint = MaterialTheme.colorScheme.primary
-            )
-
-            StatCard(
-                modifier = Modifier.weight(1f),
-                icon = Icons.Default.LocalFireDepartment,
-                title = stringResource(R.string.statistics_streak_title),
-                value = "12",
-                subtitle = stringResource(R.string.statistics_days_subtitle),
-                iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-                iconTint = MaterialTheme.colorScheme.tertiary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        MonthlyProgressCard()
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        DetailedStatsCard()
-    }
-}
-
-@Composable
-private fun StatisticsHeader() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.secondaryContainer
+                title = {
+                    Text(
+                        text = stringResource(R.string.statistics_title),
+                        fontWeight = FontWeight.Bold
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
-    ) {
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
+                .padding(all = 16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center
+            ScreenHeader(
+                title = "Votre parcours",
+                description = "Continuez à cultiver vos petits plaisirs quotidiens",
+                icon = Icons.Default.BarChart
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.BarChart, // TODO TRENDING UP ?
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(40.dp)
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    icon = Icons.Default.EmojiEvents,
+                    title = stringResource(R.string.statistics_total_pleasures_title),
+                    value = "142",
+                    subtitle = stringResource(R.string.statistics_pleasures_subtitle),
+                    gradient = listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    ),
+                    iconTint = MaterialTheme.colorScheme.primary
+                )
+
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    icon = Icons.Default.LocalFireDepartment,
+                    title = stringResource(R.string.statistics_streak_title),
+                    value = "12",
+                    subtitle = stringResource(R.string.statistics_days_subtitle),
+                    gradient = listOf(
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.05f)
+                    ),
+                    iconTint = MaterialTheme.colorScheme.tertiary
                 )
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    icon = Icons.Default.TrendingUp,
+                    title = "Moyenne/jour",
+                    value = "4.2",
+                    subtitle = "ce mois",
+                    gradient = listOf(
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                    ),
+                    iconTint = MaterialTheme.colorScheme.secondary
+                )
+
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    icon = Icons.Default.CalendarMonth,
+                    title = "Jours actifs",
+                    value = "89",
+                    subtitle = "au total",
+                    gradient = listOf(
+                        Color(0xFF4CAF50).copy(alpha = 0.15f),
+                        Color(0xFF4CAF50).copy(alpha = 0.05f)
+                    ),
+                    iconTint = Color(0xFF4CAF50)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            MonthlyProgressCard()
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = stringResource(R.string.statistics_title),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            CategoryStatsCard()
 
-            Text(
-                text = stringResource(R.string.statistics_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            DetailedStatsCard()
         }
     }
 }
@@ -158,58 +186,73 @@ private fun StatCard(
     title: String,
     value: String,
     subtitle: String,
-    iconBackgroundColor: androidx.compose.ui.graphics.Color,
-    iconTint: androidx.compose.ui.graphics.Color
+    gradient: List<Color>,
+    iconTint: Color
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.height(140.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(Brush.verticalGradient(gradient))
+                .padding(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(iconBackgroundColor),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = iconTint,
-                    modifier = Modifier.size(26.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(iconTint.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = value,
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        maxLines = 1
+                    )
+                }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Text(
-                text = value,
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
@@ -232,22 +275,41 @@ private fun MonthlyProgressCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                        )
+                    )
+                )
+                .padding(16.dp)
         ) {
-            Text(
-                text = stringResource(R.string.statistics_monthly_progress),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CalendarMonth,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    text = stringResource(R.string.statistics_monthly_progress),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -286,7 +348,7 @@ private fun MonthlyProgressCard() {
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.primary)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
                     Text(
                         text = "${(animatedProgressValue * 100).toInt()}%",
@@ -297,14 +359,14 @@ private fun MonthlyProgressCard() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             LinearProgressIndicator(
                 progress = { animatedProgressValue },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(10.dp)
-                    .clip(RoundedCornerShape(5.dp)),
+                    .height(12.dp)
+                    .clip(RoundedCornerShape(6.dp)),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             )
@@ -313,32 +375,187 @@ private fun MonthlyProgressCard() {
 }
 
 @Composable
-private fun DetailedStatsCard() {
+private fun CategoryStatsCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                        )
+                    )
+                )
+                .padding(16.dp)
         ) {
-            Text(
-                text = stringResource(R.string.statistics_detailed_stats),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Text(
+                    text = "Catégories favorites",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            StatRow(label = stringResource(R.string.statistics_best_streak), value = "18 jours")
-            StatRow(label = stringResource(R.string.statistics_this_week), value = "5 / 7 jours")
-            StatRow(label = stringResource(R.string.statistics_last_pleasure), value = "Il y a 2h", isLast = true)
+            CategoryBar(
+                category = "🍽️ Gastronomie",
+                count = 45,
+                total = 142,
+                color = Color(0xFFFF6B6B)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CategoryBar(
+                category = "🎵 Musique",
+                count = 38,
+                total = 142,
+                color = Color(0xFF4ECDC4)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CategoryBar(
+                category = "🏃 Sport",
+                count = 32,
+                total = 142,
+                color = Color(0xFF95E1D3)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryBar(
+    category: String,
+    count: Int,
+    total: Int,
+    color: Color
+) {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = category,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "$count",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        LinearProgressIndicator(
+            progress = { count.toFloat() / total },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp)),
+            color = color,
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+        )
+    }
+}
+
+@Composable
+private fun DetailedStatsCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                        )
+                    )
+                )
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.BarChart,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.statistics_detailed_stats),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            StatRow(
+                label = stringResource(R.string.statistics_best_streak),
+                value = "18 jours",
+                icon = Icons.Default.LocalFireDepartment,
+                iconTint = Color(0xFFFF6B6B)
+            )
+            StatRow(
+                label = stringResource(R.string.statistics_this_week),
+                value = "5 / 7 jours",
+                icon = Icons.Default.CalendarMonth,
+                iconTint = MaterialTheme.colorScheme.primary
+            )
+            StatRow(
+                label = "Moyenne hebdo.",
+                value = "28 plaisirs",
+                icon = Icons.Default.TrendingUp,
+                iconTint = MaterialTheme.colorScheme.secondary
+            )
+            StatRow(
+                label = stringResource(R.string.statistics_last_pleasure),
+                value = "Il y a 2h",
+                icon = Icons.Default.Favorite,
+                iconTint = Color(0xFFE91E63),
+                isLast = true
+            )
         }
     }
 }
@@ -347,26 +564,50 @@ private fun DetailedStatsCard() {
 private fun StatRow(
     label: String,
     value: String,
+    icon: ImageVector,
+    iconTint: Color,
     isLast: Boolean = false
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(vertical = 14.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.weight(1f, fill = false)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(iconTint.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium
+                )
+            }
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -376,7 +617,7 @@ private fun StatRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                    .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
             )
         }
     }

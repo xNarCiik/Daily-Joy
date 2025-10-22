@@ -17,6 +17,7 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
@@ -118,6 +119,9 @@ fun AddPleasureBottomSheet(
                 onExpandedChange = { expanded = it }
             ) {
                 OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                     value = category.getLabel(),
                     onValueChange = {},
                     readOnly = true,
@@ -125,8 +129,6 @@ fun AddPleasureBottomSheet(
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -153,10 +155,10 @@ fun AddPleasureBottomSheet(
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = onSave,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
+                onClick = onSave,
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Icon(

@@ -9,21 +9,13 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.BarChart
@@ -35,26 +27,20 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
+import com.dms.dailyjoy.ui.component.ScreenHeader
 import com.dms.dailyjoy.ui.settings.component.SettingsClickableItem
 import com.dms.dailyjoy.ui.settings.component.SettingsSectionTitle
 import com.dms.dailyjoy.ui.settings.component.SettingsSwitchItem
@@ -115,14 +101,22 @@ fun SettingsScreen(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        // Header avec design moderne
         item {
-            SettingsHeader()
+            Column {
+                ScreenHeader(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    title = stringResource(R.string.settings_title),
+                    description = stringResource(R.string.settings_header_subtitle),
+                    icon = Icons.Default.Settings
+                )
+            }
+
         }
 
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item { SettingsSectionTitle(title = stringResource(id = R.string.settings_notifications_title)) }
+
         item {
             SettingsSwitchItem(
                 icon = Icons.Default.Notifications,
@@ -138,6 +132,7 @@ fun SettingsScreen(
                 }
             )
         }
+
         item {
             AnimatedVisibility(visible = uiState.dailyReminderEnabled) {
                 SettingsClickableItem(
@@ -152,6 +147,7 @@ fun SettingsScreen(
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item { SettingsSectionTitle(title = stringResource(id = R.string.settings_personalization_title)) }
+
         item {
             SettingsClickableItem(
                 icon = Icons.Default.BarChart,
@@ -160,9 +156,11 @@ fun SettingsScreen(
                 onClick = onNavigateToStatistics
             )
         }
+
         item {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
+
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Edit,
@@ -171,9 +169,11 @@ fun SettingsScreen(
                 onClick = onNavigateToManagePleasures
             )
         }
+
         item {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
+
         item {
             val themeSubtitle = when (uiState.theme) {
                 Theme.LIGHT -> stringResource(R.string.settings_theme_light)
@@ -194,6 +194,7 @@ fun SettingsScreen(
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item { SettingsSectionTitle(title = stringResource(id = R.string.settings_about_title)) }
+
         item {
             SettingsClickableItem(
                 icon = Icons.Default.StarRate,
@@ -202,9 +203,11 @@ fun SettingsScreen(
                 showChevron = false
             )
         }
+
         item {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
+
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Share,
@@ -213,16 +216,21 @@ fun SettingsScreen(
                 showChevron = false
             )
         }
+
         item {
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         }
+
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Shield,
                 title = stringResource(id = R.string.settings_privacy_policy),
                 onClick = {
                     val intent =
-                        Intent(Intent.ACTION_VIEW, context.getString(R.string.privacy_policy_url).toUri())
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            context.getString(R.string.privacy_policy_url).toUri()
+                        )
                     context.startActivity(intent)
                 },
                 showChevron = false
@@ -230,67 +238,6 @@ fun SettingsScreen(
         }
 
         item { Spacer(modifier = Modifier.height(16.dp)) }
-    }
-}
-
-@Composable
-private fun SettingsHeader() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .height(160.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.horizontalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.secondaryContainer
-                    )
-                )
-            )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = stringResource(R.string.settings_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = stringResource(R.string.settings_header_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(44.dp)
-                )
-            }
-        }
     }
 }
 
@@ -329,7 +276,7 @@ private fun rateApp(context: Context) {
                 "market://details?id=$packageName".toUri()
             )
         )
-    } catch (e: ActivityNotFoundException) {
+    } catch (_: ActivityNotFoundException) {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,

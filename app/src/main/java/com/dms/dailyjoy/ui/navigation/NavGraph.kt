@@ -132,7 +132,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
         }
 
         composable<StatisticsRoute> {
-            StatisticsScreen(modifier = modifierWithPaddingValues)
+            StatisticsScreen(onNavigateBack = navController::popBackStack)
         }
     }
 }
