@@ -22,6 +22,7 @@ import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresViewModel
+import com.dms.dailyjoy.ui.settings.stastistics.StatisticsScreen
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import kotlinx.serialization.Serializable
 
@@ -36,6 +37,9 @@ object SettingsRoute
 
 @Serializable
 object ManagePleasuresRoute
+
+@Serializable
+object StatisticsRoute
 
 @Composable
 fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
@@ -74,7 +78,8 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 modifier = modifierWithPaddingValues,
                 uiState = settingsState,
                 onEvent = viewModel::onEvent,
-                onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
+                onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
+                onNavigateToStatistics = { navController.navigate(StatisticsRoute) }
             )
         }
 
@@ -124,6 +129,10 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 onEvent = viewModel::onEvent,
                 navigateBack = navController::popBackStack
             )
+        }
+
+        composable<StatisticsRoute> {
+            StatisticsScreen(modifier = modifierWithPaddingValues)
         }
     }
 }
