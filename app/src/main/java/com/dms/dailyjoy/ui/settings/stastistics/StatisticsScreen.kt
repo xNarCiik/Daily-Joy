@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -288,7 +289,7 @@ private fun MonthlyProgressCard() {
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "${(progress * 100).toInt()}%",
+                        text = "${(animatedProgressValue * 100).toInt()}%",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary
@@ -298,28 +299,15 @@ private fun MonthlyProgressCard() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Box(
+            LinearProgressIndicator(
+                progress = { animatedProgressValue },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(10.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(animatedProgressValue)
-                        .height(10.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.tertiary
-                                )
-                            )
-                        )
-                )
-            }
+                    .clip(RoundedCornerShape(5.dp)),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
         }
     }
 }

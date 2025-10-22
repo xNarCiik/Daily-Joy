@@ -174,7 +174,6 @@ private fun WeeklyStatsCard(
         label = "progress"
     )
 
-
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
