@@ -145,4 +145,10 @@
     <string name="notification_permission_dialog_title">Permission requise</string>
     <string name="notification_permission_dialog_text">Pour recevoir des rappels quotidiens, vous devez autoriser les notifications dans les paramètres de l\'application.</string>
     <string name="notification_permission_dialog_settings_button">Ouvrir les paramètres</string>
+
+    <!-- SocialViewModel -->
+    <string name="social_error_generic">Une erreur est survenue</string>
+    <string name="social_error_username_empty">Le nom d\'utilisateur ne peut pas être vide</string>
+    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
+    <string name="social_error_remove_friend">Erreur lors de la suppression</string>
 </resources>

@@ -1,12 +1,15 @@
 package com.dms.dailyjoy.ui.social
 
+import androidx.annotation.StringRes
+
+
 data class SocialUiState(
     val isLoading: Boolean = false,
     val friends: List<Friend> = emptyList(),
     val newFriendUsername: String = "",
     val isAddingFriend: Boolean = false,
-    val addFriendError: String? = null,
-    val error: String? = null
+    @StringRes val addFriendError: Int? = null,
+    @StringRes val error: Int? = null
 )
 
 sealed interface SocialEvent {

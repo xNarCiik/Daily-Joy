@@ -144,4 +144,10 @@
     <string name="notification_permission_dialog_title">Permission required</string>
     <string name="notification_permission_dialog_text">To receive daily reminders, you must allow notifications in the application settings.</string>
     <string name="notification_permission_dialog_settings_button">Open settings</string>
+
+    <!-- SocialViewModel -->
+    <string name="social_error_generic">An error has occurred</string>
+    <string name="social_error_username_empty">Username cannot be empty</string>
+    <string name="social_error_add_friend">Could not add this friend</string>
+    <string name="social_error_remove_friend">Error while deleting</string>
 </resources>

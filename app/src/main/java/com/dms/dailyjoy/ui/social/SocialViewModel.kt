@@ -1,8 +1,8 @@
-
 package com.dms.dailyjoy.ui.social
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.usecase.social.AddFriendUseCase
 import com.dms.dailyjoy.domain.usecase.social.GetFriendsUseCase
 import com.dms.dailyjoy.domain.usecase.social.RemoveFriendUseCase
@@ -40,11 +40,11 @@ class SocialViewModel @Inject constructor(
                     )
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    error = e.message ?: "Une erreur est survenue"
+                    error = R.string.social_error_generic
                 )
             }
         }
@@ -53,13 +53,20 @@ class SocialViewModel @Inject constructor(
     fun onEvent(event: SocialEvent) {
         when (event) {
             is SocialEvent.OnUsernameChanged -> {
-                _uiState.update { it.copy(newFriendUsername = event.username, addFriendError = null) }
+                _uiState.update {
+                    it.copy(
+                        newFriendUsername = event.username,
+                        addFriendError = null
+                    )
+                }
             }
+
             SocialEvent.OnAddFriendClicked -> addFriend()
             is SocialEvent.OnRemoveFriend -> removeFriend(event.friend)
             is SocialEvent.OnViewFriendStats -> {
                 // TODO: Handle navigation to friend stats
             }
+
             SocialEvent.OnRetryClicked -> loadFriends()
         }
     }
@@ -67,7 +74,7 @@ class SocialViewModel @Inject constructor(
     private fun addFriend() = viewModelScope.launch {
         val username = _uiState.value.newFriendUsername
         if (username.isBlank()) {
-            _uiState.update { it.copy(addFriendError = "Le nom d'utilisateur ne peut pas être vide") }
+            _uiState.update { it.copy(addFriendError = R.string.social_error_username_empty) }
             return@launch
         }
 
@@ -75,11 +82,11 @@ class SocialViewModel @Inject constructor(
         try {
             addFriendUseCase(username)
             _uiState.update { it.copy(newFriendUsername = "", isAddingFriend = false) }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             _uiState.update {
                 it.copy(
                     isAddingFriend = false,
-                    addFriendError = e.message ?: "Impossible d'ajouter cet ami"
+                    addFriendError = R.string.social_error_add_friend
                 )
             }
         }
@@ -88,8 +95,8 @@ class SocialViewModel @Inject constructor(
     private fun removeFriend(friend: Friend) = viewModelScope.launch {
         try {
             removeFriendUseCase(friend)
-        } catch (e: Exception) {
-            _uiState.update { it.copy(error = e.message ?: "Erreur lors de la suppression") }
+        } catch (_: Exception) {
+            _uiState.update { it.copy(error = R.string.social_error_remove_friend) }
         }
     }
 }
