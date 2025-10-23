@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.component.AppHeader
@@ -66,7 +66,6 @@ fun StatisticsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-
                 title = {
                     Text(
                         text = stringResource(R.string.statistics_title),
@@ -93,14 +92,14 @@ fun StatisticsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AppHeader(
                 title = stringResource(id = R.string.statistics_header_title),
                 subtitle = stringResource(id = R.string.statistics_header_subtitle),
                 icon = Icons.Default.BarChart
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -126,14 +125,12 @@ fun StatisticsScreen(
                     value = uiState.currentStreak.toString(),
                     subtitle = stringResource(R.string.statistics_days_subtitle),
                     gradient = listOf(
-                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.05f)
+                        Color(0xFFFF6B6B).copy(alpha = 0.15f),
+                        Color(0xFFFF6B6B).copy(alpha = 0.05f)
                     ),
-                    iconTint = MaterialTheme.colorScheme.tertiary
+                    iconTint = Color(0xFFFF6B6B)
                 )
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -141,7 +138,7 @@ fun StatisticsScreen(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    icon = Icons.Default.TrendingUp, // TODO ICONE
+                    icon = Icons.Default.TrendingUp,
                     title = stringResource(id = R.string.statistics_average_per_day),
                     value = uiState.averagePerDay.toString(),
                     subtitle = stringResource(id = R.string.statistics_this_month),
@@ -166,20 +163,15 @@ fun StatisticsScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             MonthlyProgressCard(uiState.monthlyProgress)
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             CategoryStatsCard(uiState.favoriteCategories)
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             DetailedStatsCard(uiState.detailedStats)
         }
     }
 }
+
 
 @Composable
 private fun StatCard(
@@ -197,7 +189,7 @@ private fun StatCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Box(
             modifier = Modifier
@@ -207,51 +199,53 @@ private fun StatCard(
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(iconTint.copy(alpha = 0.15f)),
-                    contentAlignment = Alignment.Center
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = iconTint,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
+                        modifier = Modifier.weight(1f),
                         text = title,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium,
-                        maxLines = 1
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
 
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(iconTint.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = iconTint,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
 
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Text(
                         text = value,
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
-
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                        maxLines = 1
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -261,7 +255,8 @@ private fun StatCard(
 
 @Composable
 private fun MonthlyProgressCard(monthlyProgress: MonthlyProgress) {
-    val progress = if (monthlyProgress.total > 0) monthlyProgress.completed.toFloat() / monthlyProgress.total else 0f
+    val progress =
+        if (monthlyProgress.total > 0) monthlyProgress.completed.toFloat() / monthlyProgress.total else 0f
     var animatedProgress by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(progress) {
@@ -279,48 +274,70 @@ private fun MonthlyProgressCard(monthlyProgress: MonthlyProgress) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                         )
                     )
                 )
-                .padding(16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-                Text(
-                    text = stringResource(R.string.statistics_monthly_progress),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.statistics_monthly_progress),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = stringResource(R.string.statistics_days_completed),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
+                ) {
                     Row(
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -334,117 +351,118 @@ private fun MonthlyProgressCard(monthlyProgress: MonthlyProgress) {
                         Text(
                             text = "/ ${monthlyProgress.total}",
                             style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                     }
 
-                    Text(
-                        text = stringResource(R.string.statistics_days_completed),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        shadowElevation = 4.dp
+                    ) {
+                        Text(
+                            text = "${(animatedProgressValue * 100).toInt()}%",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+                        )
+                    }
                 }
 
-                Box(
+                LinearProgressIndicator(
+                    progress = { animatedProgressValue },
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.primary)
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                ) {
-                    Text(
-                        text = "${(animatedProgressValue * 100).toInt()}%",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(6.dp)),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                )
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            LinearProgressIndicator(
-                progress = { animatedProgressValue },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(12.dp)
-                    .clip(RoundedCornerShape(6.dp)),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            )
         }
     }
 }
 
 @Composable
 private fun CategoryStatsCard(categories: List<CategoryStat>) {
-    val total = categories.sumOf { it.count }
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                            Color(0xFFFF6B6B).copy(alpha = 0.15f),
+                            Color(0xFFFF6B6B).copy(alpha = 0.05f)
                         )
                     )
                 )
-                .padding(16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = stringResource(id = R.string.statistics_favorite_categories),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFE91E63).copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = Color(0xFFE91E63),
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+
+                CategoryBar(
+                    category = "🍽️ Gastronomie",
+                    count = 45,
+                    total = 142,
+                    color = Color(0xFFFF6B6B)
                 )
 
-                Text(
-                    text = stringResource(id = R.string.statistics_favorite_categories),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                CategoryBar(
+                    category = "🎵 Musique",
+                    count = 38,
+                    total = 142,
+                    color = Color(0xFF4ECDC4)
+                )
+
+                CategoryBar(
+                    category = "🏃 Sport",
+                    count = 32,
+                    total = 142,
+                    color = Color(0xFF95E1D3)
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            CategoryBar(
-                category = "🍽️ Gastronomie",
-                count = 45,
-                total = 142,
-                color = Color(0xFFFF6B6B)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            CategoryBar(
-                category = "🎵 Musique",
-                count = 38,
-                total = 142,
-                color = Color(0xFF4ECDC4)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            CategoryBar(
-                category = "🏃 Sport",
-                count = 32,
-                total = 142,
-                color = Color(0xFF95E1D3)
-            )
         }
     }
 }
@@ -456,7 +474,9 @@ private fun CategoryBar(
     total: Int,
     color: Color
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -476,8 +496,6 @@ private fun CategoryBar(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         LinearProgressIndicator(
             progress = { count.toFloat() / total },
             modifier = Modifier
@@ -485,7 +503,7 @@ private fun CategoryBar(
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp)),
             color = color,
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+            trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
         )
     }
 }
@@ -497,68 +515,85 @@ private fun DetailedStatsCard(detailedStats: DetailedStats) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
+                            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
                         )
                     )
                 )
-                .padding(16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.BarChart,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = stringResource(R.string.statistics_detailed_stats),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
-                Text(
-                    text = stringResource(R.string.statistics_detailed_stats),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.BarChart,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+
+                StatRow(
+                    label = stringResource(R.string.statistics_best_streak),
+                    value = stringResource(
+                        id = R.string.statistics_days_unit,
+                        detailedStats.bestStreak
+                    ),
+                    icon = Icons.Default.LocalFireDepartment,
+                    iconTint = Color(0xFFFF6B6B)
+                )
+                StatRow(
+                    label = stringResource(R.string.statistics_this_week),
+                    value = detailedStats.weekProgress,
+                    icon = Icons.Default.CalendarMonth,
+                    iconTint = MaterialTheme.colorScheme.primary
+                )
+                StatRow(
+                    label = stringResource(id = R.string.statistics_weekly_average),
+                    value = detailedStats.weeklyAverage,
+                    icon = Icons.Default.TrendingUp,
+                    iconTint = MaterialTheme.colorScheme.secondary
+                )
+                StatRow(
+                    label = stringResource(R.string.statistics_last_pleasure),
+                    value = detailedStats.lastPleasure,
+                    icon = Icons.Default.Favorite,
+                    iconTint = Color(0xFFE91E63),
+                    isLast = true
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            StatRow(
-                label = stringResource(R.string.statistics_best_streak),
-                value = stringResource(id = R.string.statistics_days_unit, detailedStats.bestStreak),
-                icon = Icons.Default.LocalFireDepartment,
-                iconTint = Color(0xFFFF6B6B)
-            )
-            StatRow(
-                label = stringResource(R.string.statistics_this_week),
-                value = detailedStats.weekProgress,
-                icon = Icons.Default.CalendarMonth,
-                iconTint = MaterialTheme.colorScheme.primary
-            )
-            StatRow(
-                label = stringResource(id = R.string.statistics_weekly_average),
-                value = detailedStats.weeklyAverage,
-                icon = Icons.Default.TrendingUp, // TODO ICON
-                iconTint = MaterialTheme.colorScheme.secondary
-            )
-            StatRow(
-                label = stringResource(R.string.statistics_last_pleasure),
-                value = detailedStats.lastPleasure,
-                icon = Icons.Default.Favorite,
-                iconTint = Color(0xFFE91E63),
-                isLast = true
-            )
         }
     }
 }
@@ -575,7 +610,7 @@ private fun StatRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 14.dp),
+                .padding(vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -586,8 +621,8 @@ private fun StatRow(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
                         .background(iconTint.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -595,7 +630,7 @@ private fun StatRow(
                         imageVector = icon,
                         contentDescription = null,
                         tint = iconTint,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 }
 
