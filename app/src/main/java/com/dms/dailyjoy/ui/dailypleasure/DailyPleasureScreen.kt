@@ -8,8 +8,13 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -24,10 +29,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,9 +47,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -70,10 +81,8 @@ fun DailyPleasureScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
+            .padding(all = 16.dp)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Header
         ScreenHeader(
             title = stringResource(R.string.daily_pleasure_title),
@@ -81,7 +90,7 @@ fun DailyPleasureScreen(
             icon = Icons.Default.EmojiEvents
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Box(
             modifier = Modifier
@@ -93,9 +102,11 @@ fun DailyPleasureScreen(
                 uiState.isLoading -> {
                     LoadingState()
                 }
+
                 uiState.dailyPleasure.isDone -> {
                     DailyPleasureCompletedContent()
                 }
+
                 else -> {
                     DailyPleasureContent(
                         uiState = uiState,
@@ -104,8 +115,6 @@ fun DailyPleasureScreen(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -115,6 +124,7 @@ fun DailyPleasureContent(
     onEvent: (DailyPleasureEvent) -> Unit
 ) {
     val isFlipped = uiState.dailyPleasure.isFlipped
+    val isDone = uiState.dailyPleasure.isDone
     var showConfettiAnimation by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -157,6 +167,43 @@ fun DailyPleasureContent(
         }
     }
 
+    // Animation de hint pour swipe (uniquement si flipped et non done)
+    val infiniteTransition = rememberInfiniteTransition(label = "swipeHint")
+    val hintOffsetX by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = if (isFlipped && !isDone) 40f else 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = { t ->
+                // Easing personnalisé : pause au début et à la fin
+                when {
+                    t < 0.2f -> 0f
+                    t < 0.5f -> (t - 0.2f) / 0.3f
+                    t < 0.7f -> 1f - (t - 0.5f) / 0.2f
+                    else -> 0f
+                }
+            }),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "hintOffset"
+    )
+
+    val hintRotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = if (isFlipped && !isDone) 3f else 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = { t ->
+                when {
+                    t < 0.2f -> 0f
+                    t < 0.5f -> (t - 0.2f) / 0.3f
+                    t < 0.7f -> 1f - (t - 0.5f) / 0.2f
+                    else -> 0f
+                }
+            }),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "hintRotation"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -169,61 +216,63 @@ fun DailyPleasureContent(
         val animatedOffsetX = remember { Animatable(0f) }
         val animatedRotationZ = remember { Animatable(0f) }
 
-        PleasureCard(
-            modifier = Modifier
-                .draggable(
-                    orientation = Orientation.Horizontal,
-                    enabled = isFlipped,
-                    state = rememberDraggableState { delta ->
-                        scope.launch {
-                            val friction = if (delta < 0) 0.2f else 0.5f
-                            val newX = animatedOffsetX.value + (delta * friction)
-                            animatedOffsetX.snapTo(newX)
-                            val newRot = (newX / 18f).coerceIn(-5f, 20f)
-                            animatedRotationZ.snapTo(newRot)
-                        }
-                    },
-                    onDragStarted = {
-                        scope.launch {
-                            animatedOffsetX.stop()
-                            animatedRotationZ.stop()
-                        }
-                    },
-                    onDragStopped = {
-                        scope.launch {
-                            val swipeThreshold = 150f
-                            if (animatedOffsetX.value > swipeThreshold) {
-                                val animSpec = tween<Float>(
-                                    durationMillis = 3000,
-                                    easing = LinearOutSlowInEasing
-                                )
-                                launch { animatedOffsetX.animateTo(1000f, animSpec) }
-                                launch { animatedRotationZ.animateTo(20f, animSpec) }
+        Box(contentAlignment = Alignment.Center) {
+            PleasureCard(
+                modifier = Modifier
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        enabled = isFlipped,
+                        state = rememberDraggableState { delta ->
+                            scope.launch {
+                                val friction = if (delta < 0) 0.2f else 0.5f
+                                val newX = animatedOffsetX.value + (delta * friction)
+                                animatedOffsetX.snapTo(newX)
+                                val newRot = (newX / 18f).coerceIn(-5f, 20f)
+                                animatedRotationZ.snapTo(newRot)
+                            }
+                        },
+                        onDragStarted = {
+                            scope.launch {
+                                animatedOffsetX.stop()
+                                animatedRotationZ.stop()
+                            }
+                        },
+                        onDragStopped = {
+                            scope.launch {
+                                val swipeThreshold = 150f
+                                if (animatedOffsetX.value > swipeThreshold) {
+                                    val animSpec = tween<Float>(
+                                        durationMillis = 3000,
+                                        easing = LinearOutSlowInEasing
+                                    )
+                                    launch { animatedOffsetX.animateTo(1000f, animSpec) }
+                                    launch { animatedRotationZ.animateTo(20f, animSpec) }
 
-                                delay(400)
+                                    delay(400)
 
-                                onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
-                            } else {
-                                val springSpec = spring<Float>(dampingRatio = 0.7f)
-                                launch { animatedOffsetX.animateTo(0f, springSpec) }
-                                launch { animatedRotationZ.animateTo(0f, springSpec) }
+                                    onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
+                                } else {
+                                    val springSpec = spring<Float>(dampingRatio = 0.7f)
+                                    launch { animatedOffsetX.animateTo(0f, springSpec) }
+                                    launch { animatedRotationZ.animateTo(0f, springSpec) }
+                                }
                             }
                         }
-                    }
-                )
-                .offset(x = animatedOffsetX.value.dp)
-                .graphicsLayer {
-                    rotationZ = animatedRotationZ.value
-                    cameraDistance = 8 * density
-                    alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
-                },
-            pleasure = uiState.dailyPleasure,
-            durationRotation = rotationCardAnimationDuration,
-            onCardFlipped = {
-                showConfettiAnimation = true
-                onEvent(DailyPleasureEvent.OnCardFlipped)
-            }
-        )
+                    )
+                    .offset(x = (animatedOffsetX.value + hintOffsetX).dp)
+                    .graphicsLayer {
+                        rotationZ = animatedRotationZ.value + hintRotation
+                        cameraDistance = 8 * density
+                        alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
+                    },
+                pleasure = uiState.dailyPleasure,
+                durationRotation = rotationCardAnimationDuration,
+                onCardFlipped = {
+                    showConfettiAnimation = true
+                    onEvent(DailyPleasureEvent.OnCardFlipped)
+                }
+            )
+        }
     }
 
     // Animation Confetti
@@ -252,47 +301,87 @@ private fun DailyPleasureCompletedContent() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp),
+            .fillMaxWidth()
+            .padding(vertical = 32.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val successComposition by rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(resId = R.raw.checkmark)
-        )
-        val successProgress by animateLottieCompositionAsState(
-            composition = successComposition,
-            isPlaying = playAnimation,
-            restartOnPlay = false
-        )
+        // Success Message Card
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f)
+                        )
+                    )
+                )
+                .padding(24.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.pleasure_completed_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
-        // Once the animation is finished, update the state so it doesn't play again
-        LaunchedEffect(successProgress) {
-            if (successProgress == 1f) {
-                playAnimation = false
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Success Animation Container
+                Box(
+                    modifier = Modifier
+                        .size(180.dp)
+                        .clip(CircleShape)
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                                    MaterialTheme.colorScheme.surface
+                                )
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val successComposition by rememberLottieComposition(
+                        spec = LottieCompositionSpec.RawRes(resId = R.raw.checkmark)
+                    )
+                    val successProgress by animateLottieCompositionAsState(
+                        composition = successComposition,
+                        isPlaying = playAnimation,
+                        restartOnPlay = false
+                    )
+
+                    LaunchedEffect(successProgress) {
+                        if (successProgress == 1f) {
+                            playAnimation = false
+                        }
+                    }
+
+                    LottieAnimation(
+                        modifier = Modifier.size(140.dp),
+                        composition = successComposition,
+                        progress = { if (playAnimation) successProgress else 1.0f }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = stringResource(id = R.string.pleasure_completed_subtitle),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
-
-        LottieAnimation(
-            modifier = Modifier.size(200.dp),
-            composition = successComposition,
-            progress = { if (playAnimation) successProgress else 1.0f }
-        )
-
-        Text(
-            text = stringResource(id = R.string.pleasure_completed_title),
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = stringResource(id = R.string.pleasure_completed_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
-        )
     }
 }
 
@@ -300,10 +389,12 @@ private fun DailyPleasureCompletedContent() {
 @Composable
 fun DailyPleasureNotCompletedScreenPreview() {
     DailyJoyTheme {
-        DailyPleasureScreen(
-            uiState = previewDailyPleasureUiState,
-            onEvent = {}
-        )
+        Surface {
+            DailyPleasureScreen(
+                uiState = previewDailyPleasureUiState,
+                onEvent = {}
+            )
+        }
     }
 }
 
@@ -311,12 +402,31 @@ fun DailyPleasureNotCompletedScreenPreview() {
 @Composable
 fun DailyPleasureCompletedScreenPreview() {
     DailyJoyTheme {
-        DailyPleasureScreen(
-            uiState = previewDailyPleasureUiState.copy(
-                dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(isDone = true)
-            ),
-            onEvent = {}
-        )
+        Surface {
+            DailyPleasureScreen(
+                uiState = previewDailyPleasureUiState.copy(
+                    dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(isDone = true)
+                ),
+                onEvent = {}
+            )
+        }
     }
+}
 
+@LightDarkPreview
+@Composable
+fun DailyPleasureFlippedScreenPreview() {
+    DailyJoyTheme {
+        Surface {
+            DailyPleasureScreen(
+                uiState = previewDailyPleasureUiState.copy(
+                    dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(
+                        isFlipped = true,
+                        isDone = false
+                    )
+                ),
+                onEvent = {}
+            )
+        }
+    }
 }

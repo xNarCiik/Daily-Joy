@@ -183,7 +183,7 @@ private fun PleasureBackCard() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(28.dp),
+                .padding(horizontal = 16.dp, vertical = 22.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -213,9 +213,9 @@ private fun PleasureBackCard() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Text(
+            Text( // TODO STRINGS
                 text = "✨ Touchez la carte ✨",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center
@@ -225,7 +225,7 @@ private fun PleasureBackCard() {
 
             Text(
                 text = "pour découvrir votre plaisir",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = Color.White.copy(alpha = 0.9f),
                 textAlign = TextAlign.Center

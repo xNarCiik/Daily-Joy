@@ -108,7 +108,7 @@ val previewFriends = listOf(
         username = "Lilou la fripouille",
         streak = 33,
         currentPleasure = FriendPleasure(
-            title = "Appeler mon petit frère",
+            title = "Appeler mon petit frère et lui tapper la causette h24",
             status = com.dms.dailyjoy.ui.social.PleasureStatus.COMPLETED
         )
     )

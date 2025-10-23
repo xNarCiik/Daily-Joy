@@ -1,10 +1,9 @@
 package com.dms.dailyjoy.ui.social.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
@@ -45,75 +45,90 @@ fun AddFriendSection(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Row(
+        OutlinedTextField(
+            value = username,
+            onValueChange = onUsernameChange,
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = username,
-                onValueChange = onUsernameChange,
-                modifier = Modifier.weight(1f),
-                label = { Text(stringResource(R.string.social_add_friend_label)) },
-                placeholder = { Text(stringResource(R.string.social_username_placeholder)) },
-                isError = error != null,
-                enabled = !isLoading,
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                ),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.PersonAdd,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            )
-
-            Surface(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .clickable(enabled = !isLoading && username.isNotBlank()) { onAddFriend() },
-                color = if (username.isNotBlank() && !isLoading) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                }
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+            label = {
+                Text(
+                    stringResource(R.string.social_add_friend_label),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            },
+            placeholder = {
+                Text(
+                    stringResource(R.string.social_username_placeholder),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            isError = error != null,
+            enabled = !isLoading,
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            ),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.PersonAdd,
+                    contentDescription = null,
+                    tint = if (error != null) {
+                        MaterialTheme.colorScheme.error
                     } else {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.social_add_friend_button),
-                            tint = if (username.isNotBlank()) {
-                                MaterialTheme.colorScheme.onPrimary
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            trailingIcon = {
+                AnimatedVisibility(
+                    visible = username.isNotBlank()
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable(enabled = !isLoading) { onAddFriend() },
+                        color = MaterialTheme.colorScheme.primary,
+                        shadowElevation = 2.dp
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            if (isLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = stringResource(R.string.social_add_friend_button),
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
-                        )
+                        }
                     }
                 }
             }
-        }
+        )
 
         if (error != null) {
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = error,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(start = 16.dp)
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 12.dp)
             )
         }
     }
@@ -123,13 +138,15 @@ fun AddFriendSection(
 @Composable
 private fun AddFriendSectionPreview() {
     DailyJoyTheme {
-        AddFriendSection(
-            username = "",
-            isLoading = false,
-            error = null,
-            onUsernameChange = {},
-            onAddFriend = {}
-        )
+        Surface {
+            AddFriendSection(
+                username = "",
+                isLoading = false,
+                error = null,
+                onUsernameChange = {},
+                onAddFriend = {}
+            )
+        }
     }
 }
 
@@ -137,13 +154,15 @@ private fun AddFriendSectionPreview() {
 @Composable
 private fun AddFriendSectionLoadingPreview() {
     DailyJoyTheme {
-        AddFriendSection(
-            username = "test",
-            isLoading = true,
-            error = null,
-            onUsernameChange = {},
-            onAddFriend = {}
-        )
+        Surface {
+            AddFriendSection(
+                username = "test",
+                isLoading = true,
+                error = null,
+                onUsernameChange = {},
+                onAddFriend = {}
+            )
+        }
     }
 }
 
@@ -151,12 +170,14 @@ private fun AddFriendSectionLoadingPreview() {
 @Composable
 private fun AddFriendSectionErrorPreview() {
     DailyJoyTheme {
-        AddFriendSection(
-            username = "test",
-            isLoading = false,
-            error = "Cet utilisateur n'existe pas",
-            onUsernameChange = {},
-            onAddFriend = {}
-        )
+        Surface {
+            AddFriendSection(
+                username = "test",
+                isLoading = false,
+                error = "Cet utilisateur n'existe pas",
+                onUsernameChange = {},
+                onAddFriend = {}
+            )
+        }
     }
 }
