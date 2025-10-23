@@ -32,12 +32,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.ErrorState
+import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.settings.manage.component.AddPleasureBottomSheet
 import com.dms.dailyjoy.ui.settings.manage.component.CategoryFilters
 import com.dms.dailyjoy.ui.settings.manage.component.DeleteConfirmationDialog
-import com.dms.dailyjoy.ui.settings.manage.component.EmptyState
-import com.dms.dailyjoy.ui.settings.manage.component.ErrorState
-import com.dms.dailyjoy.ui.settings.manage.component.LoadingState
+import com.dms.dailyjoy.ui.settings.manage.component.ManagePleasuresEmptyState
 import com.dms.dailyjoy.ui.settings.manage.component.ManagePleasuresList
 import com.dms.dailyjoy.ui.settings.manage.component.TypeFilterDialog
 
@@ -131,7 +131,7 @@ fun ManagePleasuresScreen(
                     }
 
                     uiState.filteredPleasures.isEmpty() -> {
-                        EmptyState(type = uiState.selectedTab)
+                        ManagePleasuresEmptyState(type = uiState.selectedTab)
                     }
 
                     else -> {

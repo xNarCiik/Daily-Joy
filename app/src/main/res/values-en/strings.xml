@@ -129,6 +129,8 @@
     <string name="statistics_favorite_categories">Favorite categories</string>
     <string name="statistics_weekly_average">Weekly average</string>
     <string name="statistics_days_unit">days</string>
+    <string name="statistics_top_three_this_month">Top three this month</string>
+    <string name="statistics_overview_of_your_activities">Overview of your activities</string>
 
     <!-- Social Screen -->
     <string name="social_header_subtitle">Share your motivation</string>
