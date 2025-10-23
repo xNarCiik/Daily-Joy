@@ -41,7 +41,7 @@ import com.dms.dailyjoy.ui.util.previewDailyPleasure
 import com.dms.dailyjoy.ui.util.toCategoryInfo
 
 @Composable
-fun PleasuresList(
+fun ManagePleasuresList(
     pleasures: List<Pleasure>,
     onEvent: (ManagePleasuresEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -130,7 +130,9 @@ private fun PleasureItem(
         }
 
         HorizontalDivider(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
             thickness = 0.5.dp,
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
         )
@@ -170,10 +172,10 @@ private fun CategoryBadge(
 
 @LightDarkPreview
 @Composable
-private fun PleasureListPreview() {
+private fun ManagePleasuresListPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            PleasuresList(
+            ManagePleasuresList(
                 pleasures = listOf(
                     previewDailyPleasure,
                     previewDailyPleasure.copy(id = 1, isEnabled = false, isCustom = true),

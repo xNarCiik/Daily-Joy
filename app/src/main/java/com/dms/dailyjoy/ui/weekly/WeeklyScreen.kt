@@ -44,7 +44,7 @@ import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewWeeklyUiState
 import com.dms.dailyjoy.ui.weekly.component.ModalPleasureCard
-import com.dms.dailyjoy.ui.weekly.component.PleasuresList
+import com.dms.dailyjoy.ui.weekly.component.WeeklyPleasuresList
 
 @Composable
 fun WeeklyScreen(
@@ -156,7 +156,7 @@ private fun WeeklyContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        PleasuresList(
+        WeeklyPleasuresList(
             items = uiState.weeklyPleasures,
             onCardClicked = { item -> onEvent(WeeklyEvent.OnCardClicked(item)) }
         )
@@ -186,12 +186,12 @@ private fun WeeklyStatsCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(
-                Brush.verticalGradient(
+                Brush.horizontalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
+                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
                     )
                 )
             )
@@ -199,8 +199,7 @@ private fun WeeklyStatsCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .padding(horizontal = 20.dp, vertical = 16.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -208,6 +207,7 @@ private fun WeeklyStatsCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
@@ -216,6 +216,7 @@ private fun WeeklyStatsCard(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+
                     Text(
                         text = stringResource(R.string.weekly_track_your_progress),
                         style = MaterialTheme.typography.bodyMedium,
@@ -239,15 +240,15 @@ private fun WeeklyStatsCard(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Stats
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -258,6 +259,7 @@ private fun WeeklyStatsCard(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
+
                         Text(
                             text = "/ $totalCount",
                             style = MaterialTheme.typography.headlineMedium,
@@ -287,6 +289,8 @@ private fun WeeklyStatsCard(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             LinearProgressIndicator(
                 progress = { animatedProgressValue },

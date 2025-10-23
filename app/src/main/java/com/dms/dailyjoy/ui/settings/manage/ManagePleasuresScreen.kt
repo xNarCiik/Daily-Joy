@@ -38,7 +38,7 @@ import com.dms.dailyjoy.ui.settings.manage.component.DeleteConfirmationDialog
 import com.dms.dailyjoy.ui.settings.manage.component.EmptyState
 import com.dms.dailyjoy.ui.settings.manage.component.ErrorState
 import com.dms.dailyjoy.ui.settings.manage.component.LoadingState
-import com.dms.dailyjoy.ui.settings.manage.component.PleasuresList
+import com.dms.dailyjoy.ui.settings.manage.component.ManagePleasuresList
 import com.dms.dailyjoy.ui.settings.manage.component.TypeFilterDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,7 +135,7 @@ fun ManagePleasuresScreen(
                     }
 
                     else -> {
-                        PleasuresList(
+                        ManagePleasuresList(
                             pleasures = uiState.filteredPleasures,
                             onEvent = onEvent
                         )
