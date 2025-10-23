@@ -109,7 +109,8 @@
 
     <!-- Statistics Screen -->
     <string name="statistics_title">Vos Statistiques</string>
-    <string name="statistics_subtitle">Suivez votre progression quotidienne</string>
+    <string name="statistics_header_title">Votre parcours</string>
+    <string name="statistics_header_subtitle">Continuez à cultiver vos petits plaisirs quotidiens</string>
     <string name="statistics_total_pleasures_title">Total</string>
     <string name="statistics_pleasures_subtitle">plaisirs</string>
     <string name="statistics_streak_title">Série</string>
@@ -120,6 +121,13 @@
     <string name="statistics_best_streak">Meilleure série</string>
     <string name="statistics_last_pleasure">Dernier plaisir</string>
     <string name="statistics_this_week">Cette semaine</string>
+    <string name="statistics_average_per_day">Moyenne/jour</string>
+    <string name="statistics_this_month">ce mois</string>
+    <string name="statistics_active_days">Jours actifs</string>
+    <string name="statistics_in_total">au total</string>
+    <string name="statistics_favorite_categories">Catégories favorites</string>
+    <string name="statistics_weekly_average">Moyenne hebdo.</string>
+    <string name="statistics_days_unit">jours</string>
 
     <!-- Social Screen -->
     <string name="social_title">Amis</string>
@@ -133,6 +141,7 @@
     <string name="social_empty_state_subtitle">Ajoutez votre premier ami pour voir ses progrès !</string>
     <string name="social_friend_options_view_stats">Voir les stats</string>
     <string name="social_friend_options_remove">Supprimer l\'ami</string>
+    <string name="social_options">options</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>

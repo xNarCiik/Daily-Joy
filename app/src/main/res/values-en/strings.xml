@@ -108,7 +108,8 @@
 
     <!-- Statistics Screen -->
     <string name="statistics_title">Your Statistics</string>
-    <string name="statistics_subtitle">Track your daily progress</string>
+    <string name="statistics_header_title">Your journey</string>
+    <string name="statistics_header_subtitle">Continue to cultivate your daily small pleasures</string>
     <string name="statistics_total_pleasures_title">Total</string>
     <string name="statistics_pleasures_subtitle">pleasures</string>
     <string name="statistics_streak_title">Streak</string>
@@ -119,6 +120,13 @@
     <string name="statistics_best_streak">Best streak</string>
     <string name="statistics_last_pleasure">Last pleasure</string>
     <string name="statistics_this_week">This week</string>
+    <string name="statistics_average_per_day">Average/day</string>
+    <string name="statistics_this_month">this month</string>
+    <string name="statistics_active_days">Active days</string>
+    <string name="statistics_in_total">in total</string>
+    <string name="statistics_favorite_categories">Favorite categories</string>
+    <string name="statistics_weekly_average">Weekly average</string>
+    <string name="statistics_days_unit">days</string>
 
     <!-- Social Screen -->
     <string name="social_title">Friends</string>
@@ -132,6 +140,7 @@
     <string name="social_empty_state_subtitle">Add your first friend to see their progress!</string>
     <string name="social_friend_options_view_stats">View stats</string>
     <string name="social_friend_options_remove">Remove friend</string>
+    <string name="social_options">options</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Daily Reminder</string>

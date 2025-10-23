@@ -33,18 +33,14 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun AddFriendSection(
+    modifier: Modifier = Modifier,
     username: String,
     isLoading: Boolean,
     error: String?,
     onUsernameChange: (String) -> Unit,
-    onAddFriend: () -> Unit,
-    modifier: Modifier = Modifier
+    onAddFriend: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
+    Column(modifier = modifier) {
         OutlinedTextField(
             value = username,
             onValueChange = onUsernameChange,

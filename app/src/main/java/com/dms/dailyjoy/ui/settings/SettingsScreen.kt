@@ -9,12 +9,10 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -40,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
-import com.dms.dailyjoy.ui.component.ScreenHeader
+import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.settings.component.SettingsClickableItem
 import com.dms.dailyjoy.ui.settings.component.SettingsSectionTitle
 import com.dms.dailyjoy.ui.settings.component.SettingsSwitchItem
@@ -99,21 +97,17 @@ fun SettingsScreen(
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
         item {
-            Column {
-                ScreenHeader(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    title = stringResource(R.string.settings_title),
-                    description = stringResource(R.string.settings_header_subtitle),
-                    icon = Icons.Default.Settings
-                )
-            }
-
+            AppHeader(
+                title = stringResource(R.string.settings_title),
+                subtitle = stringResource(R.string.settings_header_subtitle),
+                icon = Icons.Default.Settings
+            )
         }
 
-        item { Spacer(modifier = Modifier.height(24.dp)) }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
 
         item { SettingsSectionTitle(title = stringResource(id = R.string.settings_notifications_title)) }
 
@@ -144,7 +138,7 @@ fun SettingsScreen(
             }
         }
 
-        item { Spacer(modifier = Modifier.height(24.dp)) }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
 
         item { SettingsSectionTitle(title = stringResource(id = R.string.settings_personalization_title)) }
 
@@ -158,7 +152,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider()
         }
 
         item {
@@ -171,7 +165,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider()
         }
 
         item {
@@ -191,7 +185,7 @@ fun SettingsScreen(
             )
         }
 
-        item { Spacer(modifier = Modifier.height(24.dp)) }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
 
         item { SettingsSectionTitle(title = stringResource(id = R.string.settings_about_title)) }
 
@@ -205,7 +199,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider()
         }
 
         item {
@@ -218,7 +212,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider()
         }
 
         item {
@@ -236,8 +230,6 @@ fun SettingsScreen(
                 showChevron = false
             )
         }
-
-        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 }
 

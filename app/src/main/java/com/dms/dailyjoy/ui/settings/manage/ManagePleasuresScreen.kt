@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.settings.manage.component.AddPleasureBottomSheet
 import com.dms.dailyjoy.ui.settings.manage.component.CategoryFilters
@@ -109,6 +110,7 @@ fun ManagePleasuresScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(horizontal = 16.dp)
         ) {
             CategoryFilters(
                 selectedCategories = uiState.selectedCategories,

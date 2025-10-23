@@ -35,7 +35,7 @@ fun SettingsClickableItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -54,6 +54,7 @@ fun SettingsClickableItem(
             )
             if (subtitle != null) {
                 Spacer(modifier = Modifier.height(2.dp))
+
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.labelMedium,

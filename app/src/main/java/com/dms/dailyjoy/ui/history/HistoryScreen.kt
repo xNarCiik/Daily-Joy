@@ -136,7 +136,7 @@ private fun HistoryContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         WeeklyStatsCard(
@@ -144,7 +144,7 @@ private fun HistoryContent(
             totalCount = 7
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Box(
             modifier = Modifier
@@ -202,7 +202,6 @@ private fun WeeklyStatsCard(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Header avec titre et icône
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -240,7 +239,7 @@ private fun WeeklyStatsCard(
                 }
             }
 
-            // Statistiques
+            // Stats
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom,
@@ -289,7 +288,6 @@ private fun WeeklyStatsCard(
                 }
             }
 
-            // Barre de progression
             LinearProgressIndicator(
                 progress = { animatedProgressValue },
                 modifier = Modifier

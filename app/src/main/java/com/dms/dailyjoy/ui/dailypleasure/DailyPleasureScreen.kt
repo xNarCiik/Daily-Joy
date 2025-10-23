@@ -60,8 +60,8 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.component.PleasureCard
-import com.dms.dailyjoy.ui.component.ScreenHeader
 import com.dms.dailyjoy.ui.settings.manage.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -81,12 +81,11 @@ fun DailyPleasureScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(all = 16.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        // Header
-        ScreenHeader(
+        AppHeader(
             title = stringResource(R.string.daily_pleasure_title),
-            description = uiState.headerMessage,
+            subtitle = uiState.headerMessage,
             icon = Icons.Default.EmojiEvents
         )
 
@@ -314,12 +313,12 @@ private fun DailyPleasureCompletedContent() {
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
-                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f)
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
                         )
                     )
                 )
-                .padding(24.dp)
+                .padding(vertical = 48.dp, horizontal = 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -338,16 +337,9 @@ private fun DailyPleasureCompletedContent() {
                 // Success Animation Container
                 Box(
                     modifier = Modifier
-                        .size(180.dp)
+                        .size(80.dp)
                         .clip(CircleShape)
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                                    MaterialTheme.colorScheme.surface
-                                )
-                            )
-                        ),
+                        .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
                 ) {
                     val successComposition by rememberLottieComposition(
@@ -421,8 +413,7 @@ fun DailyPleasureFlippedScreenPreview() {
             DailyPleasureScreen(
                 uiState = previewDailyPleasureUiState.copy(
                     dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(
-                        isFlipped = true,
-                        isDone = false
+                        isFlipped = true
                     )
                 ),
                 onEvent = {}

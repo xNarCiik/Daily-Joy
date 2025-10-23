@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.LocalFireDepartment
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.settings.manage.component.ErrorState
 import com.dms.dailyjoy.ui.settings.manage.component.LoadingState
 import com.dms.dailyjoy.ui.social.component.AddFriendSection
@@ -116,20 +116,27 @@ private fun FriendsContent(
     onEvent: (SocialEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        SocialHeader(friendsCount = friends.size)
-
-        Spacer(modifier = Modifier.height(12.dp))
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        AppHeader(
+            title = stringResource(R.string.social_header_title),
+            subtitle = stringResource(R.string.social_header_subtitle),
+            icon = Icons.Default.Groups,
+            value = friends.size,
+            valueIcon = Icons.Default.Groups
+        )
 
         AddFriendSection(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
             username = newFriendUsername,
             isLoading = isAddingFriend,
             error = addFriendError,
             onUsernameChange = { onEvent(SocialEvent.OnUsernameChanged(it)) },
             onAddFriend = { onEvent(SocialEvent.OnAddFriendClicked) }
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         if (friends.isEmpty()) {
             EmptyFriendsState(modifier = Modifier.weight(1f))
@@ -146,71 +153,6 @@ private fun FriendsContent(
                         friend = friend,
                         animationDelay = index * 50,
                         onClick = { onFriendClick(friend) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SocialHeader(friendsCount: Int) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .height(100.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                Brush.horizontalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.tertiaryContainer,
-                        MaterialTheme.colorScheme.primaryContainer
-                    )
-                )
-            )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.social_header_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Text(
-                    text = stringResource(R.string.social_header_subtitle),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.Groups,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = "$friendsCount",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -244,7 +186,7 @@ private fun FriendFeedItem(
             .fillMaxWidth()
             .alpha(alpha)
             .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -274,7 +216,6 @@ private fun FriendFeedItem(
                     )
                 }
 
-                // Badge streak sur l'avatar
                 if (friend.streak > 0) {
                     Box(
                         modifier = Modifier
@@ -299,7 +240,6 @@ private fun FriendFeedItem(
             Spacer(modifier = Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                // Header: Nom + Streak + Options
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -332,7 +272,7 @@ private fun FriendFeedItem(
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Options",
+                            contentDescription = stringResource(R.string.social_options),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )
@@ -341,20 +281,23 @@ private fun FriendFeedItem(
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Plaisir du jour (ÉLÉMENT PRINCIPAL - en italique et élégant)
                 Row(
-                    verticalAlignment = Alignment.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         text = if (isCompleted) "✓" else "⏳",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 2.dp)
                     )
 
+                    val pleasureTitle = friend.currentPleasure?.title
+                    val pleasureText =
+                        if (pleasureTitle == null) stringResource(R.string.social_no_pleasure_today) else
+                            "\"${pleasureTitle}\""
                     Text(
-                        text = friend.currentPleasure?.title ?: stringResource(R.string.social_no_pleasure_today),
-                        style = MaterialTheme.typography.bodyLarge.copy(
+                        text = pleasureText,
+                        style = MaterialTheme.typography.bodyMedium.copy(
                             fontStyle = FontStyle.Italic
                         ),
                         fontWeight = FontWeight.Medium,
@@ -364,21 +307,21 @@ private fun FriendFeedItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-/* TODO
-                if (isCompleted && friend.currentPleasure?.completedAt != null) {
-                    Spacer(modifier = Modifier.height(6.dp))
+                /* TODO
+                                if (isCompleted && friend.currentPleasure?.completedAt != null) {
+                                    Spacer(modifier = Modifier.height(6.dp))
 
-                    Text(
-                        text = "Complété à ${friend.currentPleasure.completedAt}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                    )
-                } */
+                                    Text(
+                                        text = "Complété à ${friend.currentPleasure.completedAt}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                    )
+                                } */
             }
         }
 
-        // Divider subtil entre amis
         Spacer(modifier = Modifier.height(16.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()

@@ -52,7 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.component.ScreenHeader
+import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
@@ -92,12 +92,11 @@ fun StatisticsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
-                .padding(all = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
-            // TODO STRINGS
-            ScreenHeader(
-                title = "Votre parcours",
-                description = "Continuez à cultiver vos petits plaisirs quotidiens",
+            AppHeader(
+                title = stringResource(id = R.string.statistics_header_title),
+                subtitle = stringResource(id = R.string.statistics_header_subtitle),
                 icon = Icons.Default.BarChart
             )
 
@@ -142,10 +141,10 @@ fun StatisticsScreen(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    icon = Icons.Default.TrendingUp, // TODO ICONE & Strings
-                    title = "Moyenne/jour",
+                    icon = Icons.Default.TrendingUp, // TODO ICONE
+                    title = stringResource(id = R.string.statistics_average_per_day),
                     value = uiState.averagePerDay.toString(),
-                    subtitle = "ce mois",
+                    subtitle = stringResource(id = R.string.statistics_this_month),
                     gradient = listOf(
                         MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
                         MaterialTheme.colorScheme.secondary.copy(alpha = 0.05f)
@@ -156,9 +155,9 @@ fun StatisticsScreen(
                 StatCard(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.CalendarMonth,
-                    title = "Jours actifs",
+                    title = stringResource(id = R.string.statistics_active_days),
                     value = uiState.activeDays.toString(),
-                    subtitle = "au total",
+                    subtitle = stringResource(id = R.string.statistics_in_total),
                     gradient = listOf(
                         Color(0xFF4CAF50).copy(alpha = 0.15f),
                         Color(0xFF4CAF50).copy(alpha = 0.05f)
@@ -379,7 +378,7 @@ private fun MonthlyProgressCard(monthlyProgress: MonthlyProgress) {
 
 @Composable
 private fun CategoryStatsCard(categories: List<CategoryStat>) {
-    val total = categories.sumOf { it.count } 
+    val total = categories.sumOf { it.count }
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -413,7 +412,7 @@ private fun CategoryStatsCard(categories: List<CategoryStat>) {
                 )
 
                 Text(
-                    text = "Catégories favorites",
+                    text = stringResource(id = R.string.statistics_favorite_categories),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -537,7 +536,7 @@ private fun DetailedStatsCard(detailedStats: DetailedStats) {
 
             StatRow(
                 label = stringResource(R.string.statistics_best_streak),
-                value = "${detailedStats.bestStreak} jours",
+                value = stringResource(id = R.string.statistics_days_unit, detailedStats.bestStreak),
                 icon = Icons.Default.LocalFireDepartment,
                 iconTint = Color(0xFFFF6B6B)
             )
@@ -548,9 +547,9 @@ private fun DetailedStatsCard(detailedStats: DetailedStats) {
                 iconTint = MaterialTheme.colorScheme.primary
             )
             StatRow(
-                label = "Moyenne hebdo.",
+                label = stringResource(id = R.string.statistics_weekly_average),
                 value = detailedStats.weeklyAverage,
-                icon = Icons.Default.TrendingUp,
+                icon = Icons.Default.TrendingUp, // TODO ICON
                 iconTint = MaterialTheme.colorScheme.secondary
             )
             StatRow(
