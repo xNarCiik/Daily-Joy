@@ -16,8 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureViewModel
-import com.dms.dailyjoy.ui.history.HistoryScreen
-import com.dms.dailyjoy.ui.history.HistoryViewModel
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
@@ -27,13 +25,15 @@ import com.dms.dailyjoy.ui.settings.statistics.StatisticsViewModel
 import com.dms.dailyjoy.ui.social.SocialScreen
 import com.dms.dailyjoy.ui.social.SocialViewModel
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
+import com.dms.dailyjoy.ui.weekly.Weekly
+import com.dms.dailyjoy.ui.weekly.WeeklyScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
 object DailyPleasureRoute
 
 @Serializable
-object HistoryRoute
+object WeeklyRoute
 
 @Serializable
 object SocialRoute
@@ -65,11 +65,11 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
             )
         }
 
-        composable<HistoryRoute> {
-            val viewModel: HistoryViewModel = hiltViewModel()
+        composable<WeeklyRoute> {
+            val viewModel: Weekly = hiltViewModel()
             val historyState by viewModel.uiState.collectAsState()
 
-            HistoryScreen(
+            WeeklyScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = historyState,
                 onEvent = viewModel::onEvent

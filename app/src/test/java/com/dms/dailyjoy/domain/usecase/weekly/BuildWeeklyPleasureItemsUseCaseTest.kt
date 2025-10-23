@@ -1,10 +1,10 @@
-package com.dms.dailyjoy.domain.usecase.history
+package com.dms.dailyjoy.domain.usecase.weekly
 
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.domain.model.WeeklyPleasureDetails
-import com.dms.dailyjoy.ui.history.PleasureStatus
-import com.dms.dailyjoy.ui.history.WeeklyPleasureItem
+import com.dms.dailyjoy.ui.weekly.PleasureStatus
+import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

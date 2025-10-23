@@ -122,7 +122,7 @@ private fun FriendsContent(
             .padding(horizontal = 16.dp)
     ) {
         AppHeader(
-            title = stringResource(R.string.social_header_title),
+            title = stringResource(R.string.social_title),
             subtitle = stringResource(R.string.social_header_subtitle),
             icon = Icons.Default.Groups,
             value = friends.size,
@@ -130,7 +130,9 @@ private fun FriendsContent(
         )
 
         AddFriendSection(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
             username = newFriendUsername,
             isLoading = isAddingFriend,
             error = addFriendError,
@@ -192,7 +194,6 @@ private fun FriendFeedItem(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
         ) {
-            // Avatar avec indicateur de streak
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(
                     modifier = Modifier

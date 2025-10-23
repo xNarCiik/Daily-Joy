@@ -1,9 +1,9 @@
-package com.dms.dailyjoy.ui.history
+package com.dms.dailyjoy.ui.weekly
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dms.dailyjoy.domain.usecase.history.BuildWeeklyPleasureItemsUseCase
-import com.dms.dailyjoy.domain.usecase.history.GetWeeklyPleasuresStatsUseCase
+import com.dms.dailyjoy.domain.usecase.weekly.BuildWeeklyPleasureItemsUseCase
+import com.dms.dailyjoy.domain.usecase.weekly.GetWeeklyPleasuresStatsUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetWeeklyPleasuresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,13 +15,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoryViewModel @Inject constructor(
+class Weekly @Inject constructor(
     private val getWeeklyPleasuresUseCase: GetWeeklyPleasuresUseCase,
     private val buildWeeklyPleasureItemsUseCase: BuildWeeklyPleasureItemsUseCase,
     private val getWeeklyPleasuresStatsUseCase: GetWeeklyPleasuresStatsUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HistoryUiState())
+    private val _uiState = MutableStateFlow(WeeklyUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -49,19 +49,19 @@ class HistoryViewModel @Inject constructor(
             }
     }
 
-    fun onEvent(event: HistoryEvent) {
+    fun onEvent(event: WeeklyEvent) {
         when (event) {
-            is HistoryEvent.OnCardClicked -> {
+            is WeeklyEvent.OnCardClicked -> {
                 if (event.item.status != PleasureStatus.LOCKED) {
                     _uiState.update { it.copy(selectedPleasure = event.item.pleasure) }
                 }
             }
 
-            is HistoryEvent.OnBottomSheetDismissed -> {
+            is WeeklyEvent.OnBottomSheetDismissed -> {
                 _uiState.update { it.copy(selectedPleasure = null) }
             }
 
-            is HistoryEvent.OnRetryClicked -> {
+            is WeeklyEvent.OnRetryClicked -> {
                 loadWeeklyHistory()
             }
         }

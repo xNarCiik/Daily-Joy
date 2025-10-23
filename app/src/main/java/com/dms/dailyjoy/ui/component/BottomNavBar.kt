@@ -36,9 +36,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
-import com.dms.dailyjoy.ui.navigation.HistoryRoute
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
 import com.dms.dailyjoy.ui.navigation.SocialRoute
+import com.dms.dailyjoy.ui.navigation.WeeklyRoute
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 
@@ -64,11 +64,11 @@ fun BottomNavBar(
         unselectedIcon = Icons.Outlined.EmojiEvents,
         route = DailyPleasureRoute
     )
-    val historyItem = TabBarItem(
-        title = stringResource(R.string.history_title),
+    val weeklyItem = TabBarItem(
+        title = stringResource(R.string.weekly_title),
         selectedIcon = Icons.Filled.DateRange,
         unselectedIcon = Icons.Outlined.DateRange,
-        route = HistoryRoute
+        route = WeeklyRoute
     )
     val socialItem = TabBarItem(
         title = stringResource(R.string.social_title),
@@ -83,7 +83,7 @@ fun BottomNavBar(
         route = SettingsRoute
     )
 
-    val tabBarItems = listOf(homeItem, historyItem, socialItem, settingsItem)
+    val tabBarItems = listOf(homeItem, weeklyItem, socialItem, settingsItem)
 
     NavigationBar(
         modifier = modifier,

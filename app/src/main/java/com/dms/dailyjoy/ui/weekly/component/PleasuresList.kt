@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.history.component
+package com.dms.dailyjoy.ui.weekly.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -42,11 +42,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.history.PleasureStatus
-import com.dms.dailyjoy.ui.history.WeeklyPleasureItem
+import com.dms.dailyjoy.ui.weekly.PleasureStatus
+import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewHistoryUiState
+import com.dms.dailyjoy.ui.util.previewWeeklyUiState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -261,7 +261,7 @@ private fun PleasuresListPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.padding(16.dp)) {
             PleasuresList(
-                items = previewHistoryUiState.weeklyPleasures,
+                items = previewWeeklyUiState.weeklyPleasures,
                 onCardClicked = {}
             )
         }

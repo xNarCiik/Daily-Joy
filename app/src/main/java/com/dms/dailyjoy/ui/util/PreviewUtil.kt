@@ -7,9 +7,9 @@ import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureUiState
-import com.dms.dailyjoy.ui.history.HistoryUiState
-import com.dms.dailyjoy.ui.history.PleasureStatus
-import com.dms.dailyjoy.ui.history.WeeklyPleasureItem
+import com.dms.dailyjoy.ui.weekly.WeeklyUiState
+import com.dms.dailyjoy.ui.weekly.PleasureStatus
+import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
 import com.dms.dailyjoy.ui.social.Friend
 import com.dms.dailyjoy.ui.social.FriendPleasure
 
@@ -32,7 +32,7 @@ val previewDailyPleasureUiState = DailyPleasureUiState(
     dailyPleasure = previewDailyPleasure
 )
 
-val previewHistoryUiState = HistoryUiState(
+val previewWeeklyUiState = WeeklyUiState(
     isLoading = false,
     weeklyPleasures = listOf(
         WeeklyPleasureItem(

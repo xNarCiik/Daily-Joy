@@ -1,8 +1,8 @@
-package com.dms.dailyjoy.domain.usecase.history
+package com.dms.dailyjoy.domain.usecase.weekly
 
 import com.dms.dailyjoy.domain.model.WeeklyPleasuresStats
-import com.dms.dailyjoy.ui.history.PleasureStatus
-import com.dms.dailyjoy.ui.history.WeeklyPleasureItem
+import com.dms.dailyjoy.ui.weekly.PleasureStatus
+import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
 import javax.inject.Inject
 
 class GetWeeklyPleasuresStatsUseCase @Inject constructor() {

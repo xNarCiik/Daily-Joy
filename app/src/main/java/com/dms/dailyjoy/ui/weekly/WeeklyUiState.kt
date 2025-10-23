@@ -1,8 +1,8 @@
-package com.dms.dailyjoy.ui.history
+package com.dms.dailyjoy.ui.weekly
 
 import com.dms.dailyjoy.data.model.Pleasure
 
-data class HistoryUiState(
+data class WeeklyUiState(
     val isLoading: Boolean = false,
     val weeklyPleasures: List<WeeklyPleasureItem> = emptyList(),
     val error: String? = null,
@@ -27,8 +27,8 @@ enum class PleasureStatus {
     LOCKED
 }
 
-sealed interface HistoryEvent {
-    data class OnCardClicked(val item: WeeklyPleasureItem) : HistoryEvent
-    data object OnBottomSheetDismissed : HistoryEvent
-    data object OnRetryClicked : HistoryEvent
+sealed interface WeeklyEvent {
+    data class OnCardClicked(val item: WeeklyPleasureItem) : WeeklyEvent
+    data object OnBottomSheetDismissed : WeeklyEvent
+    data object OnRetryClicked : WeeklyEvent
 }

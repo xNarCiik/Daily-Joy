@@ -30,7 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
-import com.dms.dailyjoy.ui.navigation.HistoryRoute
+import com.dms.dailyjoy.ui.navigation.WeeklyRoute
 import com.dms.dailyjoy.ui.navigation.NavGraph
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
 import com.dms.dailyjoy.ui.navigation.SocialRoute
@@ -94,7 +94,7 @@ fun MainActivityContent(useDarkTheme: Boolean) {
                     bottomBar = {
                         val visible = currentRoute in listOf(
                             DailyPleasureRoute::class.qualifiedName,
-                            HistoryRoute::class.qualifiedName,
+                            WeeklyRoute::class.qualifiedName,
                             SocialRoute::class.qualifiedName,
                             SettingsRoute::class.qualifiedName
                         )

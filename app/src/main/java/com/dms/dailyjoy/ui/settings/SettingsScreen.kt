@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -152,7 +153,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider()
+            SettingsDivider()
         }
 
         item {
@@ -165,7 +166,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider()
+            SettingsDivider()
         }
 
         item {
@@ -199,7 +200,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider()
+            SettingsDivider()
         }
 
         item {
@@ -212,7 +213,7 @@ fun SettingsScreen(
         }
 
         item {
-            HorizontalDivider()
+            SettingsDivider()
         }
 
         item {
@@ -231,6 +232,14 @@ fun SettingsScreen(
             )
         }
     }
+}
+
+@Composable
+private fun SettingsDivider() {
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+    )
 }
 
 @Composable

@@ -2,17 +2,19 @@
     <string name="app_name">Daily Joy</string>
     <!-- Bottom Nav Bar -->
     <string name="daily_pleasure_title">My Pleasure</string>
-    <string name="history_title">This week</string>
+    <string name="weekly_title">This week</string>
+    <string name="social_title">Your Friends</string>
     <string name="settings_title">Settings</string>
 
     <!-- DailyPleasureCompletedContent -->
     <string name="pleasure_completed_title">Seed of joy planted!</string>
     <string name="pleasure_completed_subtitle">Great! Come back tomorrow to discover your next pleasure.</string>
 
-    <!-- History Screen -->
-    <string name="history_empty">No pleasures found for this week.</string>
-    <string name="start_today">Start today!</string>
+    <!-- Weekly Screen -->
+    <string name="weekly_empty_pleasures">No pleasures found for this week.</string>
+    <string name="weekly_start_today">Start today!</string>
     <string name="weekly_progress">Weekly progress</string>
+    <string name="weekly_track_your_progress">Track your progress</string>
     <string name="pleasures_completed">pleasures completed</string>
     <plurals name="remaining_pleasures_text">
         <item quantity="one">Only %d pleasure left this week!</item>
@@ -129,8 +131,6 @@
     <string name="statistics_days_unit">days</string>
 
     <!-- Social Screen -->
-    <string name="social_title">Friends</string>
-    <string name="social_header_title">Your Friends</string>
     <string name="social_header_subtitle">Share your motivation</string>
     <string name="social_add_friend_label">Add a friend</string>
     <string name="social_username_placeholder">Username</string>

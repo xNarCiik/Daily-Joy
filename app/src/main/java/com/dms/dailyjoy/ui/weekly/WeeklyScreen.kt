@@ -1,4 +1,4 @@
-package com.dms.dailyjoy.ui.history
+package com.dms.dailyjoy.ui.weekly
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -40,17 +40,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.history.component.ModalPleasureCard
-import com.dms.dailyjoy.ui.history.component.PleasuresList
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewHistoryUiState
+import com.dms.dailyjoy.ui.util.previewWeeklyUiState
+import com.dms.dailyjoy.ui.weekly.component.ModalPleasureCard
+import com.dms.dailyjoy.ui.weekly.component.PleasuresList
 
 @Composable
-fun HistoryScreen(
+fun WeeklyScreen(
     modifier: Modifier = Modifier,
-    uiState: HistoryUiState,
-    onEvent: (HistoryEvent) -> Unit
+    uiState: WeeklyUiState,
+    onEvent: (WeeklyEvent) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
@@ -66,11 +66,11 @@ fun HistoryScreen(
             }
 
             uiState.isEmpty -> {
-                EmptyHistoryState(modifier = Modifier.align(Alignment.Center))
+                EmptyWeeklyState(modifier = Modifier.align(Alignment.Center))
             }
 
             else -> {
-                HistoryContent(
+                WeeklyContent(
                     uiState = uiState,
                     onEvent = onEvent
                 )
@@ -79,13 +79,13 @@ fun HistoryScreen(
 
         ModalPleasureCard(
             pleasure = uiState.selectedPleasure,
-            onDismiss = { onEvent(HistoryEvent.OnBottomSheetDismissed) }
+            onDismiss = { onEvent(WeeklyEvent.OnBottomSheetDismissed) }
         )
     }
 }
 
 @Composable
-private fun EmptyHistoryState(modifier: Modifier = Modifier) {
+private fun EmptyWeeklyState(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -108,7 +108,7 @@ private fun EmptyHistoryState(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.history_empty),
+            text = stringResource(R.string.weekly_empty_pleasures),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -118,7 +118,7 @@ private fun EmptyHistoryState(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = stringResource(R.string.start_today),
+            text = stringResource(R.string.weekly_start_today),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -127,10 +127,10 @@ private fun EmptyHistoryState(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun HistoryContent(
+private fun WeeklyContent(
     modifier: Modifier = Modifier,
-    uiState: HistoryUiState,
-    onEvent: (HistoryEvent) -> Unit
+    uiState: WeeklyUiState,
+    onEvent: (WeeklyEvent) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -158,7 +158,7 @@ private fun HistoryContent(
 
         PleasuresList(
             items = uiState.weeklyPleasures,
-            onCardClicked = { item -> onEvent(HistoryEvent.OnCardClicked(item)) }
+            onCardClicked = { item -> onEvent(WeeklyEvent.OnCardClicked(item)) }
         )
     }
 }
@@ -217,7 +217,7 @@ private fun WeeklyStatsCard(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Suivez votre progression",//stringResource(R.string.track_your_progress),
+                        text = stringResource(R.string.weekly_track_your_progress),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                     )
@@ -303,11 +303,11 @@ private fun WeeklyStatsCard(
 
 @LightDarkPreview
 @Composable
-private fun HistoryEmptyPreview() {
+private fun WeeklyEmptyPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            HistoryScreen(
-                uiState = HistoryUiState(),
+            WeeklyScreen(
+                uiState = WeeklyUiState(),
                 onEvent = {}
             )
         }
@@ -316,11 +316,11 @@ private fun HistoryEmptyPreview() {
 
 @LightDarkPreview
 @Composable
-private fun HistoryPreview() {
+private fun WeeklyPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            HistoryScreen(
-                uiState = previewHistoryUiState,
+            WeeklyScreen(
+                uiState = previewWeeklyUiState,
                 onEvent = {}
             )
         }

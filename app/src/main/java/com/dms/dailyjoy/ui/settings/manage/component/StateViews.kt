@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -163,7 +164,9 @@ fun EmptyState(
 @Composable
 private fun LoadingStatePreview() {
     DailyJoyTheme {
-        LoadingState()
+        Surface {
+            LoadingState()
+        }
     }
 }
 
@@ -171,7 +174,9 @@ private fun LoadingStatePreview() {
 @Composable
 private fun ErrorStatePreview() {
     DailyJoyTheme {
-        ErrorState(message = "Failed to load pleasures.", onRetry = {})
+        Surface {
+            ErrorState(message = "Failed to load pleasures.", onRetry = {})
+        }
     }
 }
 
@@ -179,6 +184,8 @@ private fun ErrorStatePreview() {
 @Composable
 private fun EmptyStatePreview() {
     DailyJoyTheme {
-        EmptyState(type = ManagePleasuresTab.SMALL)
+        Surface {
+            EmptyState(type = ManagePleasuresTab.SMALL)
+        }
     }
 }
