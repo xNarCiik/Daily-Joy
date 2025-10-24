@@ -42,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dms.dailyjoy.data.model.Pleasure
-import com.dms.dailyjoy.ui.dailypleasure.component.CategoryChip
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
@@ -278,9 +277,7 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                 .padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val category = pleasure.category
-
-            CategoryChip(category = category, isSelected = true, onClick = {})
+           /* TODO CategoryChip(category = pleasure.category) */
 
             Spacer(Modifier.weight(1f))
 

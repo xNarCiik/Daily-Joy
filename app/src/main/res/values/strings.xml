@@ -26,11 +26,6 @@
     <string name="weekly_progress">Progression hebdomadaire</string>
     <string name="weekly_track_your_progress">Suivez votre progression</string>
     <string name="pleasures_completed">plaisirs complétés</string>
-    <plurals name="remaining_pleasures_text">
-        <item quantity="one">Plus qu\'%d plaisir cette semaine !</item>
-        <item quantity="other">Plus que %d plaisirs cette semaine !</item>
-        <item quantity="many">Plus que %d plaisirs cette semaine !</item>
-    </plurals>
 
     <string name="full_day_monday">Lundi</string>
     <string name="full_day_tuesday">Mardi</string>
@@ -40,10 +35,6 @@
     <string name="full_day_saturday">Samedi</string>
     <string name="full_day_sunday">Dimanche</string>
 
-    <string name="status_completed">Réalisé</string>
-    <string name="status_not_completed">Manqué</string>
-    <string name="status_locked">Verrouillé</string>
-    <string name="status_current_day">Aujourd\'hui</string>
     <string name="label_to_discover">À découvrir</string>
     <string name="status_done_checked">Fait ✓</string>
     <string name="status_missed">Raté</string>
@@ -85,7 +76,6 @@
     <string name="add_pleasure">Ajouter un plaisir</string>
     <string name="small_pleasures">Petits Plaisirs</string>
     <string name="big_pleasures">Gros Plaisirs</string>
-    <string name="pleasures_explanation">Les Petits Plaisirs sont tirés chaque jour. Les Gros Plaisirs sont tirés une fois par semaine.</string>
     <string name="delete_pleasure">Supprimer le plaisir</string>
     <string name="title">Titre</string>
     <string name="description">Description</string>
@@ -98,7 +88,6 @@
     <string name="manage_pleasures_add_pleasure_placeholder_description">Décrivez ce plaisir…</string>
     <string name="manage_pleasures_delete_confirmation_title">Supprimer le plaisir ?</string>
     <string name="manage_pleasures_delete_confirmation_message">Êtes-vous sûr de vouloir supprimer "%1$s" ? Cette action est irréversible.</string>
-    <string name="loading">Chargement…</string>
     <string name="generic_error_message">Une erreur est survenue</string>
     <string name="retry">Réessayer</string>
     <string name="empty_state_title">Aucun plaisir</string>
