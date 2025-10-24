@@ -8,11 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.getLabel
 
 @Composable
 fun CategoryFilters(
@@ -33,7 +33,7 @@ fun CategoryFilters(
                 onClick = { onCategorySelected(category) },
                 label = {
                     Text(
-                        text = category.getLabel(),
+                        text = stringResource(category.label),
                         style = MaterialTheme.typography.labelMedium
                     )
                 }

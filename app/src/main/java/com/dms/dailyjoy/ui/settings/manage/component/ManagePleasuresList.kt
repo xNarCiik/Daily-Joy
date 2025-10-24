@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
@@ -33,12 +32,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
-import com.dms.dailyjoy.data.model.PleasureCategory
+import com.dms.dailyjoy.ui.dailypleasure.component.CategoryChip
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresEvent
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
-import com.dms.dailyjoy.ui.util.toCategoryInfo
 
 @Composable
 fun ManagePleasuresList(
@@ -106,9 +104,11 @@ private fun PleasureItem(
                     }
                 )
 
-                CategoryBadge(
+                // TODO ?
+                CategoryChip(
                     category = pleasure.category,
-                    isEnabled = pleasure.isEnabled
+                    isSelected = pleasure.isEnabled,
+                    onClick = {}
                 )
             }
 
@@ -135,37 +135,6 @@ private fun PleasureItem(
                 .padding(vertical = 12.dp),
             thickness = 0.5.dp,
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
-        )
-    }
-}
-
-@Composable
-private fun CategoryBadge(
-    category: PleasureCategory,
-    isEnabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    val categoryInfo = category.toCategoryInfo()
-
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
-        color = if (isEnabled) {
-            categoryInfo.color.copy(alpha = 0.15f)
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
-        }
-    ) {
-        Text(
-            text = categoryInfo.label,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Medium,
-            color = if (isEnabled) {
-                categoryInfo.color
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-            }
         )
     }
 }

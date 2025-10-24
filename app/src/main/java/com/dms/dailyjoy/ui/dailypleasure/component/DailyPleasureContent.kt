@@ -20,10 +20,14 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,12 +39,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureEvent
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureUiState
@@ -108,7 +115,6 @@ fun DailyPleasureContent(
         targetValue = if (isFlipped && !isDone) 40f else 0f,
         animationSpec = infiniteRepeatable(
             animation = tween(1500, easing = { t ->
-                // Easing personnalisé : pause au début et à la fin
                 when {
                     t < 0.2f -> 0f
                     t < 0.5f -> (t - 0.2f) / 0.3f
@@ -143,14 +149,33 @@ fun DailyPleasureContent(
             .fillMaxWidth()
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+
+        CategorySelector(
+            categories = uiState.availableCategories,
+            selectedCategory = uiState.selectedCategory,
+            onCategorySelected = { category ->
+                onEvent(DailyPleasureEvent.OnCategorySelected(category))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         val scope = rememberCoroutineScope()
 
         val animatedOffsetX = remember { Animatable(0f) }
         val animatedRotationZ = remember { Animatable(0f) }
 
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(vertical = 16.dp)
+        ) {
+            // Glow effect (visible seulement quand la carte est prête)
+            if (!isFlipped || isDone) {
+                CardGlowEffect()
+            }
+
             PleasureCard(
                 modifier = Modifier
                     .draggable(
@@ -189,7 +214,7 @@ fun DailyPleasureContent(
                                     val springSpec = spring<Float>(dampingRatio = 0.7f)
                                     launch { animatedOffsetX.animateTo(0f, springSpec) }
                                     launch { animatedRotationZ.animateTo(0f, springSpec) }
-                                 }
+                                }
                             }
                         }
                     )
@@ -207,6 +232,18 @@ fun DailyPleasureContent(
                 }
             )
         }
+
+        Text(
+            text = when {
+                !isFlipped -> stringResource(R.string.pleasure_tap_card_text)
+                isDone -> ""
+                else -> stringResource(R.string.pleasure_swip_card_text)
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp)
+        )
     }
 
     // Animation Confetti
@@ -227,6 +264,35 @@ fun DailyPleasureContent(
             )
         }
     }
+}
+
+@Composable
+private fun CardGlowEffect() {
+    // Animation de pulse pour le glow
+    val infiniteTransition = rememberInfiniteTransition(label = "glowPulse")
+    val glowScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowScale"
+    )
+
+    // TODO: Implémenter le vrai glow effect avec Canvas ou Modifier.drawBehind
+    // Pour l'instant, placeholder simple
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .height(280.dp)
+            .graphicsLayer {
+                scaleX = glowScale
+                scaleY = glowScale
+                alpha = 0.3f
+            }
+        // TODO: Ajouter le blur et le gradient radial
+    )
 }
 
 @LightDarkPreview

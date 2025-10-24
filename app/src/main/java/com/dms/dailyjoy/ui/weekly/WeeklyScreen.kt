@@ -1,6 +1,5 @@
 package com.dms.dailyjoy.ui.weekly
 
-import WeeklyStatsCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewWeeklyUiState
 import com.dms.dailyjoy.ui.weekly.component.ModalPleasureCard
 import com.dms.dailyjoy.ui.weekly.component.WeeklyPleasuresList
+import com.dms.dailyjoy.ui.weekly.component.WeeklyStatsCard
 
 @Composable
 fun WeeklyScreen(

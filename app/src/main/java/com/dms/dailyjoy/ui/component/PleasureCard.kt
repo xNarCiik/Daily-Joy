@@ -23,7 +23,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dms.dailyjoy.data.model.Pleasure
+import com.dms.dailyjoy.ui.dailypleasure.component.CategoryChip
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
@@ -272,34 +272,12 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                 .padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Category badge with emoji
-            val categoryInfo = pleasure.category.toCategoryInfo()
+            val category = pleasure.category
 
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = categoryInfo.color.copy(alpha = 0.25f)
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = categoryInfo.emoji,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        text = categoryInfo.label,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = categoryInfo.color
-                    )
-                }
-            }
+            CategoryChip(category = category, isSelected = true, onClick = {})
 
             Spacer(Modifier.weight(1f))
 
-            // Decorative emoji circle
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -381,59 +359,6 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                 )
             }
         }
-    }
-}
-
-// Category info avec emojis
-data class CategoryInfo(
-    val label: String,
-    val emoji: String,
-    val color: Color
-)
-
-fun com.dms.dailyjoy.data.model.PleasureCategory.toCategoryInfo(): CategoryInfo {
-    return when (this) {
-        com.dms.dailyjoy.data.model.PleasureCategory.FOOD -> CategoryInfo(
-            label = "Nourriture",
-            emoji = "🍽️",
-            color = Color(0xFFFF9800)
-        )
-
-        com.dms.dailyjoy.data.model.PleasureCategory.ENTERTAINMENT -> CategoryInfo(
-            label = "Divertissement",
-            emoji = "🎬",
-            color = Color(0xFF9C27B0)
-        )
-
-        com.dms.dailyjoy.data.model.PleasureCategory.SOCIAL -> CategoryInfo(
-            label = "Social",
-            emoji = "👥",
-            color = Color(0xFF2196F3)
-        )
-
-        com.dms.dailyjoy.data.model.PleasureCategory.WELLNESS -> CategoryInfo(
-            label = "Bien-être",
-            emoji = "🧘",
-            color = Color(0xFF4CAF50)
-        )
-
-        com.dms.dailyjoy.data.model.PleasureCategory.CREATIVE -> CategoryInfo(
-            label = "Créatif",
-            emoji = "🎨",
-            color = Color(0xFFE91E63)
-        )
-
-        com.dms.dailyjoy.data.model.PleasureCategory.OUTDOOR -> CategoryInfo(
-            label = "Extérieur",
-            emoji = "🌳",
-            color = Color(0xFF009688)
-        )
-
-        else -> CategoryInfo( // TODO OTHERS CATEGORIES
-            label = "Autre",
-            emoji = "✨",
-            color = Color(0xFF607D8B)
-        )
     }
 }
 

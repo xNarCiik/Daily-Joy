@@ -3,6 +3,7 @@ package com.dms.dailyjoy.ui.dailypleasure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
+import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.domain.usecase.GetRandomDailyMessageUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GenerateWeeklyPleasuresUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasureForTodayUseCase
@@ -38,6 +39,10 @@ class DailyPleasureViewModel @Inject constructor(
             is DailyPleasureEvent.OnCardMarkedAsDone -> {
                 markDailyCardAsDone()
             }
+
+            is DailyPleasureEvent.OnCategorySelected -> {
+                updateCategorySelected(event.category)
+            }
         }
     }
 
@@ -55,6 +60,7 @@ class DailyPleasureViewModel @Inject constructor(
             it.copy(
                 isLoading = false,
                 headerMessage = getHeaderMessage(pleasure = pleasure),
+                screenState = getScreenState(pleasure = pleasure),
                 dailyPleasure = pleasure ?: Pleasure()
             )
         }
@@ -62,8 +68,21 @@ class DailyPleasureViewModel @Inject constructor(
 
     private fun getHeaderMessage(pleasure: Pleasure?) = when {
         pleasure?.isDone == true -> "Et si on allez voir ceux des autres en attendant ?"
-        pleasure?.isFlipped == true -> "Swipper vers la droite une fois le plaisir réalisé !" // TODO STRING
+        pleasure?.isFlipped == true -> "Qu'attendons-nous pour le réaliser ?" // TODO STRING
         else -> getRandomDailyMessageUseCase()
+    }
+
+    private fun getScreenState(pleasure: Pleasure?): DailyPleasureScreenState = when {
+        pleasure == null -> DailyPleasureScreenState.Setup
+        pleasure.isDone -> DailyPleasureScreenState.Completed
+        else -> DailyPleasureScreenState.Ready
+    }
+
+
+    private fun updateCategorySelected(category: PleasureCategory) = viewModelScope.launch {
+        _uiState.update {
+            it.copy(selectedCategory = category)
+        }
     }
 
     private fun onDailyCardFlipped() = viewModelScope.launch {
@@ -72,7 +91,7 @@ class DailyPleasureViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 dailyPleasure = updatedPleasure,
-                headerMessage = getHeaderMessage(pleasure = updatedPleasure)
+                headerMessage = getHeaderMessage(pleasure = updatedPleasure),
             )
         }
     }
@@ -83,7 +102,8 @@ class DailyPleasureViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 dailyPleasure = updatedPleasure,
-                headerMessage = getHeaderMessage(pleasure = updatedPleasure)
+                headerMessage = getHeaderMessage(pleasure = updatedPleasure),
+                screenState = getScreenState(pleasure = updatedPleasure)
             )
         }
     }

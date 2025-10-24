@@ -6,7 +6,16 @@
     <string name="social_title">Your Friends</string>
     <string name="settings_title">Settings</string>
 
-    <!-- DailyPleasureCompletedContent -->
+    <!-- DailyPleasure Setup State -->
+    <string name="setup_title">Almost ready to start!</string>
+    <string name="setup_subtitle">You currently have %d pleasures activated\nYou need at least %d to draw your daily card 🎴</string>
+    <string name="setup_button_text">✨ Configure my pleasures</string>
+
+    <!-- DailyPleasure Content -->
+    <string name="pleasure_tap_card_text">Tap to discover your pleasure of the day ✨</string>
+    <string name="pleasure_swip_card_text">Swipe right to validate 👉</string>
+
+    <!-- DailyPleasure Completed Content -->
     <string name="pleasure_completed_title">Seed of joy planted!</string>
     <string name="pleasure_completed_subtitle">Great! Come back tomorrow to discover your next pleasure.</string>
 
@@ -96,6 +105,9 @@
     <string name="big_pleasures_description">Great rewards</string>
     <string name="small_pleasures_empty_state_message">Add your small daily pleasures</string>
     <string name="big_pleasures_empty_state_message">Add your great rewards</string>
+
+    <!-- Category -->
+    <string name="category_all">All</string>
     <string name="category_food">Food</string>
     <string name="category_entertainment">Entertainment</string>
     <string name="category_social">Social</string>
@@ -142,7 +154,9 @@
     <string name="social_empty_state_subtitle">Add your first friend to see their progress!</string>
     <string name="social_friend_options_view_stats">View stats</string>
     <string name="social_friend_options_remove">Remove friend</string>
-    <string name="social_options">options</string>
+    <string name="social_error_username_empty">Username cannot be empty</string>
+    <string name="social_error_add_friend">Could not add this friend</string>
+    <string name="social_error_remove_friend">Error while deleting</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Daily Reminder</string>
@@ -155,8 +169,6 @@
     <string name="notification_permission_dialog_text">To receive daily reminders, you must allow notifications in the application settings.</string>
     <string name="notification_permission_dialog_settings_button">Open settings</string>
 
-    <!-- SocialViewModel -->
-    <string name="social_error_username_empty">Username cannot be empty</string>
-    <string name="social_error_add_friend">Could not add this friend</string>
-    <string name="social_error_remove_friend">Error while deleting</string>
+    <!-- Accessibility-->
+    <string name="accessibility_options">options</string>
 </resources>

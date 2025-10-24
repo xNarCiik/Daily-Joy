@@ -1,5 +1,10 @@
 package com.dms.dailyjoy.ui.dailypleasure
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +27,7 @@ import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureCompletedContent
 import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureContent
+import com.dms.dailyjoy.ui.dailypleasure.component.SetupContent
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasureUiState
@@ -52,22 +58,57 @@ fun DailyPleasureScreen(
                 .weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            when {
-                uiState.isLoading -> {
-                    LoadingState()
-                }
+            AnimatedContent(
+                targetState = uiState.screenState,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(300)) togetherWith
+                            fadeOut(animationSpec = tween(300))
+                },
+                label = "screenStateTransition"
+            ) { state ->
+                when {
+                    uiState.isLoading -> {
+                        LoadingState()
+                    }
 
-                uiState.dailyPleasure.isDone -> {
-                    DailyPleasureCompletedContent()
-                }
+                    state == DailyPleasureScreenState.Setup -> {
+                        SetupContent(
+                            currentPleasureCount = uiState.totalPleasuresCount,
+                            requiredCount = 7, // TODO: Mettre en constante ou config
+                            onConfigureClick = {
+                                // TODO NAV
+                            }
+                        )
+                    }
 
-                else -> {
-                    DailyPleasureContent(
-                        uiState = uiState,
-                        onEvent = onEvent
-                    )
+                    uiState.dailyPleasure.isDone -> {
+                        DailyPleasureCompletedContent()
+                    }
+
+                    else -> {
+                        DailyPleasureContent(
+                            uiState = uiState,
+                            onEvent = onEvent
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun DailyPleasureSetupScreenPreview() {
+    DailyJoyTheme {
+        Surface {
+            DailyPleasureScreen(
+                uiState = previewDailyPleasureUiState.copy(
+                    screenState = DailyPleasureScreenState.Setup,
+                    totalPleasuresCount = 4
+                ),
+                onEvent = {}
+            )
         }
     }
 }

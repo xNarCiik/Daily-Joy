@@ -154,7 +154,7 @@ fun FriendFeedItem(
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(R.string.social_options),
+                            contentDescription = stringResource(R.string.accessibility_options),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(20.dp)
                         )

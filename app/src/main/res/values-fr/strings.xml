@@ -6,7 +6,16 @@
     <string name="social_title">Vos amis</string>
     <string name="settings_title">Paramètres</string>
 
-    <!-- DailyPleasureCompletedContent -->
+    <!-- DailyPleasure Setup State -->
+    <string name="setup_title">Presque prêt à commencer !</string>
+    <string name="setup_subtitle">Tu as actuellement %d plaisirs d\'activé\nIl t\'en faut au moins %d pour tirer ta carte quotidienne 🎴</string>
+    <string name="setup_button_text">✨ Configurer mes plaisirs</string>
+
+    <!-- DailyPleasure Content -->
+    <string name="pleasure_tap_card_text">Tape pour découvrir ton plaisir du jour ✨</string>
+    <string name="pleasure_swip_card_text">Glisse vers la droite pour valider 👉</string>
+
+    <!-- DailyPleasure Completed Content -->
     <string name="pleasure_completed_title">Graine de joie plantée !</string>
     <string name="pleasure_completed_subtitle">Super ! Reviens demain pour découvrir ton prochain plaisir.</string>
 
@@ -97,6 +106,9 @@
     <string name="big_pleasures_description">Grandes récompenses</string>
     <string name="small_pleasures_empty_state_message">Ajoutez vos petits plaisirs quotidiens</string>
     <string name="big_pleasures_empty_state_message">Ajoutez vos grandes récompenses</string>
+
+    <!-- Category -->
+    <string name="category_all">Toutes</string>
     <string name="category_food">Nourriture</string>
     <string name="category_entertainment">Divertissement</string>
     <string name="category_social">Social</string>
@@ -143,7 +155,9 @@
     <string name="social_empty_state_subtitle">Ajoutez votre premier ami pour voir ses progrès !</string>
     <string name="social_friend_options_view_stats">Voir les stats</string>
     <string name="social_friend_options_remove">Supprimer l\'ami</string>
-    <string name="social_options">options</string>
+    <string name="social_error_username_empty">Le nom d\'utilisateur ne peut pas être vide</string>
+    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
+    <string name="social_error_remove_friend">Erreur lors de la suppression</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Rappel quotidien</string>
@@ -156,8 +170,6 @@
     <string name="notification_permission_dialog_text">Pour recevoir des rappels quotidiens, vous devez autoriser les notifications dans les paramètres de l\'application.</string>
     <string name="notification_permission_dialog_settings_button">Ouvrir les paramètres</string>
 
-    <!-- SocialViewModel -->
-    <string name="social_error_username_empty">Le nom d\'utilisateur ne peut pas être vide</string>
-    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
-    <string name="social_error_remove_friend">Erreur lors de la suppression</string>
+    <!-- Accessibility-->
+    <string name="accessibility_options">options</string>
 </resources>

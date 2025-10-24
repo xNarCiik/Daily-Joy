@@ -40,7 +40,6 @@ import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.getLabel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,7 +121,7 @@ fun AddPleasureBottomSheet(
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryNotEditable),
-                    value = category.getLabel(),
+                    value = stringResource(category.label),
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.category)) },
@@ -142,7 +141,7 @@ fun AddPleasureBottomSheet(
                 ) {
                     PleasureCategory.entries.forEach { cat ->
                         DropdownMenuItem(
-                            text = { Text(cat.getLabel()) },
+                            text = { Text(stringResource(cat.label)) },
                             onClick = {
                                 onCategoryChange(cat)
                                 expanded = false
