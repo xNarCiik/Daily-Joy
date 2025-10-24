@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -14,19 +15,38 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,17 +57,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureEvent
@@ -66,8 +90,9 @@ fun DailyPleasureContent(
     onEvent: (DailyPleasureEvent) -> Unit
 ) {
     val isFlipped = uiState.isCardFlipped
-    val isDone = uiState.drawnPleasure?.isDone ?: false
+    val isDone = uiState.dailyPleasure?.isDone ?: false
     var showConfettiAnimation by remember { mutableStateOf(false) }
+    var showCategoryDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -109,7 +134,7 @@ fun DailyPleasureContent(
         }
     }
 
-    // Animation de hint pour swipe (uniquement si flipped et non done)
+    // Animation de hint pour swipe
     val infiniteTransition = rememberInfiniteTransition(label = "swipeHint")
     val hintOffsetX by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -153,12 +178,10 @@ fun DailyPleasureContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        CategorySelector(
-            categories = uiState.availableCategories,
-            selectedCategory = uiState.selectedCategory,
-            onCategorySelected = { category ->
-                onEvent(DailyPleasureEvent.OnCategorySelected(category))
-            }
+        // Category Selector Button
+        CurrentCategoryButton(
+            category = uiState.selectedCategory,
+            onClick = { showCategoryDialog = true }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -172,13 +195,13 @@ fun DailyPleasureContent(
             contentAlignment = Alignment.Center,
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            // Glow effect (visible seulement quand la carte est prête)
             if (!isFlipped || isDone) {
                 CardGlowEffect()
             }
 
             PleasureCard(
                 modifier = Modifier
+                    .clickable { onEvent(DailyPleasureEvent.OnCardClicked) }
                     .draggable(
                         orientation = Orientation.Horizontal,
                         enabled = isFlipped,
@@ -225,7 +248,7 @@ fun DailyPleasureContent(
                         cameraDistance = 8 * density
                         alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
                     },
-                pleasure = uiState.drawnPleasure ?: Pleasure(),
+                pleasure = uiState.dailyPleasure,
                 flipped = uiState.isCardFlipped,
                 durationRotation = rotationCardAnimationDuration,
                 onCardFlipped = {
@@ -248,7 +271,20 @@ fun DailyPleasureContent(
         )
     }
 
-    // Animation Confetti
+    // Category Selection Dialog
+    if (showCategoryDialog) {
+        CategorySelectionDialog(
+            categories = uiState.availableCategories,
+            selectedCategory = uiState.selectedCategory,
+            onCategorySelected = { category ->
+                onEvent(DailyPleasureEvent.OnCategorySelected(category))
+                showCategoryDialog = false
+            },
+            onDismiss = { showCategoryDialog = false }
+        )
+    }
+
+    // Confetti Animation
     val confettiComposition by rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(resId = R.raw.confetti)
     )
@@ -269,8 +305,181 @@ fun DailyPleasureContent(
 }
 
 @Composable
+private fun CurrentCategoryButton(
+    category: PleasureCategory?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (category != null) {
+                Icon(
+                    imageVector = category.icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+
+                Text(
+                    text = stringResource(category.label),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            } else {
+                Text(
+                    text = "Sélectionner une catégorie",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategorySelectionDialog(
+    categories: List<PleasureCategory>,
+    selectedCategory: PleasureCategory?,
+    onCategorySelected: (PleasureCategory) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.daily_pleasure_choose_category),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.height(320.dp)
+                ) {
+                    items(categories, key = { it }) { category ->
+                        CategoryDialogItem(
+                            category = category,
+                            isSelected = category == selectedCategory,
+                            onClick = { onCategorySelected(category) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CategoryDialogItem(
+    category: PleasureCategory,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .height(100.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                if (isSelected) {
+                    Brush.verticalGradient(category.gradientColors)
+                } else {
+                    Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.surfaceContainerHigh,
+                            MaterialTheme.colorScheme.surfaceContainerHigh
+                        )
+                    )
+                }
+            )
+            .clickable(onClick = onClick)
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Icon(
+                    imageVector = category.icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp),
+                    tint = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                AnimatedVisibility(
+                    visible = isSelected,
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.White.copy(alpha = 0.3f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text = stringResource(category.label),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2
+            )
+        }
+    }
+}
+
+@Composable
 private fun CardGlowEffect() {
-    // Animation de pulse pour le glow
     val infiniteTransition = rememberInfiniteTransition(label = "glowPulse")
     val glowScale by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -282,8 +491,6 @@ private fun CardGlowEffect() {
         label = "glowScale"
     )
 
-    // TODO: Implémenter le vrai glow effect avec Canvas ou Modifier.drawBehind
-    // Pour l'instant, placeholder simple
     Box(
         modifier = Modifier
             .fillMaxWidth(0.9f)
@@ -293,7 +500,6 @@ private fun CardGlowEffect() {
                 scaleY = glowScale
                 alpha = 0.3f
             }
-        // TODO: Ajouter le blur et le gradient radial
     )
 }
 
@@ -304,8 +510,9 @@ private fun DailyPleasureContentPreview() {
         DailyPleasureContent(
             uiState = DailyPleasureScreenState.Ready(
                 availableCategories = PleasureCategory.entries,
-                drawnPleasure = previewDailyPleasure,
-                isCardFlipped = true
+                dailyPleasure = previewDailyPleasure,
+                isCardFlipped = true,
+                selectedCategory = PleasureCategory.entries.first()
             ),
             onEvent = {}
         )

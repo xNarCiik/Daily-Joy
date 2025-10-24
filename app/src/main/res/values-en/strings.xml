@@ -12,6 +12,7 @@
     <string name="setup_button_text">✨ Configure my pleasures</string>
 
     <!-- DailyPleasure Content -->
+    <string name="daily_pleasure_choose_category">Choose a category</string>
     <string name="pleasure_tap_card_text">Tap to discover your pleasure of the day ✨</string>
     <string name="pleasure_swip_card_text">Swipe right to validate 👉</string>
 

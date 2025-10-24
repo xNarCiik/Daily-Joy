@@ -3,15 +3,15 @@ package com.dms.dailyjoy.ui.dailypleasure
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.PleasureCategory
-import com.dms.dailyjoy.domain.usecase.GetRandomDailyMessageUseCase
-import com.dms.dailyjoy.domain.usecase.dailypleasure.DrawDailyPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.dailypleasure.GetDailyPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.dailypleasure.GetRandomPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.dailypleasure.SaveDailyPleasureUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasuresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,48 +19,52 @@ const val MinimumPleasuresCount = 7
 
 @HiltViewModel
 class DailyPleasureViewModel @Inject constructor(
-    private val getRandomDailyMessageUseCase: GetRandomDailyMessageUseCase,
     private val getPleasuresUseCase: GetPleasuresUseCase,
-    private val drawDailyPleasureUseCase: DrawDailyPleasureUseCase
+    private val getRandomPleasureUseCase: GetRandomPleasureUseCase,
+    private val getDailyPleasureUseCase: GetDailyPleasureUseCase,
+    private val saveDailyPleasureUseCase: SaveDailyPleasureUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DailyPleasureUiState())
     val uiState: StateFlow<DailyPleasureUiState> = _uiState.asStateFlow()
 
     init {
-        initializeScreen()
+        checkInitialState()
     }
 
-    private fun initializeScreen() {
-        getPleasuresUseCase().onEach { pleasuresList ->
-            val enabledPleasures = pleasuresList.count { it.isEnabled }
-            if (enabledPleasures < MinimumPleasuresCount) {
+    fun checkInitialState() {
+        viewModelScope.launch {
+            val pleasures = getPleasuresUseCase().first()
+
+            val enabledPleasures = pleasures.count { it.isEnabled }
+            val isSetupRequired = enabledPleasures < MinimumPleasuresCount
+
+            if (isSetupRequired) {
                 _uiState.value =
                     DailyPleasureUiState(
                         screenState = DailyPleasureScreenState.SetupRequired(
                             pleasureCount = enabledPleasures
-                        ),// TODO STRING
-                        headerMessage = "Avant de tirer votre carte, vous devez ajouter au moins $MinimumPleasuresCount plaisirs"
+                        )
                     )
-            } else {
-                loadReadyState()
+                return@launch
             }
-        }.launchIn(viewModelScope)
-    }
 
-    private fun loadReadyState() = viewModelScope.launch {
-        _uiState.value = DailyPleasureUiState(
-            screenState = DailyPleasureScreenState.Ready(
-                availableCategories = PleasureCategory.entries
-            ),
-            headerMessage = getRandomDailyMessageUseCase()
-        )
+            val dailPleasure = getDailyPleasureUseCase().first()
+            _uiState.value = DailyPleasureUiState(
+                screenState = DailyPleasureScreenState.Ready(
+                    availableCategories = PleasureCategory.entries,
+                    dailyPleasure = dailPleasure,
+                    isCardFlipped = dailPleasure != null
+                )
+            )
+        }
     }
 
     fun onEvent(event: DailyPleasureEvent) {
         when (event) {
+            is DailyPleasureEvent.Reload -> checkInitialState()
             is DailyPleasureEvent.OnCategorySelected -> handleCategorySelection(event.category)
-            is DailyPleasureEvent.OnDrawCardClicked -> handleDrawCard()
+            is DailyPleasureEvent.OnCardClicked -> handleDrawCard()
             is DailyPleasureEvent.OnCardFlipped -> handleCardFlipped()
             is DailyPleasureEvent.OnCardMarkedAsDone -> handleCardMarkedAsDone()
         }
@@ -75,14 +79,14 @@ class DailyPleasureViewModel @Inject constructor(
         }
     }
 
-    private fun handleDrawCard() {
+    private fun handleDrawCard() = viewModelScope.launch {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready && currentState.drawnPleasure == null) {
-            drawDailyPleasureUseCase(currentState.selectedCategory).onEach { pleasure ->
-                _uiState.value = _uiState.value.copy(
-                    screenState = currentState.copy(drawnPleasure = pleasure)
-                )
-            }.launchIn(viewModelScope)
+        if (currentState is DailyPleasureScreenState.Ready && currentState.dailyPleasure == null) {
+            val randomPleasure = getRandomPleasureUseCase(currentState.selectedCategory).first()
+            saveDailyPleasureUseCase(randomPleasure)
+            _uiState.value = _uiState.value.copy(
+                screenState = currentState.copy(dailyPleasure = randomPleasure)
+            )
         }
     }
 
@@ -97,7 +101,7 @@ class DailyPleasureViewModel @Inject constructor(
 
     private fun handleCardMarkedAsDone() {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready && currentState.drawnPleasure != null) {
+        if (currentState is DailyPleasureScreenState.Ready && currentState.dailyPleasure != null) {
             _uiState.value = _uiState.value.copy(
                 screenState = DailyPleasureScreenState.Completed
             )

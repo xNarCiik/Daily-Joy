@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PleasureCard(
     modifier: Modifier = Modifier,
-    pleasure: Pleasure,
+    pleasure: Pleasure?,
     flipped: Boolean,
     durationRotation: Int,
     onCardFlipped: () -> Unit
@@ -68,6 +68,21 @@ fun PleasureCard(
         if (isFlipped != flipped) {
             shouldAnimate = false
             isFlipped = flipped
+        }
+    }
+
+    LaunchedEffect(pleasure) {
+        if (pleasure != null) {
+            if (!isFlipped && !isJumping) {
+                scope.launch {
+                    isJumping = true
+                    delay(250)
+                    shouldAnimate = true
+                    isFlipped = true
+                    delay(100)
+                    isJumping = false
+                }
+            }
         }
     }
 
@@ -117,27 +132,17 @@ fun PleasureCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        ),
-        onClick = {
-            if (!isFlipped && !isJumping) {
-                scope.launch {
-                    isJumping = true
-                    delay(250)
-                    shouldAnimate = true
-                    isFlipped = true
-                    delay(100)
-                    isJumping = false
-                }
-            }
-        }
+        )
     ) {
         if (rotation < 90f) {
             PleasureBackCard()
         } else {
-            PleasureCardContent(
-                modifier = Modifier.graphicsLayer { rotationY = 180f },
-                pleasure = pleasure
-            )
+            pleasure?.let {
+                PleasureCardContent(
+                    modifier = Modifier.graphicsLayer { rotationY = 180f },
+                    pleasure = it
+                )
+            }
         }
     }
 }

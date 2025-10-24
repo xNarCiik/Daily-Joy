@@ -18,10 +18,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.AppHeader
@@ -40,6 +44,20 @@ fun DailyPleasureScreen(
     onEvent: (DailyPleasureEvent) -> Unit = {},
     navigateToManagePleasures: () -> Unit = {}
 ) {
+    // Observe lifecycle events to refresh the state when the screen is resumed
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                onEvent(DailyPleasureEvent.Reload)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -122,7 +140,7 @@ fun DailyPleasureNotCompletedScreenPreview() {
                 uiState = DailyPleasureUiState(
                     screenState = DailyPleasureScreenState.Ready(
                         availableCategories = PleasureCategory.entries,
-                        drawnPleasure = previewDailyPleasure
+                        dailyPleasure = previewDailyPleasure
                     )
                 )
             )
@@ -149,7 +167,7 @@ fun DailyPleasureFlippedScreenPreview() {
                 uiState = DailyPleasureUiState(
                     screenState = DailyPleasureScreenState.Ready(
                         availableCategories = PleasureCategory.entries,
-                        drawnPleasure = previewDailyPleasure,
+                        dailyPleasure = previewDailyPleasure,
                         isCardFlipped = true
                     )
                 )

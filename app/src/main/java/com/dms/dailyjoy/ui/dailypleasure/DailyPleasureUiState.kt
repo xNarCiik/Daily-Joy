@@ -16,7 +16,7 @@ sealed interface DailyPleasureScreenState {
     data class Ready(
         val availableCategories: List<PleasureCategory> = emptyList(),
         val selectedCategory: PleasureCategory = PleasureCategory.ALL,
-        val drawnPleasure: Pleasure? = null,
+        val dailyPleasure: Pleasure? = null,
         val isCardFlipped: Boolean = false
     ) : DailyPleasureScreenState
 
@@ -24,8 +24,9 @@ sealed interface DailyPleasureScreenState {
 }
 
 sealed interface DailyPleasureEvent {
+    data object Reload : DailyPleasureEvent
     data class OnCategorySelected(val category: PleasureCategory) : DailyPleasureEvent
-    data object OnDrawCardClicked : DailyPleasureEvent
+    data object OnCardClicked : DailyPleasureEvent
     data object OnCardFlipped : DailyPleasureEvent
     data object OnCardMarkedAsDone : DailyPleasureEvent
 }

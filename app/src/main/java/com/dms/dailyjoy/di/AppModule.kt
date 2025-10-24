@@ -5,7 +5,7 @@ import android.content.res.Resources
 import com.dms.dailyjoy.domain.repository.DailyMessageRepository
 import com.dms.dailyjoy.domain.repository.PleasureRepository
 import com.dms.dailyjoy.domain.usecase.GetRandomDailyMessageUseCase
-import com.dms.dailyjoy.domain.usecase.dailypleasure.DrawDailyPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.dailypleasure.GetRandomPleasureUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasuresUseCase
 import dagger.Module
 import dagger.Provides
@@ -41,7 +41,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDrawDailyPleasureUseCase(repository: PleasureRepository) =
-        DrawDailyPleasureUseCase(repository = repository)
+        GetRandomPleasureUseCase(repository = repository)
 
     @Provides
     @Singleton
