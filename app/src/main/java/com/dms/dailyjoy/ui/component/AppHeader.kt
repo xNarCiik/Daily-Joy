@@ -124,7 +124,7 @@ fun AppHeader(
 private fun AppHeaderPreview() {
     DailyJoyTheme {
         Surface {
-            AppHeader(title = "This is a title", subtitle = "This is a long subtitle. This is a long subtitle.", icon = Icons.Filled.Settings)
+            AppHeader(title = "This is a title", subtitle = "This is a long subtitle. This is a long subtitle. This is a very long subtitle", icon = Icons.Filled.Settings)
         }
     }
 }

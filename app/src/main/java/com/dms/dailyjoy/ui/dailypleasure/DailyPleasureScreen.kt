@@ -23,20 +23,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureCompletedContent
 import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureContent
-import com.dms.dailyjoy.ui.dailypleasure.component.SetupContent
+import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureSetupContent
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewDailyPleasureUiState
+import com.dms.dailyjoy.ui.util.previewDailyPleasure
 
 @Composable
 fun DailyPleasureScreen(
     modifier: Modifier = Modifier,
     uiState: DailyPleasureUiState,
-    onEvent: (DailyPleasureEvent) -> Unit
+    onEvent: (DailyPleasureEvent) -> Unit = {},
+    navigateToManagePleasures: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -66,30 +68,28 @@ fun DailyPleasureScreen(
                 },
                 label = "screenStateTransition"
             ) { state ->
-                when {
-                    uiState.isLoading -> {
+                when (state) {
+                    is DailyPleasureScreenState.Loading -> {
                         LoadingState()
                     }
 
-                    state == DailyPleasureScreenState.Setup -> {
-                        SetupContent(
-                            currentPleasureCount = uiState.totalPleasuresCount,
-                            requiredCount = 7, // TODO: Mettre en constante ou config
-                            onConfigureClick = {
-                                // TODO NAV
-                            }
+                    is DailyPleasureScreenState.SetupRequired -> {
+                        DailyPleasureSetupContent(
+                            currentPleasureCount = state.pleasureCount,
+                            requiredCount = MinimumPleasuresCount,
+                            onConfigureClick = navigateToManagePleasures
                         )
                     }
 
-                    uiState.dailyPleasure.isDone -> {
-                        DailyPleasureCompletedContent()
-                    }
-
-                    else -> {
+                    is DailyPleasureScreenState.Ready -> {
                         DailyPleasureContent(
-                            uiState = uiState,
+                            uiState = state,
                             onEvent = onEvent
                         )
+                    }
+
+                    is DailyPleasureScreenState.Completed -> {
+                        DailyPleasureCompletedContent()
                     }
                 }
             }
@@ -103,11 +103,11 @@ fun DailyPleasureSetupScreenPreview() {
     DailyJoyTheme {
         Surface {
             DailyPleasureScreen(
-                uiState = previewDailyPleasureUiState.copy(
-                    screenState = DailyPleasureScreenState.Setup,
-                    totalPleasuresCount = 4
-                ),
-                onEvent = {}
+                uiState = DailyPleasureUiState(
+                    screenState = DailyPleasureScreenState.SetupRequired(
+                        pleasureCount = 1
+                    )
+                )
             )
         }
     }
@@ -119,8 +119,12 @@ fun DailyPleasureNotCompletedScreenPreview() {
     DailyJoyTheme {
         Surface {
             DailyPleasureScreen(
-                uiState = previewDailyPleasureUiState,
-                onEvent = {}
+                uiState = DailyPleasureUiState(
+                    screenState = DailyPleasureScreenState.Ready(
+                        availableCategories = PleasureCategory.entries,
+                        drawnPleasure = previewDailyPleasure
+                    )
+                )
             )
         }
     }
@@ -131,12 +135,7 @@ fun DailyPleasureNotCompletedScreenPreview() {
 fun DailyPleasureCompletedScreenPreview() {
     DailyJoyTheme {
         Surface {
-            DailyPleasureScreen(
-                uiState = previewDailyPleasureUiState.copy(
-                    dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(isDone = true)
-                ),
-                onEvent = {}
-            )
+            DailyPleasureScreen(uiState = DailyPleasureUiState(screenState = DailyPleasureScreenState.Completed))
         }
     }
 }
@@ -147,12 +146,13 @@ fun DailyPleasureFlippedScreenPreview() {
     DailyJoyTheme {
         Surface {
             DailyPleasureScreen(
-                uiState = previewDailyPleasureUiState.copy(
-                    dailyPleasure = previewDailyPleasureUiState.dailyPleasure.copy(
-                        isFlipped = true
+                uiState = DailyPleasureUiState(
+                    screenState = DailyPleasureScreenState.Ready(
+                        availableCategories = PleasureCategory.entries,
+                        drawnPleasure = previewDailyPleasure,
+                        isCardFlipped = true
                     )
-                ),
-                onEvent = {}
+                )
             )
         }
     }

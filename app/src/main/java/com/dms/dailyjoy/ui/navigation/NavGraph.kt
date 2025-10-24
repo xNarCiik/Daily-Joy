@@ -61,7 +61,8 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
             DailyPleasureScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = dailyPleasureUiState,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                navigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
             )
         }
 

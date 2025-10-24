@@ -2,9 +2,9 @@ package com.dms.dailyjoy.domain.usecase.weekly
 
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.WeeklyPleasureDetails
+import com.dms.dailyjoy.ui.util.getCurrentDayIndex
 import com.dms.dailyjoy.ui.weekly.PleasureStatus
 import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
-import com.dms.dailyjoy.ui.util.getCurrentDayIndex
 import javax.inject.Inject
 
 class BuildWeeklyPleasureItemsUseCase @Inject constructor() {
@@ -26,9 +26,9 @@ class BuildWeeklyPleasureItemsUseCase @Inject constructor() {
             val detail = details.find { it.dayOfWeek == dayOfWeek }
             val currentDayIndex = dayOfWeek
 
-            val status = when {
+            val status = when {  // TODO IS FLIPPING
                 currentDayIndex < todayIndex -> if (detail?.completed == true) PleasureStatus.PAST_COMPLETED else PleasureStatus.PAST_NOT_COMPLETED
-                currentDayIndex == todayIndex -> if (detail?.completed == true) PleasureStatus.CURRENT_COMPLETED else if (detail?.pleasure?.isFlipped == true) PleasureStatus.CURRENT_REVEALED else PleasureStatus.LOCKED
+                currentDayIndex == todayIndex -> if (detail?.completed == true) PleasureStatus.CURRENT_COMPLETED else if (true) PleasureStatus.CURRENT_REVEALED else PleasureStatus.LOCKED
                 else -> PleasureStatus.LOCKED
             }
 

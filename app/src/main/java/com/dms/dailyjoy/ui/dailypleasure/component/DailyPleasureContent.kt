@@ -47,13 +47,14 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureEvent
-import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureUiState
+import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreenState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewDailyPleasureUiState
+import com.dms.dailyjoy.ui.util.previewDailyPleasure
 import com.dms.dailyjoy.ui.util.rotationCardAnimationDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -61,11 +62,11 @@ import kotlin.math.abs
 
 @Composable
 fun DailyPleasureContent(
-    uiState: DailyPleasureUiState,
+    uiState: DailyPleasureScreenState.Ready,
     onEvent: (DailyPleasureEvent) -> Unit
 ) {
-    val isFlipped = uiState.dailyPleasure.isFlipped
-    val isDone = uiState.dailyPleasure.isDone
+    val isFlipped = uiState.isCardFlipped
+    val isDone = uiState.drawnPleasure?.isDone ?: false
     var showConfettiAnimation by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -224,7 +225,8 @@ fun DailyPleasureContent(
                         cameraDistance = 8 * density
                         alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
                     },
-                pleasure = uiState.dailyPleasure,
+                pleasure = uiState.drawnPleasure ?: Pleasure(),
+                flipped = uiState.isCardFlipped,
                 durationRotation = rotationCardAnimationDuration,
                 onCardFlipped = {
                     showConfettiAnimation = true
@@ -300,7 +302,11 @@ private fun CardGlowEffect() {
 private fun DailyPleasureContentPreview() {
     DailyJoyTheme {
         DailyPleasureContent(
-            uiState = previewDailyPleasureUiState,
+            uiState = DailyPleasureScreenState.Ready(
+                availableCategories = PleasureCategory.entries,
+                drawnPleasure = previewDailyPleasure,
+                isCardFlipped = true
+            ),
             onEvent = {}
         )
     }

@@ -8,7 +8,7 @@
 
     <!-- DailyPleasure Setup State -->
     <string name="setup_title">Almost ready to start!</string>
-    <string name="setup_subtitle">You currently have %d pleasures activated\nYou need at least %d to draw your daily card 🎴</string>
+    <string name="setup_subtitle">You currently have %d pleasures selected\n\You need at least %d to draw your daily card 🎴</string>
     <string name="setup_button_text">✨ Configure my pleasures</string>
 
     <!-- DailyPleasure Content -->

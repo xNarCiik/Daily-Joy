@@ -6,12 +6,11 @@ import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.data.model.PleasureType
-import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureUiState
-import com.dms.dailyjoy.ui.weekly.WeeklyUiState
-import com.dms.dailyjoy.ui.weekly.PleasureStatus
-import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
 import com.dms.dailyjoy.ui.social.Friend
 import com.dms.dailyjoy.ui.social.FriendPleasure
+import com.dms.dailyjoy.ui.weekly.PleasureStatus
+import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
+import com.dms.dailyjoy.ui.weekly.WeeklyUiState
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -22,14 +21,7 @@ val previewDailyPleasure = Pleasure(
     title = "Pleasure Title",
     description = "Pleasure Description",
     type = PleasureType.BIG,
-    category = PleasureCategory.CREATIVE,
-    isFlipped = true
-)
-
-val previewDailyPleasureUiState = DailyPleasureUiState(
-    isLoading = false,
-    headerMessage = "Et si aujourd'hui, on prenait le temps de...",
-    dailyPleasure = previewDailyPleasure
+    category = PleasureCategory.CREATIVE
 )
 
 val previewWeeklyUiState = WeeklyUiState(

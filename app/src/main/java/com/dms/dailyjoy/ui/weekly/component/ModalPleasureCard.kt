@@ -69,7 +69,8 @@ fun ModalPleasureCard(
                         modifier = Modifier
                             .offset(y = 40.dp)
                             .clickable(enabled = false) {},
-                        pleasure = it.copy(isFlipped = true),
+                        pleasure = it,
+                        flipped = true,
                         durationRotation = 0,
                         onCardFlipped = {}
                     )

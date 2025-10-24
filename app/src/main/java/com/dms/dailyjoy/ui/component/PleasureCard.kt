@@ -54,19 +54,20 @@ import kotlinx.coroutines.launch
 fun PleasureCard(
     modifier: Modifier = Modifier,
     pleasure: Pleasure,
+    flipped: Boolean,
     durationRotation: Int,
     onCardFlipped: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
-    var isFlipped by remember { mutableStateOf(pleasure.isFlipped) }
+    var isFlipped by remember { mutableStateOf(flipped) }
     var isJumping by remember { mutableStateOf(false) }
     var shouldAnimate by remember { mutableStateOf(false) }
 
-    LaunchedEffect(pleasure) {
-        if (isFlipped != pleasure.isFlipped) {
+    LaunchedEffect(flipped) {
+        if (isFlipped != flipped) {
             shouldAnimate = false
-            isFlipped = pleasure.isFlipped
+            isFlipped = flipped
         }
     }
 
@@ -82,7 +83,7 @@ fun PleasureCard(
         },
         label = "rotationAnimation",
         finishedListener = { finalValue ->
-            if (finalValue == 180f && !pleasure.isFlipped) {
+            if (finalValue == 180f && !flipped) {
                 onCardFlipped()
             }
             shouldAnimate = false
@@ -367,8 +368,9 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
 private fun NotFlippedPleasureCardPreview() {
     DailyJoyTheme {
         PleasureCard(
-            pleasure = previewDailyPleasure.copy(isFlipped = false),
+            pleasure = previewDailyPleasure,
             durationRotation = 0,
+            flipped = false,
             onCardFlipped = {}
         )
     }
@@ -381,6 +383,7 @@ private fun FlippedPleasureCardPreview() {
         PleasureCard(
             pleasure = previewDailyPleasure,
             durationRotation = 0,
+            flipped = true,
             onCardFlipped = {}
         )
     }
