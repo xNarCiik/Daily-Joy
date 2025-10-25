@@ -12,4 +12,5 @@ interface PleasureRepository {
     suspend fun insert(pleasure: Pleasure)
     suspend fun update(pleasure: Pleasure)
     suspend fun delete(pleasure: Pleasure)
+    suspend fun saveHistoryEntry(pleasure: Pleasure)
 }

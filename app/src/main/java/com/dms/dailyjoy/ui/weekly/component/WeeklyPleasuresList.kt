@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.HighlightOff
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,12 +41,67 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
-import com.dms.dailyjoy.ui.social.PleasureStatus
+import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewWeeklyUiState
 import kotlinx.coroutines.delay
-import kotlin.collections.forEachIndexed
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
+private enum class ItemStatus {
+    COMPLETED,
+    MISSED,
+    IN_PROGRESS
+}
+
+@Composable
+private fun getItemStatus(item: PleasureHistoryEntry): ItemStatus {
+    val calendar = Calendar.getInstance()
+    val today = calendar.get(Calendar.DAY_OF_YEAR)
+    val year = calendar.get(Calendar.YEAR)
+
+    calendar.timeInMillis = item.dateDrawn
+    val itemDay = calendar.get(Calendar.DAY_OF_YEAR)
+    val itemYear = calendar.get(Calendar.YEAR)
+
+    val isToday = today == itemDay && year == itemYear
+
+    return when {
+        item.isCompleted -> ItemStatus.COMPLETED
+        !isToday -> ItemStatus.MISSED
+        else -> ItemStatus.IN_PROGRESS
+    }
+}
+
+@Composable
+private fun getDayText(dateDrawn: Long): String {
+    val calendar = Calendar.getInstance()
+    val today = calendar.clone() as Calendar
+
+    calendar.timeInMillis = dateDrawn
+
+    val isToday = today.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+            today.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
+
+    if (isToday) {
+        return "Aujourd'hui"
+    }
+
+    val yesterday = Calendar.getInstance()
+    yesterday.add(Calendar.DAY_OF_YEAR, -1)
+    val isYesterday = yesterday.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+            yesterday.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
+
+    if (isYesterday) {
+        return "Hier"
+    }
+
+    val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+    return dateFormat.format(Date(dateDrawn)).replaceFirstChar { it.uppercase() }
+}
+
 
 @Composable
 fun WeeklyPleasuresList(
@@ -88,21 +142,21 @@ private fun AnimatedPleasureItem(
         label = "alpha"
     )
 
-    val isLocked = item.status == PleasureStatus.LOCKED
-    val day = stringResource(id = item.dayNameRes)
+    val status = getItemStatus(item)
+    val day = getDayText(item.dateDrawn)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .alpha(alpha)
-            .clickable(enabled = !isLocked) { onClick() }
+            .clickable { onClick() }
             .padding(vertical = 14.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
         ) {
-            StatusIcon(status = item.status)
+            StatusIcon(status = status)
 
             Spacer(modifier = Modifier.width(14.dp))
 
@@ -118,31 +172,21 @@ private fun AnimatedPleasureItem(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-
-                    if (!isLocked) {
-                        StatusBadge(status = item.status)
-                    }
+                    StatusBadge(status = status)
                 }
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Titre du plaisir (en italique pour cohérence)
-                item.pleasure?.let { pleasure ->
-                    Text(
-                        text = if (isLocked) stringResource(R.string.label_to_discover) else pleasure.title,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontStyle = if (!isLocked) FontStyle.Italic else FontStyle.Normal
-                        ),
-                        fontWeight = FontWeight.Medium,
-                        color = if (isLocked) {
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Text(
+                    text = item.pleasureTitle,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontStyle = FontStyle.Italic
+                    ),
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
 
@@ -160,30 +204,24 @@ private fun AnimatedPleasureItem(
 
 @Composable
 private fun StatusIcon(
-    status: PleasureStatus,
+    status: ItemStatus,
     modifier: Modifier = Modifier
 ) {
     val (icon, tint, backgroundColor) = when (status) {
-        PleasureStatus.LOCKED -> Triple(
-            Icons.Default.Lock,
-            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-            MaterialTheme.colorScheme.surfaceVariant
-        )
-
-        PleasureStatus.PAST_COMPLETED, PleasureStatus.CURRENT_COMPLETED -> Triple(
+        ItemStatus.COMPLETED -> Triple(
             Icons.Default.CheckCircle,
             MaterialTheme.colorScheme.primary,
             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
         )
 
-        PleasureStatus.PAST_NOT_COMPLETED -> Triple(
+        ItemStatus.MISSED -> Triple(
             Icons.Default.HighlightOff,
             MaterialTheme.colorScheme.error,
             MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
         )
 
-        else -> Triple(
-            Icons.Default.CheckCircle,
+        ItemStatus.IN_PROGRESS -> Triple(
+            Icons.Default.CheckCircle, // Placeholder icon
             MaterialTheme.colorScheme.secondary,
             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
         )
@@ -196,7 +234,7 @@ private fun StatusIcon(
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        if (status == PleasureStatus.CURRENT_REVEALED) {
+        if (status == ItemStatus.IN_PROGRESS) {
             CircularProgressIndicator(
                 modifier = Modifier.size(22.dp),
                 strokeWidth = 2.dp,
@@ -215,20 +253,18 @@ private fun StatusIcon(
 
 @Composable
 private fun StatusBadge(
-    status: PleasureStatus,
+    status: ItemStatus,
     modifier: Modifier = Modifier
 ) {
-    val (text, color) = when (status) {
-        PleasureStatus.PAST_COMPLETED, PleasureStatus.CURRENT_COMPLETED ->
-            stringResource(R.string.status_done_checked) to MaterialTheme.colorScheme.primary
+    val (textRes, color) = when (status) {
+        ItemStatus.COMPLETED ->
+            R.string.status_done_checked to MaterialTheme.colorScheme.primary
 
-        PleasureStatus.PAST_NOT_COMPLETED ->
-            stringResource(R.string.status_missed) to MaterialTheme.colorScheme.error
+        ItemStatus.MISSED ->
+            R.string.status_missed to MaterialTheme.colorScheme.error
 
-        PleasureStatus.CURRENT_REVEALED ->
-            stringResource(R.string.status_in_progress) to MaterialTheme.colorScheme.secondary
-
-        else -> return
+        ItemStatus.IN_PROGRESS ->
+            R.string.status_in_progress to MaterialTheme.colorScheme.secondary
     }
 
     Box(
@@ -238,7 +274,7 @@ private fun StatusBadge(
             .padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
         Text(
-            text = text,
+            text = stringResource(textRes),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.SemiBold,
             color = color
@@ -251,8 +287,34 @@ private fun StatusBadge(
 private fun WeeklyPleasuresListPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
+            val previewItems = listOf(
+                PleasureHistoryEntry(
+                    id = 1,
+                    dateDrawn = System.currentTimeMillis() - 86400000 * 2, // 2 days ago
+                    isCompleted = true,
+                    pleasureTitle = "Aller au cinéma",
+                    pleasureDescription = "Et si on se faisait un bon film ?",
+                    category = PleasureCategory.ALL
+                ),
+                PleasureHistoryEntry(
+                    id = 2,
+                    dateDrawn = System.currentTimeMillis() - 86400000, // Yesterday
+                    isCompleted = false,
+                    pleasureTitle = "Faire une bouffe XXL",
+                    pleasureDescription = "Ce soir, on mange sans regrêt",
+                    category = PleasureCategory.ALL
+                ),
+                PleasureHistoryEntry(
+                    id = 3,
+                    dateDrawn = System.currentTimeMillis(),
+                    isCompleted = false,
+                    pleasureTitle = "Aller au cinéma",
+                    pleasureDescription = "Et si on se faisait un bon film ?",
+                    category = PleasureCategory.ALL
+                )
+            )
             WeeklyPleasuresList(
-                items = previewWeeklyUiState.history,
+                items = previewItems,
                 onCardClicked = {}
             )
         }

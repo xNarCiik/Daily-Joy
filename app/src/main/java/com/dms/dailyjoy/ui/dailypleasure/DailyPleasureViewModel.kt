@@ -6,6 +6,7 @@ import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.domain.usecase.dailypleasure.GetDailyPleasureUseCase
 import com.dms.dailyjoy.domain.usecase.dailypleasure.GetRandomPleasureUseCase
 import com.dms.dailyjoy.domain.usecase.dailypleasure.SaveDailyPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.history.SaveHistoryEntryUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasuresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,8 @@ class DailyPleasureViewModel @Inject constructor(
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val getRandomPleasureUseCase: GetRandomPleasureUseCase,
     private val getDailyPleasureUseCase: GetDailyPleasureUseCase,
-    private val saveDailyPleasureUseCase: SaveDailyPleasureUseCase
+    private val saveDailyPleasureUseCase: SaveDailyPleasureUseCase,
+    private val saveHistoryEntryUseCase: SaveHistoryEntryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DailyPleasureUiState())
@@ -70,7 +72,7 @@ class DailyPleasureViewModel @Inject constructor(
         }
     }
 
-    private fun handleCategorySelection(category: PleasureCategory) {
+    private fun handleCategorySelection(category: PleasureCategory) = viewModelScope.launch {
         val currentState = _uiState.value.screenState
         if (currentState is DailyPleasureScreenState.Ready) {
             _uiState.value = _uiState.value.copy(
@@ -83,6 +85,7 @@ class DailyPleasureViewModel @Inject constructor(
         val currentState = _uiState.value.screenState
         if (currentState is DailyPleasureScreenState.Ready && currentState.dailyPleasure == null) {
             val randomPleasure = getRandomPleasureUseCase(currentState.selectedCategory).first()
+            saveHistoryEntryUseCase(randomPleasure)
             saveDailyPleasureUseCase(randomPleasure)
             _uiState.value = _uiState.value.copy(
                 screenState = currentState.copy(dailyPleasure = randomPleasure)
@@ -90,7 +93,7 @@ class DailyPleasureViewModel @Inject constructor(
         }
     }
 
-    private fun handleCardFlipped() {
+    private fun handleCardFlipped() = viewModelScope.launch {
         val currentState = _uiState.value.screenState
         if (currentState is DailyPleasureScreenState.Ready) {
             _uiState.value = _uiState.value.copy(
@@ -99,12 +102,15 @@ class DailyPleasureViewModel @Inject constructor(
         }
     }
 
-    private fun handleCardMarkedAsDone() {
+    private fun handleCardMarkedAsDone() = viewModelScope.launch {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready && currentState.dailyPleasure != null) {
-            _uiState.value = _uiState.value.copy(
-                screenState = DailyPleasureScreenState.Completed
-            )
+        if (currentState is DailyPleasureScreenState.Ready) {
+            currentState.dailyPleasure?.let {
+                saveHistoryEntryUseCase(currentState.dailyPleasure)
+                _uiState.value = _uiState.value.copy(
+                    screenState = DailyPleasureScreenState.Completed
+                )
+            }
         }
     }
 }

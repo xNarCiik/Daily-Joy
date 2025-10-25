@@ -7,7 +7,7 @@ import com.dms.dailyjoy.data.model.PleasureCategory
 @Entity(tableName = "pleasure_history")
 data class PleasureHistoryEntry(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    val id: Int = 0,
     val dateDrawn: Long,
     val isCompleted: Boolean = false,
     val pleasureTitle: String,

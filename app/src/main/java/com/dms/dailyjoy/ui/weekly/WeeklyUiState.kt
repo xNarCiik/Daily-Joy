@@ -5,7 +5,8 @@ import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 data class WeeklyUiState(
     val isLoading: Boolean = false,
     val history: List<PleasureHistoryEntry> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val selectedHistoryEntry: PleasureHistoryEntry? = null
 ) {
     val isEmpty: Boolean get() = history.isEmpty() && !isLoading && error == null
 }

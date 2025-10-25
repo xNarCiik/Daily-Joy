@@ -31,10 +31,7 @@ class WeeklyViewModel @Inject constructor(
             }
             .catch { throwable ->
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = throwable.message ?: "An unknown error occurred"
-                    )
+                    it.copy(isLoading = false, error = throwable.message ?: "An unknown error occurred")
                 }
             }
             .collect { historyEntries ->
@@ -53,13 +50,11 @@ class WeeklyViewModel @Inject constructor(
             is WeeklyEvent.OnRetryClicked -> {
                 loadWeeklyHistory()
             }
-
-            is WeeklyEvent.OnBottomSheetDismissed -> {
-                TODO()
-            }
-
             is WeeklyEvent.OnCardClicked -> {
-                TODO()
+                _uiState.update { it.copy(selectedHistoryEntry = event.item) }
+            }
+            is WeeklyEvent.OnBottomSheetDismissed -> {
+                _uiState.update { it.copy(selectedHistoryEntry = null) }
             }
         }
     }
