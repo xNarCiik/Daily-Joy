@@ -106,7 +106,7 @@ class DailyPleasureViewModel @Inject constructor(
         val currentState = _uiState.value.screenState
         if (currentState is DailyPleasureScreenState.Ready) {
             currentState.dailyPleasure?.let {
-                saveHistoryEntryUseCase(currentState.dailyPleasure)
+                saveHistoryEntryUseCase(pleasure = currentState.dailyPleasure, markAsCompleted = true)
                 _uiState.value = _uiState.value.copy(
                     screenState = DailyPleasureScreenState.Completed
                 )

@@ -290,6 +290,7 @@ private fun WeeklyPleasuresListPreview() {
             val previewItems = listOf(
                 PleasureHistoryEntry(
                     id = 1,
+                    dayIdentifier = "",
                     dateDrawn = System.currentTimeMillis() - 86400000 * 2, // 2 days ago
                     isCompleted = true,
                     pleasureTitle = "Aller au cinéma",
@@ -298,6 +299,7 @@ private fun WeeklyPleasuresListPreview() {
                 ),
                 PleasureHistoryEntry(
                     id = 2,
+                    dayIdentifier = "",
                     dateDrawn = System.currentTimeMillis() - 86400000, // Yesterday
                     isCompleted = false,
                     pleasureTitle = "Faire une bouffe XXL",
@@ -306,6 +308,7 @@ private fun WeeklyPleasuresListPreview() {
                 ),
                 PleasureHistoryEntry(
                     id = 3,
+                    dayIdentifier = "",
                     dateDrawn = System.currentTimeMillis(),
                     isCompleted = false,
                     pleasureTitle = "Aller au cinéma",

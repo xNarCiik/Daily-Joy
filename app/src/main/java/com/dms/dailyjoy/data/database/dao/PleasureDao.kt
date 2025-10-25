@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.dms.dailyjoy.data.database.entity.PleasureEntity
 import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 import kotlinx.coroutines.flow.Flow
@@ -30,9 +31,12 @@ interface PleasureDao {
     @Delete
     suspend fun delete(pleasure: PleasureEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHistoryEntry(entry: PleasureHistoryEntry): Long
+    @Upsert
+    suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry)
 
     @Query("SELECT * FROM pleasure_history WHERE dateDrawn BETWEEN :startDate AND :endDate ORDER BY dateDrawn DESC")
     fun getHistoryForDateRange(startDate: Long, endDate: Long): Flow<List<PleasureHistoryEntry>>
+
+    @Query("SELECT * FROM pleasure_history WHERE dayIdentifier = :dayIdentifier")
+    suspend fun getHistoryEntryForDay(dayIdentifier: String): PleasureHistoryEntry?
 }

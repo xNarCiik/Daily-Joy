@@ -1,9 +1,9 @@
 package com.dms.dailyjoy.data.repository
 
 import com.dms.dailyjoy.data.database.dao.PleasureDao
+import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 import com.dms.dailyjoy.data.database.mapper.toDomain
 import com.dms.dailyjoy.data.database.mapper.toEntity
-import com.dms.dailyjoy.data.database.mapper.toHistoryEntry
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.domain.repository.PleasureRepository
@@ -49,7 +49,11 @@ class PleasureRepositoryImpl @Inject constructor(
 
     override suspend fun delete(pleasure: Pleasure) = pleasureDao.delete(pleasure.toEntity())
 
-    override suspend fun saveHistoryEntry(pleasure: Pleasure) {
-        pleasureDao.insertHistoryEntry(pleasure.toHistoryEntry())
+    override suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry) {
+        pleasureDao.upsertHistoryEntry(entry)
+    }
+
+    override suspend fun getHistoryEntryForDay(dayIdentifier: String): PleasureHistoryEntry? {
+        return pleasureDao.getHistoryEntryForDay(dayIdentifier)
     }
 }

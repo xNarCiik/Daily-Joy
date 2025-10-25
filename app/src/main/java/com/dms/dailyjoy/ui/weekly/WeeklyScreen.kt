@@ -171,6 +171,7 @@ private fun WeeklyPreview() {
                     history = listOf(
                         PleasureHistoryEntry(
                             id = 1,
+                            dayIdentifier = "",
                             dateDrawn = System.currentTimeMillis(),
                             isCompleted = true,
                             pleasureTitle = "Boire un café chaud",
