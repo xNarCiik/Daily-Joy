@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.dms.dailyjoy.data.database.AppDatabase
 import com.dms.dailyjoy.data.database.DatabaseCallback
 import com.dms.dailyjoy.data.database.dao.PleasureDao
-import com.dms.dailyjoy.data.database.dao.WeeklyPleasureDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,8 +29,4 @@ object DatabaseModule {
 
     @Provides
     fun providePleasureDao(appDatabase: AppDatabase): PleasureDao = appDatabase.pleasureDao()
-
-    @Provides
-    fun provideWeeklyPleasureDao(appDatabase: AppDatabase): WeeklyPleasureDao =
-        appDatabase.weeklyPleasureDao()
 }

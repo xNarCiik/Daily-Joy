@@ -41,18 +41,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
+import com.dms.dailyjoy.ui.social.PleasureStatus
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewWeeklyUiState
-import com.dms.dailyjoy.ui.weekly.PleasureStatus
-import com.dms.dailyjoy.ui.weekly.WeeklyPleasureItem
 import kotlinx.coroutines.delay
+import kotlin.collections.forEachIndexed
 
 @Composable
 fun WeeklyPleasuresList(
     modifier: Modifier = Modifier,
-    items: List<WeeklyPleasureItem>,
-    onCardClicked: (WeeklyPleasureItem) -> Unit
+    items: List<PleasureHistoryEntry>,
+    onCardClicked: (PleasureHistoryEntry) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -70,7 +71,7 @@ fun WeeklyPleasuresList(
 
 @Composable
 private fun AnimatedPleasureItem(
-    item: WeeklyPleasureItem,
+    item: PleasureHistoryEntry,
     onClick: () -> Unit,
     animationDelay: Int = 0
 ) {
@@ -251,7 +252,7 @@ private fun WeeklyPleasuresListPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
             WeeklyPleasuresList(
-                items = previewWeeklyUiState.weeklyPleasures,
+                items = previewWeeklyUiState.history,
                 onCardClicked = {}
             )
         }

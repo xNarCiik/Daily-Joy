@@ -25,8 +25,8 @@ import com.dms.dailyjoy.ui.settings.statistics.StatisticsViewModel
 import com.dms.dailyjoy.ui.social.SocialScreen
 import com.dms.dailyjoy.ui.social.SocialViewModel
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
-import com.dms.dailyjoy.ui.weekly.Weekly
 import com.dms.dailyjoy.ui.weekly.WeeklyScreen
+import com.dms.dailyjoy.ui.weekly.WeeklyViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -67,7 +67,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
         }
 
         composable<WeeklyRoute> {
-            val viewModel: Weekly = hiltViewModel()
+            val viewModel: WeeklyViewModel = hiltViewModel()
             val historyState by viewModel.uiState.collectAsState()
 
             WeeklyScreen(

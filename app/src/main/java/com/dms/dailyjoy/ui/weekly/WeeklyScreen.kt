@@ -28,10 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
+import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
-import com.dms.dailyjoy.ui.util.previewWeeklyUiState
-import com.dms.dailyjoy.ui.weekly.component.ModalPleasureCard
 import com.dms.dailyjoy.ui.weekly.component.WeeklyPleasuresList
 import com.dms.dailyjoy.ui.weekly.component.WeeklyStatsCard
 
@@ -60,16 +60,11 @@ fun WeeklyScreen(
 
             else -> {
                 WeeklyContent(
-                    uiState = uiState,
+                    history = uiState.history,
                     onEvent = onEvent
                 )
             }
         }
-
-        ModalPleasureCard(
-            pleasure = uiState.selectedPleasure,
-            onDismiss = { onEvent(WeeklyEvent.OnBottomSheetDismissed) }
-        )
     }
 }
 
@@ -118,7 +113,7 @@ private fun EmptyWeeklyState(modifier: Modifier = Modifier) {
 @Composable
 private fun WeeklyContent(
     modifier: Modifier = Modifier,
-    uiState: WeeklyUiState,
+    history: List<PleasureHistoryEntry>,
     onEvent: (WeeklyEvent) -> Unit
 ) {
     Column(
@@ -128,9 +123,10 @@ private fun WeeklyContent(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        val completedCount = history.count { it.isCompleted }
         WeeklyStatsCard(
-            completedCount = uiState.completedPleasuresCount,
-            totalCount = 7
+            completedCount = completedCount,
+            totalCount = history.size
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -146,7 +142,7 @@ private fun WeeklyContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         WeeklyPleasuresList(
-            items = uiState.weeklyPleasures,
+            items = history,
             onCardClicked = { item -> onEvent(WeeklyEvent.OnCardClicked(item)) }
         )
     }
@@ -171,7 +167,18 @@ private fun WeeklyPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             WeeklyScreen(
-                uiState = previewWeeklyUiState,
+                uiState = WeeklyUiState(
+                    history = listOf(
+                        PleasureHistoryEntry(
+                            id = 1,
+                            dateDrawn = System.currentTimeMillis(),
+                            isCompleted = true,
+                            pleasureTitle = "Boire un café chaud",
+                            pleasureDescription = "Savourer un bon café le matin.",
+                            category = PleasureCategory.ALL
+                        )
+                    )
+                ),
                 onEvent = {}
             )
         }
