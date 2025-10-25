@@ -2,10 +2,10 @@ package com.dms.dailyjoy.ui.dailypleasure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dms.dailyjoy.data.database.mapper.toPleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
-import com.dms.dailyjoy.domain.usecase.dailypleasure.GetDailyPleasureUseCase
 import com.dms.dailyjoy.domain.usecase.dailypleasure.GetRandomPleasureUseCase
-import com.dms.dailyjoy.domain.usecase.dailypleasure.SaveDailyPleasureUseCase
+import com.dms.dailyjoy.domain.usecase.history.GetTodayHistoryEntryUseCase
 import com.dms.dailyjoy.domain.usecase.history.SaveHistoryEntryUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasuresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +22,8 @@ const val MinimumPleasuresCount = 7
 class DailyPleasureViewModel @Inject constructor(
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val getRandomPleasureUseCase: GetRandomPleasureUseCase,
-    private val getDailyPleasureUseCase: GetDailyPleasureUseCase,
-    private val saveDailyPleasureUseCase: SaveDailyPleasureUseCase,
-    private val saveHistoryEntryUseCase: SaveHistoryEntryUseCase
+    private val saveHistoryEntryUseCase: SaveHistoryEntryUseCase,
+    private val getTodayHistoryEntryUseCase: GetTodayHistoryEntryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DailyPleasureUiState())
@@ -51,14 +50,20 @@ class DailyPleasureViewModel @Inject constructor(
                 return@launch
             }
 
-            val dailPleasure = getDailyPleasureUseCase().first()
-            _uiState.value = DailyPleasureUiState(
-                screenState = DailyPleasureScreenState.Ready(
-                    availableCategories = PleasureCategory.entries,
-                    dailyPleasure = dailPleasure,
-                    isCardFlipped = dailPleasure != null
+            val todayHistoryPleasure = getTodayHistoryEntryUseCase().first()
+            if (todayHistoryPleasure?.isCompleted == true) {
+                _uiState.value = _uiState.value.copy(
+                    screenState = DailyPleasureScreenState.Completed
                 )
-            )
+            } else {
+                _uiState.value = DailyPleasureUiState(
+                    screenState = DailyPleasureScreenState.Ready(
+                        availableCategories = PleasureCategory.entries,
+                        dailyPleasure = todayHistoryPleasure?.toPleasure(),
+                        isCardFlipped = todayHistoryPleasure != null
+                    )
+                )
+            }
         }
     }
 
@@ -86,7 +91,6 @@ class DailyPleasureViewModel @Inject constructor(
         if (currentState is DailyPleasureScreenState.Ready && currentState.dailyPleasure == null) {
             val randomPleasure = getRandomPleasureUseCase(currentState.selectedCategory).first()
             saveHistoryEntryUseCase(randomPleasure)
-            saveDailyPleasureUseCase(randomPleasure)
             _uiState.value = _uiState.value.copy(
                 screenState = currentState.copy(dailyPleasure = randomPleasure)
             )
@@ -106,7 +110,10 @@ class DailyPleasureViewModel @Inject constructor(
         val currentState = _uiState.value.screenState
         if (currentState is DailyPleasureScreenState.Ready) {
             currentState.dailyPleasure?.let {
-                saveHistoryEntryUseCase(pleasure = currentState.dailyPleasure, markAsCompleted = true)
+                saveHistoryEntryUseCase(
+                    pleasure = currentState.dailyPleasure,
+                    markAsCompleted = true
+                )
                 _uiState.value = _uiState.value.copy(
                     screenState = DailyPleasureScreenState.Completed
                 )

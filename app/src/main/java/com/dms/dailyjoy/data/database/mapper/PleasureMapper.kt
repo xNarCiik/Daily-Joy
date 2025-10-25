@@ -9,7 +9,6 @@ fun PleasureEntity.toDomain() = Pleasure(
     description = description,
     type = type,
     category = category,
-    isDone = isDone,
     isCustom = isCustom,
     isEnabled = isEnabled
 )
@@ -20,7 +19,6 @@ fun Pleasure.toEntity() = PleasureEntity(
     description = description,
     type = type,
     category = category,
-    isDone = isDone,
     isCustom = isCustom,
     isEnabled = isEnabled
 )

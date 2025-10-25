@@ -11,3 +11,6 @@ fun Pleasure.toHistoryEntry() = PleasureHistoryEntry(
     pleasureDescription = description,
     category = category
 )
+
+fun PleasureHistoryEntry.toPleasure() =
+    Pleasure(title = pleasureTitle, description = pleasureDescription, category = category)

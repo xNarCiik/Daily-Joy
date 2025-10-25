@@ -9,7 +9,6 @@ data class Pleasure(
     val type: PleasureType = PleasureType.SMALL,
     val category: PleasureCategory = PleasureCategory.OTHER,
     val date: LocalDate? = null,
-    val isDone: Boolean = false,
     val isCustom: Boolean = false,
     val isEnabled: Boolean = true
 )

@@ -72,7 +72,8 @@ fun ModalPleasureCard(
                         pleasure = it,
                         flipped = true,
                         durationRotation = 0,
-                        onCardFlipped = {}
+                        onCardFlipped = {},
+                        onClick = {}
                     )
                 }
             }

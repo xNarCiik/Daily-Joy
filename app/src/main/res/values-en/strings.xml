@@ -7,7 +7,7 @@
     <string name="settings_title">Settings</string>
 
     <!-- DailyPleasure Setup State -->
-    <string name="setup_title">Almost ready to start!</string>
+    <string name="setup_title">Ready to start?</string>
     <string name="setup_subtitle">You currently have %d pleasures selected\n\You need at least %d to draw your daily card 🎴</string>
     <string name="setup_button_text">✨ Configure my pleasures</string>
 
@@ -16,7 +16,7 @@
     <string name="pleasure_card_back_title">✨ Tap the card ✨</string>
     <string name="pleasure_card_back_subtitle">to discover your pleasure</string>
     <string name="pleasure_tap_card_text">Tap to discover your pleasure of the day ✨</string>
-    <string name="pleasure_swip_card_text">Swipe right to validate 👉</string>
+    <string name="pleasure_swip_card_text">Swipe right one your pleasure is done 👉</string>
 
     <!-- DailyPleasure Completed Content -->
     <string name="pleasure_completed_title">Seed of joy planted!</string>

@@ -57,7 +57,8 @@ fun PleasureCard(
     pleasure: Pleasure?,
     flipped: Boolean,
     durationRotation: Int,
-    onCardFlipped: () -> Unit
+    onCardFlipped: () -> Unit,
+    onClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -133,7 +134,8 @@ fun PleasureCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        )
+        ),
+        onClick = onClick
     ) {
         if (rotation < 90f) {
             PleasureBackCard()
@@ -375,7 +377,8 @@ private fun NotFlippedPleasureCardPreview() {
             pleasure = previewDailyPleasure,
             durationRotation = 0,
             flipped = false,
-            onCardFlipped = {}
+            onCardFlipped = {},
+            onClick = {}
         )
     }
 }
@@ -388,7 +391,8 @@ private fun FlippedPleasureCardPreview() {
             pleasure = previewDailyPleasure,
             durationRotation = 0,
             flipped = true,
-            onCardFlipped = {}
+            onCardFlipped = {},
+            onClick = {}
         )
     }
 }

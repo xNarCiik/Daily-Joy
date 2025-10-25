@@ -5,14 +5,12 @@ import androidx.datastore.preferences.core.Preferences
 import com.dms.dailyjoy.data.database.dao.PleasureDao
 import com.dms.dailyjoy.data.local.LocalDailyMessagesDataSource
 import com.dms.dailyjoy.data.repository.DailyMessageRepositoryImpl
-import com.dms.dailyjoy.data.repository.DailyPleasureRepositoryImpl
 import com.dms.dailyjoy.data.repository.HistoryRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureRepositoryImpl
 import com.dms.dailyjoy.data.repository.SettingsRepositoryImpl
 import com.dms.dailyjoy.data.repository.SocialRepositoryImpl
 import com.dms.dailyjoy.data.repository.StatisticsRepositoryImpl
 import com.dms.dailyjoy.domain.repository.DailyMessageRepository
-import com.dms.dailyjoy.domain.repository.DailyPleasureRepository
 import com.dms.dailyjoy.domain.repository.HistoryRepository
 import com.dms.dailyjoy.domain.repository.PleasureRepository
 import com.dms.dailyjoy.domain.repository.SettingsRepository
@@ -31,14 +29,6 @@ object RepositoryModule {
     @Singleton
     fun bindPleasureRepository(pleasureDao: PleasureDao): PleasureRepository =
         PleasureRepositoryImpl(pleasureDao = pleasureDao)
-
-    @Provides
-    @Singleton
-    fun bindDailyPleasureRepository(
-        dataStore: DataStore<Preferences>,
-        pleasureRepository: PleasureRepository
-    ): DailyPleasureRepository =
-        DailyPleasureRepositoryImpl(dataStore = dataStore, pleasureRepository = pleasureRepository)
 
     @Provides
     @Singleton
