@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
+import com.dms.dailyjoy.ui.component.CategoryChip
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresEvent
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -103,10 +104,7 @@ private fun PleasureItem(
                     }
                 )
 
-                // TODO ?
-                /*CategoryChip(
-                    category = pleasure.category
-                ) */
+                CategoryChip(category = pleasure.category)
             }
 
             if (pleasure.isCustom) {

@@ -13,6 +13,8 @@
 
     <!-- DailyPleasure Content -->
     <string name="daily_pleasure_choose_category">Choisir une catégorie</string>
+    <string name="pleasure_card_back_title">✨ Touchez la carte ✨</string>
+    <string name="pleasure_card_back_subtitle">pour découvrir votre plaisir</string>
     <string name="pleasure_tap_card_text">Tape pour découvrir ton plaisir du jour ✨</string>
     <string name="pleasure_swip_card_text">Glisse vers la droite pour valider 👉</string>
 
@@ -132,8 +134,6 @@
     <string name="statistics_favorite_categories">Catégories favorites</string>
     <string name="statistics_weekly_average">Moyenne hebdo.</string>
     <string name="statistics_days_unit">jours</string>
-    <string name="statistics_top_three_this_month">Les trois meilleures de ce mois</string>
-    <string name="statistics_overview_of_your_activities">Aperçu de vos activités</string>
 
     <!-- Social Screen -->
     <string name="social_header_subtitle">Partagez votre motivation</string>

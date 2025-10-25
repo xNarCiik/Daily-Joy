@@ -37,10 +37,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -157,7 +159,7 @@ private fun PleasureBackCard() {
             .background(
                 Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF6366F1), // TODO EXPORT THEME ?
+                        Color(0xFF6366F1),
                         Color(0xFF8B5CF6),
                         Color(0xFFEC4899)
                     )
@@ -218,8 +220,8 @@ private fun PleasureBackCard() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Text( // TODO STRINGS
-                text = "✨ Touchez la carte ✨",
+            Text(
+                text = stringResource(R.string.pleasure_card_back_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -229,7 +231,7 @@ private fun PleasureBackCard() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "pour découvrir votre plaisir",
+                text = stringResource(R.string.pleasure_card_back_subtitle),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = Color.White.copy(alpha = 0.9f),
@@ -277,7 +279,7 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                 .padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-           /* TODO CategoryChip(category = pleasure.category) */
+            CategoryChip(category = pleasure.category)
 
             Spacer(Modifier.weight(1f))
 

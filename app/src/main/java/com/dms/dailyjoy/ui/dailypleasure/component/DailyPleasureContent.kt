@@ -12,6 +12,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -138,16 +139,17 @@ fun DailyPleasureContent(
     val infiniteTransition = rememberInfiniteTransition(label = "swipeHint")
     val hintOffsetX by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = if (isFlipped && !isDone) 40f else 0f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = { t ->
-                when {
-                    t < 0.2f -> 0f
-                    t < 0.5f -> (t - 0.2f) / 0.3f
-                    t < 0.7f -> 1f - (t - 0.5f) / 0.2f
-                    else -> 0f
-                }
-            }),
+            animation = keyframes {
+                durationMillis = 3000
+                0.0f at 0
+                25.0f at 500
+                -15.0f at 700
+                15.0f at 900
+                0.0f at 1100
+                0.0f at 3000
+            },
             repeatMode = RepeatMode.Restart
         ),
         label = "hintOffset"
@@ -155,16 +157,17 @@ fun DailyPleasureContent(
 
     val hintRotation by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = if (isFlipped && !isDone) 3f else 0f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = { t ->
-                when {
-                    t < 0.2f -> 0f
-                    t < 0.5f -> (t - 0.2f) / 0.3f
-                    t < 0.7f -> 1f - (t - 0.5f) / 0.2f
-                    else -> 0f
-                }
-            }),
+            animation = keyframes {
+                durationMillis = 3000
+                0.0f at 0
+                2.0f at 500
+                -1.0f at 700
+                1.0f at 900
+                0.0f at 1100
+                0.0f at 3000
+            },
             repeatMode = RepeatMode.Restart
         ),
         label = "hintRotation"
@@ -238,13 +241,13 @@ fun DailyPleasureContent(
                                     val springSpec = spring<Float>(dampingRatio = 0.7f)
                                     launch { animatedOffsetX.animateTo(0f, springSpec) }
                                     launch { animatedRotationZ.animateTo(0f, springSpec) }
-                                }
+                                 }
                             }
                         }
                     )
-                    .offset(x = (animatedOffsetX.value + hintOffsetX).dp)
+                    .offset(x = (animatedOffsetX.value + if (isFlipped && !isDone) hintOffsetX else 0f).dp)
                     .graphicsLayer {
-                        rotationZ = animatedRotationZ.value + hintRotation
+                        rotationZ = animatedRotationZ.value + if (isFlipped && !isDone) hintRotation else 0f
                         cameraDistance = 8 * density
                         alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
                     },
