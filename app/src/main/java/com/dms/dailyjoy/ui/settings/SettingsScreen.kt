@@ -123,11 +123,9 @@ fun SettingsScreen(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
     ) {
         item {
-            UserHeader(
-                userName = "Utilisateur", // TODO: Récupérer depuis uiState
-                userEmail = "user@example.com", // TODO: Récupérer depuis uiState
-                userId = "UID-123456" // TODO: Récupérer depuis uiState
-            )
+            uiState.userInfo?.let {
+                UserHeader(userInfo = it)
+            }
         }
 
         item { Spacer(modifier = Modifier.height(24.dp)) }
@@ -266,10 +264,8 @@ fun SettingsScreen(
 
 @Composable
 private fun UserHeader(
-    userName: String,
-    userEmail: String,
-    userId: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    userInfo: UserInfo
 ) {
     Box(
         modifier = modifier
@@ -299,11 +295,11 @@ private fun UserHeader(
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                if (true) {
+                if (userInfo.avatarUrl != null) {
                     GlideImage(
                         modifier = Modifier.size(48.dp),
                         contentScale = ContentScale.Crop,
-                        model = "https://imgs.search.brave.com/AcI86uv_5R_MljLp-jhJLLKldiWrXlTbkKN5i1lrFMA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4w/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvcGVvcGxlLTEz/Ny81MTMvZ2FtZXIt/NTEyLnBuZw",
+                        model = userInfo.avatarUrl,
                         contentDescription = ""
                     )
                 } else {
@@ -321,14 +317,14 @@ private fun UserHeader(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = userName,
+                    text = userInfo.username ?: "",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
-                    text = userEmail,
+                    text = userInfo.email ?: "",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -338,7 +334,7 @@ private fun UserHeader(
                     color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
                 ) {
                     Text(
-                        text = userId,
+                        text = userInfo.id ?: "",
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

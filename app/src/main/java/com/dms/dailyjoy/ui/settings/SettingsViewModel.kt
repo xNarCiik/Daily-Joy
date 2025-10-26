@@ -11,6 +11,8 @@ import com.dms.dailyjoy.domain.usecase.settings.SetDailyReminderStateUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetReminderTimeUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetThemeUseCase
 import com.dms.dailyjoy.notification.DailyReminderManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,27 +36,54 @@ class SettingsViewModel @Inject constructor(
 
     private val dailyReminderManager = DailyReminderManager(application)
 
+    private val firestore = FirebaseFirestore.getInstance()
+    private val firebaseAuth = FirebaseAuth.getInstance()
+
     init {
+        loadUserInfo()
         loadSettings()
     }
 
-    private fun loadSettings() {
-        viewModelScope.launch {
-            combine(
-                getThemeUseCase(),
-                getDailyReminderStateUseCase(),
-                getReminderTimeUseCase()
-            ) { theme, dailyReminderEnabled, reminderTime ->
-                SettingsUiState(
-                    theme = theme,
-                    dailyReminderEnabled = dailyReminderEnabled,
-                    reminderTime = reminderTime
+    private fun loadUserInfo() {
+        val user = firebaseAuth.currentUser ?: return
+
+        val uid = user.uid
+        val email = user.email
+
+        firestore.collection("users").document(uid).get()
+            .addOnSuccessListener { doc ->
+                val username = doc.getString("username")
+                val avatarUrl = doc.getString("avatar_url")
+                _uiState.value = _uiState.value.copy(
+                    userInfo = UserInfo(
+                        id = uid,
+                        username = username,
+                        email = email,
+                        avatarUrl = avatarUrl
+                    )
                 )
-            }.collect { combinedState ->
-                _uiState.value = combinedState
             }
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+            }
+    }
+
+    private fun loadSettings() = viewModelScope.launch {
+        combine(
+            getThemeUseCase(),
+            getDailyReminderStateUseCase(),
+            getReminderTimeUseCase()
+        ) { theme, dailyReminderEnabled, reminderTime ->
+            SettingsUiState(
+                theme = theme,
+                dailyReminderEnabled = dailyReminderEnabled,
+                reminderTime = reminderTime
+            )
+        }.collect { combinedState ->
+            _uiState.value = combinedState
         }
     }
+
 
     fun onEvent(event: SettingsEvent) {
         when (event) {
