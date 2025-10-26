@@ -10,13 +10,14 @@ import com.dms.dailyjoy.domain.usecase.settings.GetThemeUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetDailyReminderStateUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetReminderTimeUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetThemeUseCase
+import com.dms.dailyjoy.domain.usecase.user.GetUserInfoUseCase
 import com.dms.dailyjoy.notification.DailyReminderManager
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +29,8 @@ class SettingsViewModel @Inject constructor(
     private val getDailyReminderStateUseCase: GetDailyReminderStateUseCase,
     private val setDailyReminderStateUseCase: SetDailyReminderStateUseCase,
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
-    private val setReminderTimeUseCase: SetReminderTimeUseCase
+    private val setReminderTimeUseCase: SetReminderTimeUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -36,36 +38,15 @@ class SettingsViewModel @Inject constructor(
 
     private val dailyReminderManager = DailyReminderManager(application)
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val firebaseAuth = FirebaseAuth.getInstance()
-
     init {
-        loadUserInfo()
         loadSettings()
+        loadUserInfo()
     }
 
     private fun loadUserInfo() {
-        val user = firebaseAuth.currentUser ?: return
-
-        val uid = user.uid
-        val email = user.email
-
-        firestore.collection("users").document(uid).get()
-            .addOnSuccessListener { doc ->
-                val username = doc.getString("username")
-                val avatarUrl = doc.getString("avatar_url")
-                _uiState.value = _uiState.value.copy(
-                    userInfo = UserInfo(
-                        id = uid,
-                        username = username,
-                        email = email,
-                        avatarUrl = avatarUrl
-                    )
-                )
-            }
-            .addOnFailureListener { e ->
-                e.printStackTrace()
-            }
+        getUserInfoUseCase().onEach { userInfo ->
+            _uiState.value = _uiState.value.copy(userInfo = userInfo)
+        }.launchIn(viewModelScope)
     }
 
     private fun loadSettings() = viewModelScope.launch {
@@ -74,7 +55,7 @@ class SettingsViewModel @Inject constructor(
             getDailyReminderStateUseCase(),
             getReminderTimeUseCase()
         ) { theme, dailyReminderEnabled, reminderTime ->
-            SettingsUiState(
+            _uiState.value.copy(
                 theme = theme,
                 dailyReminderEnabled = dailyReminderEnabled,
                 reminderTime = reminderTime
@@ -83,7 +64,6 @@ class SettingsViewModel @Inject constructor(
             _uiState.value = combinedState
         }
     }
-
 
     fun onEvent(event: SettingsEvent) {
         when (event) {

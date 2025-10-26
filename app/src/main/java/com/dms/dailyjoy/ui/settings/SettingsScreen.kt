@@ -61,6 +61,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
+import com.dms.dailyjoy.domain.model.UserInfo
 import com.dms.dailyjoy.ui.settings.component.SettingsClickableItem
 import com.dms.dailyjoy.ui.settings.component.SettingsSectionTitle
 import com.dms.dailyjoy.ui.settings.component.SettingsSwitchItem
