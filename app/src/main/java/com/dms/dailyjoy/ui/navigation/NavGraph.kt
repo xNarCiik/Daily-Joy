@@ -55,17 +55,20 @@ object StatisticsRoute
 @Composable
 fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     val modifierWithPaddingValues = Modifier.padding(paddingValues)
+
+    val navigateSingleTop: (Any) -> Unit = { route ->
+        navController.navigate(route) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = if (FirebaseAuth.getInstance().currentUser != null) DailyPleasureRoute else LoginScreen
     ) {
         composable<LoginScreen> {
-            LoginScreen(onNavigateToHome = {
-                navController.navigate(DailyPleasureRoute) {
-                    popUpTo(0) { inclusive = true }
-                    launchSingleTop = true
-                }
-            })
+            LoginScreen(onNavigateToHome = { navigateSingleTop(DailyPleasureRoute) })
         }
 
         composable<DailyPleasureRoute> {
@@ -112,11 +115,9 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 onEvent = viewModel::onEvent,
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
                 onNavigateToStatistics = { navController.navigate(StatisticsRoute) },
-                backToLogin = {
-                    navController.navigate(LoginScreen) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
+                onDisconnect = {
+                    FirebaseAuth.getInstance().signOut()
+                    navigateSingleTop(LoginScreen)
                 }
             )
         }

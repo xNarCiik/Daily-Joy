@@ -76,7 +76,7 @@ fun SettingsScreen(
     onEvent: (SettingsEvent) -> Unit,
     onNavigateToManagePleasures: () -> Unit,
     onNavigateToStatistics: () -> Unit,
-    backToLogin: () -> Unit
+    onDisconnect: () -> Unit
 ) {
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -255,10 +255,7 @@ fun SettingsScreen(
                 icon = Icons.Default.Logout,
                 title = "Déconnexion",
                 subtitle = "Se déconnecter de l'application",
-                onClick = {
-                    onEvent(SettingsEvent.OnDisconnectClicked)
-                    backToLogin()
-                },
+                onClick = onDisconnect,
                 showChevron = false
             )
         }
@@ -427,7 +424,7 @@ private fun SettingsScreenPreview() {
                 onEvent = {},
                 onNavigateToManagePleasures = {},
                 onNavigateToStatistics = {},
-                backToLogin = {}
+                onDisconnect = {}
             )
         }
     }
