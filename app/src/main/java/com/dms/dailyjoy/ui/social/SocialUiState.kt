@@ -25,7 +25,8 @@ data class Friend(
     val id: String,
     val username: String,
     val streak: Int,
-    val currentPleasure: FriendPleasure? = null
+    val currentPleasure: FriendPleasure? = null,
+    val avatarUrl: String? = null
 )
 
 data class FriendPleasure(

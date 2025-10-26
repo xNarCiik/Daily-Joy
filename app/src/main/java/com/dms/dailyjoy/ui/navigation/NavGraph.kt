@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureViewModel
+import com.dms.dailyjoy.ui.login.LoginScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
@@ -27,7 +28,11 @@ import com.dms.dailyjoy.ui.social.SocialViewModel
 import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import com.dms.dailyjoy.ui.weekly.WeeklyScreen
 import com.dms.dailyjoy.ui.weekly.WeeklyViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
+
+@Serializable
+object LoginScreen
 
 @Serializable
 object DailyPleasureRoute
@@ -52,8 +57,17 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     val modifierWithPaddingValues = Modifier.padding(paddingValues)
     NavHost(
         navController = navController,
-        startDestination = DailyPleasureRoute
+        startDestination = if (FirebaseAuth.getInstance().currentUser != null) DailyPleasureRoute else LoginScreen
     ) {
+        composable<LoginScreen> {
+            LoginScreen(onNavigateToHome = {
+                navController.navigate(DailyPleasureRoute) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            })
+        }
+
         composable<DailyPleasureRoute> {
             val viewModel: DailyPleasureViewModel = hiltViewModel()
             val dailyPleasureUiState by viewModel.uiState.collectAsState()
@@ -97,7 +111,13 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 uiState = settingsState,
                 onEvent = viewModel::onEvent,
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
-                onNavigateToStatistics = { navController.navigate(StatisticsRoute) }
+                onNavigateToStatistics = { navController.navigate(StatisticsRoute) },
+                backToLogin = {
+                    navController.navigate(LoginScreen) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 

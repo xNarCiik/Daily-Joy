@@ -29,7 +29,8 @@ val previewFriends = listOf(
         currentPleasure = FriendPleasure(
             title = "Roule un pet (ou 2...)",
             status = PleasureStatus.COMPLETED
-        )
+        ),
+        avatarUrl = "https://imgs.search.brave.com/AcI86uv_5R_MljLp-jhJLLKldiWrXlTbkKN5i1lrFMA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4w/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvcGVvcGxlLTEz/Ny81MTMvZ2FtZXIt/NTEyLnBuZw"
     ),
     Friend(
         id = "2",
@@ -38,7 +39,8 @@ val previewFriends = listOf(
         currentPleasure = FriendPleasure(
             title = "Baiser Hugo",
             status = PleasureStatus.IN_PROGRESS
-        )
+        ),
+        avatarUrl = "https://media.istockphoto.com/id/1346787021/fr/photo/chat-pli%C3%A9-surpris-dans-un-chapeau-danniversaire-de-f%C3%AAte-espace-de-copie.jpg?s=612x612&w=0&k=20&c=N0bA8ZddvSKqXjSwcxFufGaPh_OB_0tpobF9Z56HFdg="
     ),
     Friend(
         id = "3",
@@ -47,7 +49,8 @@ val previewFriends = listOf(
         currentPleasure = FriendPleasure(
             title = "Faire une bouffe XXL",
             status = PleasureStatus.IN_PROGRESS
-        )
+        ),
+        avatarUrl = "https://media.vanityfair.fr/photos/60d37b2d768549db8994a8ee/16:9/w_2240,c_limit/vf_avatar_cover_2953.jpeg"
     ),
     Friend(
         id = "4",

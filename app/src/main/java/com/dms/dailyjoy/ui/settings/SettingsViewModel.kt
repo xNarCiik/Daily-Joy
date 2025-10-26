@@ -11,11 +11,11 @@ import com.dms.dailyjoy.domain.usecase.settings.SetDailyReminderStateUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetReminderTimeUseCase
 import com.dms.dailyjoy.domain.usecase.settings.SetThemeUseCase
 import com.dms.dailyjoy.notification.DailyReminderManager
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,6 +62,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.OnThemeChanged -> onThemeChange(event.theme)
             is SettingsEvent.OnDailyReminderEnabledChanged -> onDailyReminderEnabledChange(event.enabled)
             is SettingsEvent.OnReminderTimeChanged -> onReminderTimeChange(event.time)
+            is SettingsEvent.OnDisconnectClicked -> disconnectUser()
         }
     }
 
@@ -81,5 +82,9 @@ class SettingsViewModel @Inject constructor(
     private fun onReminderTimeChange(time: String) = viewModelScope.launch {
         setReminderTimeUseCase(time)
         dailyReminderManager.schedule(time)
+    }
+
+    private fun disconnectUser() {
+        FirebaseAuth.getInstance().signOut()
     }
 }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalGlideComposeApi::class)
+
 package com.dms.dailyjoy.ui.settings
 
 import android.Manifest
@@ -49,11 +51,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.settings.component.SettingsClickableItem
@@ -71,7 +76,7 @@ fun SettingsScreen(
     onEvent: (SettingsEvent) -> Unit,
     onNavigateToManagePleasures: () -> Unit,
     onNavigateToStatistics: () -> Unit,
-    onLogout: () -> Unit = {}
+    backToLogin: () -> Unit
 ) {
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -250,7 +255,10 @@ fun SettingsScreen(
                 icon = Icons.Default.Logout,
                 title = "Déconnexion",
                 subtitle = "Se déconnecter de l'application",
-                onClick = onLogout,
+                onClick = {
+                    onEvent(SettingsEvent.OnDisconnectClicked)
+                    backToLogin()
+                },
                 showChevron = false
             )
         }
@@ -294,12 +302,21 @@ private fun UserHeader(
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (true) {
+                    GlideImage(
+                        modifier = Modifier.size(48.dp),
+                        contentScale = ContentScale.Crop,
+                        model = "https://imgs.search.brave.com/AcI86uv_5R_MljLp-jhJLLKldiWrXlTbkKN5i1lrFMA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4w/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvcGVvcGxlLTEz/Ny81MTMvZ2FtZXIt/NTEyLnBuZw",
+                        contentDescription = ""
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
 
             // User Info
@@ -409,7 +426,8 @@ private fun SettingsScreenPreview() {
                 uiState = SettingsUiState(),
                 onEvent = {},
                 onNavigateToManagePleasures = {},
-                onNavigateToStatistics = {}
+                onNavigateToStatistics = {},
+                backToLogin = {}
             )
         }
     }
