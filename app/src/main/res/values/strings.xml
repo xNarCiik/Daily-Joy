@@ -15,6 +15,7 @@
     <string name="daily_pleasure_choose_category">Choisir une catégorie</string>
     <string name="pleasure_card_back_title">✨ Touchez la carte ✨</string>
     <string name="pleasure_card_back_subtitle">pour découvrir votre plaisir</string>
+    <string name="pleasure_card_id">Plaisir #%1$d</string>
     <string name="pleasure_tap_card_text">Tape pour découvrir ton plaisir du jour ✨</string>
     <string name="pleasure_swip_card_text">Glisse vers la droite une fois le plaisir effectué 👉</string>
 

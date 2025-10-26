@@ -278,7 +278,7 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(28.dp),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CategoryChip(category = pleasure.category)
@@ -301,7 +301,7 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
             ) {
                 Text(
                     text = "🎉",
-                    fontSize = 48.sp
+                    fontSize = 38.sp
                 )
             }
 
@@ -318,26 +318,24 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                 lineHeight = 32.sp
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Description
             Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = pleasure.description,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
                 lineHeight = 24.sp
             )
 
             Spacer(Modifier.weight(1f))
 
-            // Bottom section with card number
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Decorative dots
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -356,9 +354,8 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                     }
                 }
 
-                // Card number
                 Text(
-                    text = "Plaisir #${pleasure.id}",
+                    text = stringResource(R.string.pleasure_card_id, pleasure.id),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),

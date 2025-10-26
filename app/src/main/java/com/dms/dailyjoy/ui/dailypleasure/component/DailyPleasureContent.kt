@@ -90,25 +90,38 @@ fun DailyPleasureContent(
     uiState: DailyPleasureScreenState.Ready,
     onEvent: (DailyPleasureEvent) -> Unit
 ) {
-    val isFlipped = uiState.isCardFlipped
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
     var showConfettiAnimation by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-
+    // --- Vibrator setup ---
     val vibrator = remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager =
+            val manager =
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            vibratorManager.defaultVibrator
+            manager.defaultVibrator
         } else {
             @Suppress("DEPRECATION")
             context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
     }
 
+    // --- Lottie confetti ---
+    val confettiComposition by rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.confetti)
+    )
+    val confettiProgress by animateLottieCompositionAsState(
+        composition = confettiComposition,
+        isPlaying = showConfettiAnimation,
+        restartOnPlay = false
+    )
+
+    // --- Play sound & vibration when confetti starts ---
     LaunchedEffect(showConfettiAnimation) {
         if (showConfettiAnimation) {
+            // Sound
             try {
                 MediaPlayer.create(context, R.raw.done).apply {
                     setOnCompletionListener { it.release() }
@@ -118,14 +131,13 @@ fun DailyPleasureContent(
             } catch (_: Exception) {
             }
 
+            // Vibration
             if (vibrator.hasVibrator()) {
                 val duration = 400L
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val vibrationEffect = VibrationEffect.createOneShot(
-                        duration,
-                        VibrationEffect.DEFAULT_AMPLITUDE
+                    vibrator.vibrate(
+                        VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE)
                     )
-                    vibrator.vibrate(vibrationEffect)
                 } else {
                     @Suppress("DEPRECATION")
                     vibrator.vibrate(duration)
@@ -134,33 +146,163 @@ fun DailyPleasureContent(
         }
     }
 
-    // Category Selection Dialog
+    // --- Hint animation ---
+    val (hintOffsetX, hintRotation) = swipeHintAnimation()
+
+    // --- Swipe animations ---
+    val animatedOffsetX = remember { Animatable(0f) }
+    val animatedRotationZ = remember { Animatable(0f) }
+
+    // --- Dialog categories ---
     if (showCategoryDialog) {
         CategorySelectionDialog(
             categories = uiState.availableCategories,
             selectedCategory = uiState.selectedCategory,
-            onCategorySelected = { category ->
-                onEvent(DailyPleasureEvent.OnCategorySelected(category))
+            onCategorySelected = {
+                onEvent(DailyPleasureEvent.OnCategorySelected(it))
                 showCategoryDialog = false
             },
             onDismiss = { showCategoryDialog = false }
         )
     }
 
-    // Animation de hint pour swipe
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CurrentCategoryButton(
+            category = uiState.selectedCategory,
+            onClick = { showCategoryDialog = true }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // --- carte + confetti ---
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            // Carte
+            PleasureCard(
+                modifier = Modifier
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        enabled = uiState.isCardFlipped,
+                        state = rememberDraggableState { delta ->
+                            scope.launch {
+                                val friction = 0.25f
+                                animatedOffsetX.snapTo(animatedOffsetX.value + delta * friction)
+                                animatedRotationZ.snapTo(
+                                    (animatedOffsetX.value / 20f).coerceIn(
+                                        -5f,
+                                        15f
+                                    )
+                                )
+                            }
+                        },
+                        onDragStopped = {
+                            scope.launch {
+                                val threshold = 180f
+                                val offset = animatedOffsetX.value
+
+                                if (offset > threshold) {
+                                    launch {
+                                        animatedOffsetX.animateTo(
+                                            1000f, tween(600, easing = LinearOutSlowInEasing)
+                                        )
+                                    }
+                                    launch { animatedRotationZ.animateTo(15f, tween(600)) }
+                                    delay(300)
+                                    onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
+                                } else {
+                                    launch {
+                                        animatedOffsetX.animateTo(
+                                            0f,
+                                            spring(dampingRatio = 0.7f)
+                                        )
+                                    }
+                                    launch {
+                                        animatedRotationZ.animateTo(
+                                            0f,
+                                            spring(dampingRatio = 0.7f)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
+                    .offset(x = (animatedOffsetX.value + if (uiState.isCardFlipped) hintOffsetX else 0f).dp)
+                    .graphicsLayer {
+                        rotationZ =
+                            animatedRotationZ.value + if (uiState.isCardFlipped) hintRotation else 0f
+                        alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
+                        cameraDistance = 8 * density
+                    },
+                pleasure = uiState.dailyPleasure,
+                flipped = uiState.isCardFlipped,
+                durationRotation = rotationCardAnimationDuration,
+                onCardFlipped = {
+                    showConfettiAnimation = true
+                    onEvent(DailyPleasureEvent.OnCardFlipped)
+                },
+                onClick = { onEvent(DailyPleasureEvent.OnCardClicked) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = if (!uiState.isCardFlipped)
+                    stringResource(R.string.pleasure_tap_card_text)
+                else
+                    stringResource(R.string.pleasure_swip_card_text),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+
+    if (showConfettiAnimation) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            LottieAnimation(
+                modifier = Modifier
+                    .size(350.dp),
+                composition = confettiComposition,
+                progress = { confettiProgress },
+            )
+        }
+    }
+}
+
+@Composable
+fun swipeHintAnimation(): Pair<Float, Float> {
     val infiniteTransition = rememberInfiniteTransition(label = "swipeHint")
+
     val hintOffsetX by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = 1f,
+        targetValue = 20f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 3000
-                0.0f at 0
-                25.0f at 500
-                -15.0f at 700
-                15.0f at 900
-                0.0f at 1100
-                0.0f at 3000
+                0f at 0
+                0f at 1000
+                20f at 1500
+                0f at 2000
+                0f at 3000
             },
             repeatMode = RepeatMode.Restart
         ),
@@ -173,128 +315,20 @@ fun DailyPleasureContent(
         animationSpec = infiniteRepeatable(
             animation = keyframes {
                 durationMillis = 3000
-                0.0f at 0
-                2.0f at 500
-                -1.0f at 700
-                1.0f at 900
-                0.0f at 1100
-                0.0f at 3000
+                0f at 0
+                0f at 1000
+                3f at 1500
+                0f at 2000
+                0f at 3000
             },
             repeatMode = RepeatMode.Restart
         ),
         label = "hintRotation"
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        val scope = rememberCoroutineScope()
-
-        val animatedOffsetX = remember { Animatable(0f) }
-        val animatedRotationZ = remember { Animatable(0f) }
-
-        CurrentCategoryButton(
-            category = uiState.selectedCategory,
-            onClick = { showCategoryDialog = true }
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        PleasureCard(
-            modifier = Modifier
-                .draggable(
-                    orientation = Orientation.Horizontal,
-                    enabled = isFlipped,
-                    state = rememberDraggableState { delta ->
-                        scope.launch {
-                            val friction = if (delta < 0) 0.2f else 0.5f
-                            val newX = animatedOffsetX.value + (delta * friction)
-                            animatedOffsetX.snapTo(newX)
-                            val newRot = (newX / 18f).coerceIn(-5f, 20f)
-                            animatedRotationZ.snapTo(newRot)
-                        }
-                    },
-                    onDragStarted = {
-                        scope.launch {
-                            animatedOffsetX.stop()
-                            animatedRotationZ.stop()
-                        }
-                    },
-                    onDragStopped = {
-                        scope.launch {
-                            val swipeThreshold = 150f
-                            if (animatedOffsetX.value > swipeThreshold) {
-                                val animSpec = tween<Float>(
-                                    durationMillis = 3000,
-                                    easing = LinearOutSlowInEasing
-                                )
-                                launch { animatedOffsetX.animateTo(1000f, animSpec) }
-                                launch { animatedRotationZ.animateTo(20f, animSpec) }
-
-                                delay(400)
-
-                                onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
-                            } else {
-                                val springSpec = spring<Float>(dampingRatio = 0.7f)
-                                launch { animatedOffsetX.animateTo(0f, springSpec) }
-                                launch { animatedRotationZ.animateTo(0f, springSpec) }
-                            }
-                        }
-                    }
-                )
-                .offset(x = (animatedOffsetX.value + if (isFlipped) hintOffsetX else 0f).dp)
-                .graphicsLayer {
-                    rotationZ = animatedRotationZ.value + if (isFlipped) hintRotation else 0f
-                    cameraDistance = 8 * density
-                    alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
-                },
-            pleasure = uiState.dailyPleasure,
-            flipped = uiState.isCardFlipped,
-            durationRotation = rotationCardAnimationDuration,
-            onCardFlipped = {
-                showConfettiAnimation = true
-                onEvent(DailyPleasureEvent.OnCardFlipped)
-            },
-            onClick = { onEvent(DailyPleasureEvent.OnCardClicked) }
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Text(
-            text = when {
-                !isFlipped -> stringResource(R.string.pleasure_tap_card_text)
-                else -> stringResource(R.string.pleasure_swip_card_text)
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 32.dp)
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-    }
-
-    // Confetti Animation
-    val confettiComposition by rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(resId = R.raw.confetti)
-    )
-    val confettiProgress by animateLottieCompositionAsState(
-        composition = confettiComposition,
-        isPlaying = showConfettiAnimation,
-        restartOnPlay = false
-    )
-
-    if (showConfettiAnimation) {
-        LottieAnimation(
-            composition = confettiComposition,
-            progress = { confettiProgress }
-        )
-    }
+    return Pair(hintOffsetX, hintRotation)
 }
+
 
 @Composable
 private fun CurrentCategoryButton(
