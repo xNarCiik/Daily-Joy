@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureViewModel
 import com.dms.dailyjoy.ui.login.LoginScreen
+import com.dms.dailyjoy.ui.onboarding.OnboardingScreen
 import com.dms.dailyjoy.ui.settings.SettingsScreen
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.settings.manage.ManagePleasuresScreen
@@ -32,7 +33,10 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
 
 @Serializable
-object LoginScreen
+object LoginRoute
+
+@Serializable
+object OnboardingRoute
 
 @Serializable
 object DailyPleasureRoute
@@ -65,10 +69,15 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
 
     NavHost(
         navController = navController,
-        startDestination = if (FirebaseAuth.getInstance().currentUser != null) DailyPleasureRoute else LoginScreen
+        startDestination = OnboardingRoute
+        // TODO Change startDestination = if (FirebaseAuth.getInstance().currentUser != null) DailyPleasureRoute else LoginScreen
     ) {
-        composable<LoginScreen> {
+        composable<LoginRoute> {
             LoginScreen(onNavigateToHome = { navigateSingleTop(DailyPleasureRoute) })
+        }
+
+        composable<OnboardingRoute> {
+            OnboardingScreen(onComplete = { navigateSingleTop(DailyPleasureRoute) })
         }
 
         composable<DailyPleasureRoute> {
@@ -117,7 +126,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 onNavigateToStatistics = { navController.navigate(StatisticsRoute) },
                 onDisconnect = {
                     FirebaseAuth.getInstance().signOut()
-                    navigateSingleTop(LoginScreen)
+                    navigateSingleTop(LoginRoute)
                 }
             )
         }
