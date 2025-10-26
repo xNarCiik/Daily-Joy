@@ -8,7 +8,7 @@
 
     <!-- DailyPleasure Setup State -->
     <string name="setup_title">Ready to start?</string>
-    <string name="setup_subtitle">You currently have %d pleasures selected\n\You need at least %d to draw your daily card 🎴</string>
+    <string name="setup_subtitle">You currently have %d pleasures selected\n\nYou need at least %d to draw your daily card 🎴</string>
     <string name="setup_button_text">✨ Configure my pleasures</string>
 
     <!-- DailyPleasure Content -->
@@ -61,7 +61,6 @@
     <string name="settings_statistics_title">Statistics</string>
     <string name="settings_statistics_subtitle">Check your progress</string>
     <string name="settings_header_subtitle">Customize your Daily Joy experience</string>
-    <string name="privacy_policy_url" translatable="false">https://privacy-policy-url.com</string>
 
     <!-- Theme Dialog -->
     <string name="settings_theme_dialog_title">Choose a theme</string>
@@ -163,4 +162,38 @@
 
     <!-- Accessibility-->
     <string name="accessibility_options">options</string>
+
+    <!-- Login Screen -->
+    <string name="login_google_failed">Google login failed</string>
+    <string name="login_daily_joy_logo">DailyJoy Logo</string>
+    <string name="login_start_day_with_joy">Start your day with joy</string>
+    <string name="login_daily_happiness">Your daily dose of happiness</string>
+    <string name="login_terms_and_conditions">By continuing, you accept our terms of use and our privacy policy</string>
+    <string name="login_google_logo">Google Logo</string>
+    <string name="login_continue_with_google">Continue with Google</string>
+
+    <!-- Onboarding Welcome Step -->
+    <string name="onboarding_welcome_title">Welcome to Daily Joy!</string>
+    <string name="onboarding_welcome_subtitle">Let\'s set up your experience together to fully enjoy your daily pleasures.</string>
+    <string name="onboarding_welcome_feature1_text">Customize your name</string>
+    <string name="onboarding_welcome_feature2_text">Choose your favorite pleasures</string>
+    <string name="onboarding_welcome_feature3_text">Set up your reminders</string>
+
+    <!-- Onboarding Username Step -->
+    <string name="onboarding_username_title">What would you like to be called?</string>
+    <string name="onboarding_username_subtitle">This name will be used to personalize your experience.</string>
+    <string name="onboarding_username_label">Your first name</string>
+    <string name="onboarding_username_placeholder">Ex: Mary</string>
+
+    <!-- Onboarding Pleasures Step -->
+    <string name="onboarding_pleasures_title">Select your pleasures</string>
+    <string name="onboarding_pleasures_subtitle">Choose the activities that bring you joy. You can modify this list later.</string>
+
+    <!-- Onboarding Notification Step -->
+    <string name="onboarding_notification_title">Set up your reminders</string>
+    <string name="onboarding_notification_subtitle">Receive a daily notification to discover your pleasure of the day.</string>
+    <string name="onboarding_notification_daily_reminder">Daily reminder</string>
+    <string name="onboarding_notification_daily_reminder_subtitle">Don\'t miss any pleasure</string>
+    <string name="onboarding_notification_reminder_time">Reminder time</string>
+
 </resources>

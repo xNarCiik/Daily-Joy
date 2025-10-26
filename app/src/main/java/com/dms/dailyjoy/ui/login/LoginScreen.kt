@@ -132,7 +132,7 @@ fun LoginScreen(
                             }
                         } catch (e: Exception) {
                             snackbarHostState.showSnackbar(
-                                e.localizedMessage ?: "Connexion Google échouée"
+                                e.localizedMessage ?: context.getString(R.string.login_google_failed)
                             )
                         }
                     }
@@ -201,7 +201,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.Favorite,
-                contentDescription = "DailyJoy Logo",
+                contentDescription = stringResource(id = R.string.login_daily_joy_logo),
                 modifier = Modifier.size(64.dp),
                 tint = Color(0xFFFF6B9D)
             )
@@ -219,7 +219,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Commencez votre journée avec joie",
+            text = stringResource(id = R.string.login_start_day_with_joy),
             style = MaterialTheme.typography.titleMedium,
             color = Color(0xFF7F8C8D),
             textAlign = TextAlign.Center
@@ -228,7 +228,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Votre dose de bonheur quotidienne",
+            text = stringResource(id = R.string.login_daily_happiness),
             style = MaterialTheme.typography.bodyLarge,
             color = Color(0xFFBDC3C7),
             textAlign = TextAlign.Center
@@ -241,7 +241,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = "En continuant, vous acceptez nos conditions d'utilisation et notre politique de confidentialité",
+            text = stringResource(id = R.string.login_terms_and_conditions),
             style = MaterialTheme.typography.bodySmall,
             color = Color(0xFFBDC3C7),
             textAlign = TextAlign.Center,
@@ -278,7 +278,7 @@ private fun GoogleSignInButton(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.google_logo),
-                contentDescription = "Google Logo",
+                contentDescription = stringResource(id = R.string.login_google_logo),
                 modifier = Modifier.size(24.dp),
                 tint = Color.Unspecified
             )
@@ -286,7 +286,7 @@ private fun GoogleSignInButton(
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
-                text = "Continuer avec Google",
+                text = stringResource(id = R.string.login_continue_with_google),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )

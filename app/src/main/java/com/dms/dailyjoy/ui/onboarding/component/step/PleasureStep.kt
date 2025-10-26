@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -23,12 +24,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.component.CategoryChip
+import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun PleasuresStep(
@@ -43,7 +48,7 @@ fun PleasuresStep(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Sélectionnez vos plaisirs",
+            text = stringResource(id = R.string.onboarding_pleasures_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -53,7 +58,7 @@ fun PleasuresStep(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Choisissez les activités qui vous apportent de la joie. Vous pourrez modifier cette liste plus tard.",
+            text = stringResource(id = R.string.onboarding_pleasures_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -134,6 +139,16 @@ private fun PleasureOnboardingItem(
 
                 CategoryChip(category = pleasure.category)
             }
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun PleasuresStepPreview() {
+    DailyJoyTheme {
+        Surface {
+            PleasuresStep(pleasures = emptyList(), onTogglePleasure = {})
         }
     }
 }

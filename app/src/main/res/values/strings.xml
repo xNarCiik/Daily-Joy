@@ -163,4 +163,42 @@
 
     <!-- Accessibility-->
     <string name="accessibility_options">options</string>
+
+    <!-- Login Screen -->
+    <string name="login_google_failed">Connexion Google échouée</string>
+    <string name="login_daily_joy_logo">DailyJoy Logo</string>
+    <string name="login_start_day_with_joy">Commencez votre journée avec joie</string>
+    <string name="login_daily_happiness">Votre dose de bonheur quotidienne</string>
+    <string name="login_terms_and_conditions">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité</string>
+    <string name="login_google_logo">Google Logo</string>
+    <string name="login_continue_with_google">Continuer avec Google</string>
+
+    <!-- Onboarding Welcome Step -->
+    <string name="onboarding_welcome_emoji" translatable="false">🎉</string>
+    <string name="onboarding_welcome_title">Bienvenue dans Daily Joy !</string>
+    <string name="onboarding_welcome_subtitle">Configurons ensemble votre expérience pour profiter pleinement de vos plaisirs quotidiens.</string>
+    <string name="onboarding_welcome_feature1_emoji" translatable="false">📝</string>
+    <string name="onboarding_welcome_feature1_text">Personnalisez votre nom</string>
+    <string name="onboarding_welcome_feature2_emoji" translatable="false">✨</string>
+    <string name="onboarding_welcome_feature2_text">Choisissez vos plaisirs préférés</string>
+    <string name="onboarding_welcome_feature3_emoji" translatable="false">🔔</string>
+    <string name="onboarding_welcome_feature3_text">Configurez vos rappels</string>
+
+    <!-- Onboarding Username Step -->
+    <string name="onboarding_username_title">Comment voulez-vous qu\'on vous appelle ?</string>
+    <string name="onboarding_username_subtitle">Ce nom sera utilisé pour personnaliser votre expérience.</string>
+    <string name="onboarding_username_label">Votre prénom</string>
+    <string name="onboarding_username_placeholder">Ex: Marie</string>
+
+    <!-- Onboarding Pleasures Step -->
+    <string name="onboarding_pleasures_title">Sélectionnez vos plaisirs</string>
+    <string name="onboarding_pleasures_subtitle">Choisissez les activités qui vous apportent de la joie. Vous pourrez modifier cette liste plus tard.</string>
+
+    <!-- Onboarding Notification Step -->
+    <string name="onboarding_notification_title">Configurez vos rappels</string>
+    <string name="onboarding_notification_subtitle">Recevez une notification quotidienne pour découvrir votre plaisir du jour.</string>
+    <string name="onboarding_notification_daily_reminder">Rappel quotidien</string>
+    <string name="onboarding_notification_daily_reminder_subtitle">Ne manquez aucun plaisir</string>
+    <string name="onboarding_notification_reminder_time">Heure du rappel</string>
+
 </resources>

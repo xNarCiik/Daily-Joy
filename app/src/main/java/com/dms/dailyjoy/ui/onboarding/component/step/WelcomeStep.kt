@@ -15,15 +15,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun WelcomeStep() {
@@ -49,7 +54,7 @@ fun WelcomeStep() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "🎉",
+                text = stringResource(id = R.string.onboarding_welcome_emoji),
                 style = MaterialTheme.typography.displayLarge
             )
         }
@@ -57,7 +62,7 @@ fun WelcomeStep() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Bienvenue dans Daily Joy !",
+            text = stringResource(id = R.string.onboarding_welcome_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -66,7 +71,7 @@ fun WelcomeStep() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Configurons ensemble votre expérience pour profiter pleinement de vos plaisirs quotidiens.",
+            text = stringResource(id = R.string.onboarding_welcome_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -85,9 +90,18 @@ fun WelcomeStep() {
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                OnboardingFeatureItem("📝", "Personnalisez votre nom")
-                OnboardingFeatureItem("✨", "Choisissez vos plaisirs préférés")
-                OnboardingFeatureItem("🔔", "Configurez vos rappels")
+                OnboardingFeatureItem(
+                    emoji = stringResource(id = R.string.onboarding_welcome_feature1_emoji),
+                    text = stringResource(id = R.string.onboarding_welcome_feature1_text)
+                )
+                OnboardingFeatureItem(
+                    emoji = stringResource(id = R.string.onboarding_welcome_feature2_emoji),
+                    text = stringResource(id = R.string.onboarding_welcome_feature2_text)
+                )
+                OnboardingFeatureItem(
+                    emoji = stringResource(id = R.string.onboarding_welcome_feature3_emoji),
+                    text = stringResource(id = R.string.onboarding_welcome_feature3_text)
+                )
             }
         }
     }
@@ -108,5 +122,15 @@ private fun OnboardingFeatureItem(emoji: String, text: String) {
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium
         )
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun WelcomeStepPreview() {
+    DailyJoyTheme {
+        Surface {
+            WelcomeStep()
+        }
     }
 }

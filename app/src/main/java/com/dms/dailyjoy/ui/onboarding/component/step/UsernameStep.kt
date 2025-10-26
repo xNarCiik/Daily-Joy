@@ -14,13 +14,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun UsernameStep(
@@ -35,7 +40,7 @@ fun UsernameStep(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Comment voulez-vous qu'on vous appelle ?",
+            text = stringResource(id = R.string.onboarding_username_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -44,7 +49,7 @@ fun UsernameStep(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Ce nom sera utilisé pour personnaliser votre expérience.",
+            text = stringResource(id = R.string.onboarding_username_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -56,8 +61,8 @@ fun UsernameStep(
             value = username,
             onValueChange = onUsernameChange,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Votre prénom") },
-            placeholder = { Text("Ex: Marie") },
+            label = { Text(stringResource(id = R.string.onboarding_username_label)) },
+            placeholder = { Text(stringResource(id = R.string.onboarding_username_placeholder)) },
             singleLine = true,
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -71,5 +76,15 @@ fun UsernameStep(
                 )
             }
         )
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun UsernameStepPreview() {
+    DailyJoyTheme {
+        Surface {
+            UsernameStep(username = "Marie", onUsernameChange = {})
+        }
     }
 }

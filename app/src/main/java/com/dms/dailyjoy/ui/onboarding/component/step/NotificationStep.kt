@@ -24,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,9 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.util.LightDarkPreview
 
 @Composable
 fun NotificationStep(
@@ -80,7 +85,7 @@ fun NotificationStep(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Configurez vos rappels",
+            text = stringResource(id = R.string.onboarding_notification_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -89,7 +94,7 @@ fun NotificationStep(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Recevez une notification quotidienne pour découvrir votre plaisir du jour.",
+            text = stringResource(id = R.string.onboarding_notification_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -124,12 +129,12 @@ fun NotificationStep(
                         )
                         Column {
                             Text(
-                                text = "Rappel quotidien",
+                                text = stringResource(id = R.string.onboarding_notification_daily_reminder),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "Ne manquez aucun plaisir",
+                                text = stringResource(id = R.string.onboarding_notification_daily_reminder_subtitle),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -175,7 +180,7 @@ fun NotificationStep(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = "Heure du rappel",
+                                    text = stringResource(id = R.string.onboarding_notification_reminder_time),
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }
@@ -190,6 +195,21 @@ fun NotificationStep(
                     }
                 }
             }
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun NotificationStepPreview() {
+    DailyJoyTheme {
+        Surface {
+            NotificationStep(
+                notificationEnabled = true,
+                reminderTime = "08:00",
+                onNotificationToggle = {},
+                onTimeChange = {}
+            )
         }
     }
 }
