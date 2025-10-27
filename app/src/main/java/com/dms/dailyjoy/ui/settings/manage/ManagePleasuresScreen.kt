@@ -120,7 +120,7 @@ fun ManagePleasuresScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 when {
                     uiState.isLoading -> {
-                        LoadingState()
+                        LoadingState(modifier = Modifier.fillMaxSize())
                     }
 
                     uiState.error != null -> {

@@ -1,34 +1,42 @@
 package com.dms.dailyjoy.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -45,7 +53,6 @@ data class TabBarItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val badgeAmount: Int? = null,
     val route: Any
 )
 
@@ -57,98 +64,151 @@ fun BottomNavBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val homeItem = TabBarItem(
-        title = stringResource(R.string.daily_pleasure_title),
-        selectedIcon = Icons.Filled.EmojiEvents,
-        unselectedIcon = Icons.Outlined.EmojiEvents,
-        route = DailyPleasureRoute
-    )
-    val weeklyItem = TabBarItem(
-        title = stringResource(R.string.weekly_title),
-        selectedIcon = Icons.Filled.DateRange,
-        unselectedIcon = Icons.Outlined.DateRange,
-        route = WeeklyRoute
-    )
-    val socialItem = TabBarItem(
-        title = stringResource(R.string.social_title),
-        selectedIcon = Icons.Filled.AccountCircle,
-        unselectedIcon = Icons.Outlined.AccountCircle,
-        route = SocialRoute
-    )
-    val settingsItem = TabBarItem(
-        title = stringResource(R.string.settings_title),
-        selectedIcon = Icons.Filled.Settings,
-        unselectedIcon = Icons.Outlined.Settings,
-        route = SettingsRoute
+    val tabBarItems = listOf(
+        TabBarItem(
+            title = stringResource(R.string.daily_pleasure_title),
+            selectedIcon = Icons.Filled.Favorite,
+            unselectedIcon = Icons.Outlined.Favorite,
+            route = DailyPleasureRoute
+        ),
+        TabBarItem(
+            title = stringResource(R.string.weekly_title),
+            selectedIcon = Icons.Filled.DateRange,
+            unselectedIcon = Icons.Outlined.DateRange,
+            route = WeeklyRoute
+        ),
+        TabBarItem(
+            title = stringResource(R.string.social_title),
+            selectedIcon = Icons.Filled.AccountCircle,
+            unselectedIcon = Icons.Outlined.AccountCircle,
+            route = SocialRoute
+        ),
+        TabBarItem(
+            title = stringResource(R.string.settings_title),
+            selectedIcon = Icons.Filled.Settings,
+            unselectedIcon = Icons.Outlined.Settings,
+            route = SettingsRoute
+        )
     )
 
-    val tabBarItems = listOf(homeItem, weeklyItem, socialItem, settingsItem)
-
-    NavigationBar(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 16.dp,
+                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            ),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 3.dp
     ) {
-        tabBarItems.forEach { tabBarItem ->
-            val isSelected = currentDestination?.route == tabBarItem.route::class.qualifiedName
-
-            this@NavigationBar.NavigationBarItem(
-                selected = isSelected,
-                onClick = {
-                    if (!isSelected) {
-                        navController.navigate(tabBarItem.route) {
-                            popUpTo(navController.graph.id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                },
-                icon = {
-                    Box(contentAlignment = Alignment.Center) {
-                        if (isSelected) {
-                            Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        MaterialTheme.colorScheme.primaryContainer.copy(
-                                            alpha = 0.3f
-                                        )
-                                    )
-                            )
-                        }
-
-                        Icon(
-                            imageVector = if (isSelected) tabBarItem.selectedIcon else tabBarItem.unselectedIcon,
-                            contentDescription = tabBarItem.title,
-                            modifier = Modifier.size(24.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
                         )
-                    }
-                },
-                label = {
-                    if (isSelected) {
-                        Text(
-                            text = tabBarItem.title,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.surface
+                    )
                 )
-            )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                tabBarItems.forEach { tabBarItem ->
+                    val isSelected = currentDestination?.route == tabBarItem.route::class.qualifiedName
+
+                    NavBarItem(
+                        isSelected = isSelected,
+                        icon = if (isSelected) tabBarItem.selectedIcon else tabBarItem.unselectedIcon,
+                        label = tabBarItem.title,
+                        onClick = {
+                            if (!isSelected) {
+                                navController.navigate(tabBarItem.route) {
+                                    popUpTo(navController.graph.id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 }
+
+@Composable
+private fun NavBarItem(
+    isSelected: Boolean,
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.15f else 1f,
+        animationSpec = spring(dampingRatio = 0.7f),
+        label = "scale"
+    )
+
+    val iconColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary
+        else MaterialTheme.colorScheme.onSurfaceVariant,
+        label = "iconColor"
+    )
+
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.95f)
+        else Color.Transparent,
+        label = "backgroundColor"
+    )
+
+    Surface(
+        onClick = onClick,
+        modifier = Modifier
+            .scale(scale)
+            .padding(horizontal = 6.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(18.dp),
+        color = backgroundColor
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = if (isSelected) 14.dp else 0.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                modifier = Modifier.size(if (isSelected) 24.dp else 22.dp),
+                tint = iconColor
+            )
+
+            AnimatedVisibility(visible = isSelected) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+    }
+}
+
 
 @LightDarkPreview
 @Composable

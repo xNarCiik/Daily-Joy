@@ -44,7 +44,7 @@ fun WeeklyScreen(
     Box(modifier = modifier.fillMaxSize()) {
         when {
             uiState.isLoading -> {
-                LoadingState()
+                LoadingState(modifier = modifier.fillMaxSize())
             }
 
             uiState.error != null -> {

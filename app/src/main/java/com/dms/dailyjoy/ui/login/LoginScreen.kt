@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -52,6 +50,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.AppIcon
 import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -70,7 +69,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 
     val credentialManager = remember { CredentialManager.create(context) }
 
-    val googleIdOption = GetGoogleIdOption.Builder()
+    val googleIdOption = GetGoogleIdOption.Builder() // TODO STRING
         .setServerClientId("251003841383-uiaqo6aq7himht7bt3d78aeaqga456h3.apps.googleusercontent.com")
         .setFilterByAuthorizedAccounts(false)
         .build()
@@ -146,7 +145,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                LoadingState()
+                LoadingState(modifier = Modifier.fillMaxSize())
             }
         }
     }
@@ -157,7 +156,7 @@ private fun LoginContent(
     isLoading: Boolean,
     onGoogleSignInClick: () -> Unit
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = isSystemInDarkTheme() // TODO EXPORT THEME
 
     val scale by animateFloatAsState(
         targetValue = 1f,
@@ -202,12 +201,7 @@ private fun LoginContent(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = stringResource(id = R.string.login_daily_joy_logo),
-                modifier = Modifier.size(64.dp),
-                tint = if (isDarkTheme) Color(0xFFFF6B9D) else Color(0xFFFF6B9D)
-            )
+            AppIcon(modifier = Modifier.size(64.dp))
         }
 
         Spacer(modifier = Modifier.height(32.dp))

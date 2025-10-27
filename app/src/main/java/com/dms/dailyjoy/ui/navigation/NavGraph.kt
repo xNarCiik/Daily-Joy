@@ -146,7 +146,12 @@ fun NavGraph(
             }
         }
 
-        composable<DailyPleasureRoute>{
+        composable<DailyPleasureRoute>(
+            enterTransition = enterTransition,
+            exitTransition = exitTransition,
+            popEnterTransition = popEnterTransition,
+            popExitTransition = popExitTransition
+        ) {
             val viewModel: DailyPleasureViewModel = hiltViewModel()
             val dailyPleasureUiState by viewModel.uiState.collectAsState()
 

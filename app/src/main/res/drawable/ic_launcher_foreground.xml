@@ -1,89 +1,15 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-  <group android:scaleX="0.6477778"
-      android:scaleY="0.6477778"
-      android:translateX="19.02"
-      android:translateY="19.02">
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#F8739E">
+  <group android:scaleX="0.42456"
+      android:scaleY="0.42456"
+      android:translateX="6.90528"
+      android:translateY="6.8581066">
     <path
-        android:pathData="M24,0L84,0A24,24 0,0 1,108 24L108,84A24,24 0,0 1,84 108L24,108A24,24 0,0 1,0 84L0,24A24,24 0,0 1,24 0z">
-      <aapt:attr name="android:fillColor">
-        <gradient
-            android:startX="-0"
-            android:startY="0"
-            android:endX="108"
-            android:endY="108"
-            android:type="linear">
-          <item android:offset="0" android:color="#FF2D5F4F"/>
-          <item android:offset="1" android:color="#FF4A8F75"/>
-        </gradient>
-      </aapt:attr>
-    </path>
-    <path
-        android:pathData="M20,25m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"
-        android:strokeAlpha="0.3"
-        android:fillColor="#3D6F5E"
-        android:fillAlpha="0.3"/>
-    <path
-        android:pathData="M88,80m-18,0a18,18 0,1 1,36 0a18,18 0,1 1,-36 0"
-        android:strokeAlpha="0.25"
-        android:fillColor="#5A9D82"
-        android:fillAlpha="0.25"/>
-    <path
-        android:pathData="M35.62,27.5L67.5,24.71A4,4 80.17,0 1,71.83 28.35L76.02,76.17A4,4 93.17,0 1,72.38 80.5L40.5,83.29A4,4 107.64,0 1,36.17 79.65L31.98,31.83A4,4 112.86,0 1,35.62 27.5z"
-        android:strokeAlpha="0.4"
-        android:fillColor="#1A3D32"
-        android:fillAlpha="0.4"/>
-    <path
-        android:pathData="M35.62,27.5L67.5,24.71A4,4 80.17,0 1,71.83 28.35L76.02,76.17A4,4 93.17,0 1,72.38 80.5L40.5,83.29A4,4 107.64,0 1,36.17 79.65L31.98,31.83A4,4 112.86,0 1,35.62 27.5z"
-        android:strokeAlpha="0.95"
-        android:strokeWidth="1.5"
-        android:strokeColor="#FFFFFF"
-        android:fillAlpha="0.95">
-      <aapt:attr name="android:fillColor">
-        <gradient
-            android:startX="31.97"
-            android:startY="24.7"
-            android:endX="31.97"
-            android:endY="83.3"
-            android:type="linear">
-          <item android:offset="0" android:color="#FFA8D5BA"/>
-          <item android:offset="1" android:color="#FF7FB89A"/>
-        </gradient>
-      </aapt:attr>
-    </path>
-    <path
-        android:pathData="M53.3,46.03L55.82,51.83L61.8,51.31L57.16,55.73L59.68,61.53L54.35,57.98L49.72,62.41L51.19,56.25L45.86,52.7L51.83,52.18Z"
-        android:strokeAlpha="0.95"
-        android:fillColor="#FFFFFF"
-        android:fillAlpha="0.95"/>
-    <path
-        android:pathData="M61.45,47.33L62.62,49.23L64.61,49.06L63.25,50.68L63.87,52.13L61.75,50.81L59.89,52.48L60.26,50.94L58.63,49.58L60.62,49.41Z"
-        android:strokeAlpha="0.8"
-        android:fillColor="#FFFFFF"
-        android:fillAlpha="0.8"/>
-    <path
-        android:pathData="M30,70m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
-        android:strokeAlpha="0.6"
-        android:fillColor="#B8E6D5"
-        android:fillAlpha="0.6"/>
-    <path
-        android:pathData="M78,35m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
-        android:strokeAlpha="0.7"
-        android:fillColor="#B8E6D5"
-        android:fillAlpha="0.7"/>
-    <path
-        android:pathData="M25,45m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0"
-        android:strokeAlpha="0.5"
-        android:fillColor="#FFFFFF"
-        android:fillAlpha="0.5"/>
-    <path
-        android:pathData="M85,65m-1.8,0a1.8,1.8 0,1 1,3.6 0a1.8,1.8 0,1 1,-3.6 0"
-        android:strokeAlpha="0.6"
-        android:fillColor="#FFFFFF"
-        android:fillAlpha="0.6"/>
+        android:fillColor="@android:color/white"
+        android:pathData="M12,21.35l-1.45,-1.32C5.4,15.36 2,12.28 2,8.5 2,5.42 4.42,3 7.5,3c1.74,0 3.41,0.81 4.5,2.09C13.09,3.81 14.76,3 16.5,3 19.58,3 22,5.42 22,8.5c0,3.78 -3.4,6.86 -8.55,11.54L12,21.35z"/>
   </group>
 </vector>

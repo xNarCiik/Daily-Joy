@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -64,15 +64,22 @@ fun DailyPleasureScreen(
         AppHeader(
             title = stringResource(R.string.daily_pleasure_title),
             subtitle = uiState.headerMessage,
-            icon = Icons.Default.EmojiEvents
+            icon = Icons.Default.Favorite
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val contentModifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+
+        if (screenState is DailyPleasureScreenState.Loading) {
+            LoadingState(modifier = contentModifier)
+            return@Column
+        }
+
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
+            modifier = contentModifier,
             contentAlignment = Alignment.Center
         ) {
             when (screenState) {
@@ -98,10 +105,6 @@ fun DailyPleasureScreen(
                 else -> {}
             }
         }
-    }
-
-    if (screenState is DailyPleasureScreenState.Loading) {
-        LoadingState()
     }
 }
 
