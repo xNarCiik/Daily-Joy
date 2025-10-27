@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +43,7 @@ fun WeeklyStatsCard(
 ) {
     val progress = completedCount.toFloat() / totalCount.toFloat()
 
-    var animatedProgress by remember { mutableFloatStateOf(0f) }
+    var animatedProgress by rememberSaveable { mutableFloatStateOf(0f) }
 
     LaunchedEffect(progress) {
         animatedProgress = progress
@@ -172,6 +172,7 @@ fun WeeklyStatsCard(
                     .clip(RoundedCornerShape(7.dp)),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                drawStopIndicator = {}
             )
         }
     }

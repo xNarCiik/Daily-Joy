@@ -34,7 +34,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.domain.model.RootNavigationState
 import com.dms.dailyjoy.domain.model.Theme
-import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
+import com.dms.dailyjoy.ui.component.BottomNavBar
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
 import com.dms.dailyjoy.ui.navigation.NavGraph
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
@@ -119,10 +119,9 @@ class MainActivity : ComponentActivity() {
                                 SettingsRoute::class.qualifiedName
                             )
 
-                            AnimatedBottomNavBar(
-                                navController = navController,
-                                visible = visible
-                            )
+                            if (visible) {
+                                BottomNavBar(navController = navController)
+                            }
                         }
                     ) { innerPadding ->
                         NavGraph(

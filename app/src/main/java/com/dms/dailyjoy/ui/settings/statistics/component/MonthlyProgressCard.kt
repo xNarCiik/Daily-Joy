@@ -163,6 +163,7 @@ fun MonthlyProgressCard(monthlyProgress: MonthlyProgress) {
                         .clip(RoundedCornerShape(6.dp)),
                     color = MaterialTheme.colorScheme.primary,
                     trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                    drawStopIndicator = {}
                 )
             }
         }

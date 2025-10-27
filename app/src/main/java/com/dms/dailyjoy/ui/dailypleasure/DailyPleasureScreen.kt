@@ -1,10 +1,5 @@
 package com.dms.dailyjoy.ui.dailypleasure
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +39,8 @@ fun DailyPleasureScreen(
     onEvent: (DailyPleasureEvent) -> Unit = {},
     navigateToManagePleasures: () -> Unit = {}
 ) {
+    val screenState = uiState.screenState
+
     // Observe lifecycle events to refresh the state when the screen is resumed
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -78,37 +75,28 @@ fun DailyPleasureScreen(
                 .weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            AnimatedContent(
-                targetState = uiState.screenState,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween(300)) togetherWith
-                            fadeOut(animationSpec = tween(300))
-                },
-                label = "screenStateTransition"
-            ) { state ->
-                when (state) {
-                    is DailyPleasureScreenState.Loading -> {
-                        LoadingState()
-                    }
+            when (screenState) {
+                is DailyPleasureScreenState.Loading -> {
+                    LoadingState()
+                }
 
-                    is DailyPleasureScreenState.SetupRequired -> {
-                        DailyPleasureSetupContent(
-                            currentPleasureCount = state.pleasureCount,
-                            requiredCount = MinimumPleasuresCount,
-                            onConfigureClick = navigateToManagePleasures
-                        )
-                    }
+                is DailyPleasureScreenState.SetupRequired -> {
+                    DailyPleasureSetupContent(
+                        currentPleasureCount = screenState.pleasureCount,
+                        requiredCount = MinimumPleasuresCount,
+                        onConfigureClick = navigateToManagePleasures
+                    )
+                }
 
-                    is DailyPleasureScreenState.Ready -> {
-                        DailyPleasureContent(
-                            uiState = state,
-                            onEvent = onEvent
-                        )
-                    }
+                is DailyPleasureScreenState.Ready -> {
+                    DailyPleasureContent(
+                        uiState = screenState,
+                        onEvent = onEvent
+                    )
+                }
 
-                    is DailyPleasureScreenState.Completed -> {
-                        DailyPleasureCompletedContent()
-                    }
+                is DailyPleasureScreenState.Completed -> {
+                    DailyPleasureCompletedContent()
                 }
             }
         }

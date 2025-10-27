@@ -17,7 +17,7 @@ import com.dms.dailyjoy.ui.onboarding.OnboardingStep
 @Composable
 fun OnboardingProgressBar(
     currentStep: OnboardingStep,
-    totalSteps: Int
+    totalSteps: Int // TODO REMOVE ? OR UPDATE UI
 ) {
     val progress = when (currentStep) {
         OnboardingStep.WELCOME -> 0f
@@ -40,7 +40,8 @@ fun OnboardingProgressBar(
                 .fillMaxWidth()
                 .height(4.dp),
             color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            drawStopIndicator = {}
         )
     }
 }

@@ -148,7 +148,8 @@ private fun CategoryBar(
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp)),
             color = color,
-            trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+            trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+            drawStopIndicator = {}
         )
     }
 }

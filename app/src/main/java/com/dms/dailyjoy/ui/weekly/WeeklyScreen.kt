@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 import com.dms.dailyjoy.data.model.PleasureCategory
+import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.weekly.component.WeeklyPleasuresList
@@ -44,7 +44,7 @@ fun WeeklyScreen(
     Box(modifier = modifier.fillMaxSize()) {
         when {
             uiState.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                LoadingState()
             }
 
             uiState.error != null -> {
