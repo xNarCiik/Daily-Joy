@@ -25,19 +25,11 @@ import com.dms.dailyjoy.ui.onboarding.component.step.UsernameStep
 import com.dms.dailyjoy.ui.onboarding.component.step.WelcomeStep
 
 @Composable
-fun OnboardingScreen(
-    viewModel: OnboardingViewModel = hiltViewModel(),
-    onComplete: () -> Unit
-) {
+fun OnboardingScreen(modifier: Modifier, viewModel: OnboardingViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.isCompleted) {
-        onComplete()
-        return
-    }
-
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(all = 16.dp)
     ) {
@@ -91,7 +83,7 @@ fun OnboardingScreen(
                         onTimeChange = viewModel::updateReminderTime
                     )
 
-                    OnboardingStep.COMPLETE -> Unit
+                    OnboardingStep.COMPLETE -> {}
                 }
             }
         }

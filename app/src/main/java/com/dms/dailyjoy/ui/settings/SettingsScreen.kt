@@ -77,7 +77,7 @@ fun SettingsScreen(
     onEvent: (SettingsEvent) -> Unit,
     onNavigateToManagePleasures: () -> Unit,
     onNavigateToStatistics: () -> Unit,
-    onDisconnect: () -> Unit
+    onSignOut: () -> Unit
 ) {
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -121,7 +121,7 @@ fun SettingsScreen(
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
         item {
             uiState.userInfo?.let {
@@ -252,9 +252,12 @@ fun SettingsScreen(
         item {
             SettingsClickableItem(
                 icon = Icons.Default.Logout,
-                title = "Déconnexion",
+                title = "Déconnexion", // TODO STRING
                 subtitle = "Se déconnecter de l'application",
-                onClick = onDisconnect,
+                onClick = {
+                    onEvent(SettingsEvent.OnSignOut)
+                    onSignOut()
+                },
                 showChevron = false
             )
         }
@@ -417,11 +420,17 @@ private fun SettingsScreenPreview() {
     DailyJoyTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             SettingsScreen(
-                uiState = SettingsUiState(),
+                uiState = SettingsUiState(
+                    userInfo = UserInfo(
+                        username = "Daily User",
+                        id = "aofjzeosfeg",
+                        email = "dailyuser@google.com"
+                    )
+                ),
                 onEvent = {},
                 onNavigateToManagePleasures = {},
                 onNavigateToStatistics = {},
-                onDisconnect = {}
+                onSignOut = {}
             )
         }
     }

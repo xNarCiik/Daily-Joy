@@ -4,8 +4,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.dms.dailyjoy.data.database.dao.PleasureDao
 import com.dms.dailyjoy.data.local.LocalDailyMessagesDataSource
+import com.dms.dailyjoy.data.repository.AuthRepository
 import com.dms.dailyjoy.data.repository.DailyMessageRepositoryImpl
 import com.dms.dailyjoy.data.repository.HistoryRepositoryImpl
+import com.dms.dailyjoy.data.repository.OnboardingRepositoryImpl
 import com.dms.dailyjoy.data.repository.PleasureRepositoryImpl
 import com.dms.dailyjoy.data.repository.SettingsRepositoryImpl
 import com.dms.dailyjoy.data.repository.SocialRepositoryImpl
@@ -18,6 +20,7 @@ import com.dms.dailyjoy.domain.repository.SettingsRepository
 import com.dms.dailyjoy.domain.repository.SocialRepository
 import com.dms.dailyjoy.domain.repository.StatisticsRepository
 import com.dms.dailyjoy.domain.repository.UserRepository
+import com.dms.dailyjoy.domain.repository.onboarding.OnboardingRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -31,10 +34,23 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
+    fun provideAuthRepository(firebaseAuth: FirebaseAuth): AuthRepository =
+        AuthRepository(auth = firebaseAuth)
+
+    @Provides
+    @Singleton
     fun provideUserRepository(
         firestore: FirebaseFirestore,
         firebaseAuth: FirebaseAuth
-    ): UserRepository = UserRepositoryImpl(firestore = firestore, firebaseAuth)
+    ): UserRepository = UserRepositoryImpl(firestore = firestore, firebaseAuth = firebaseAuth)
+
+    @Provides
+    @Singleton
+    fun provideOnboardingRepository(
+        firestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth
+    ): OnboardingRepository =
+        OnboardingRepositoryImpl(firestore = firestore, firebaseAuth = firebaseAuth)
 
     @Provides
     @Singleton

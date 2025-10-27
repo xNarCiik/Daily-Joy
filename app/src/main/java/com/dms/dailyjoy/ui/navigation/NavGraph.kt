@@ -7,6 +7,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dms.dailyjoy.domain.model.RootNavigationState
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreen
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureViewModel
 import com.dms.dailyjoy.ui.login.LoginScreen
@@ -26,17 +28,12 @@ import com.dms.dailyjoy.ui.settings.statistics.StatisticsScreen
 import com.dms.dailyjoy.ui.settings.statistics.StatisticsViewModel
 import com.dms.dailyjoy.ui.social.SocialScreen
 import com.dms.dailyjoy.ui.social.SocialViewModel
-import com.dms.dailyjoy.ui.util.navigationAnimationDuration
 import com.dms.dailyjoy.ui.weekly.WeeklyScreen
 import com.dms.dailyjoy.ui.weekly.WeeklyViewModel
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.Serializable
 
 @Serializable
-object LoginRoute
-
-@Serializable
-object OnboardingRoute
+object RootRoute
 
 @Serializable
 object DailyPleasureRoute
@@ -56,28 +53,45 @@ object ManagePleasuresRoute
 @Serializable
 object StatisticsRoute
 
+private const val navigationAnimationDuration = 900
+
 @Composable
-fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
+fun NavGraph(
+    navController: NavHostController,
+    paddingValues: PaddingValues,
+    rootNavigationState: RootNavigationState
+) {
     val modifierWithPaddingValues = Modifier.padding(paddingValues)
 
     val navigateSingleTop: (Any) -> Unit = { route ->
         navController.navigate(route) {
-            popUpTo(0) { inclusive = true }
+            popUpTo(navController.graph.id) { inclusive = true }
             launchSingleTop = true
         }
     }
 
     NavHost(
         navController = navController,
-        startDestination = OnboardingRoute
-        // TODO Change startDestination = if (FirebaseAuth.getInstance().currentUser != null) DailyPleasureRoute else LoginScreen
+        startDestination = RootRoute
     ) {
-        composable<LoginRoute> {
-            LoginScreen(onNavigateToHome = { navigateSingleTop(DailyPleasureRoute) })
-        }
+        composable<RootRoute> {
+            when (rootNavigationState) {
+                RootNavigationState.NotAuthenticated -> {
+                    LoginScreen()
+                }
 
-        composable<OnboardingRoute> {
-            OnboardingScreen(onComplete = { navigateSingleTop(DailyPleasureRoute) })
+                RootNavigationState.AuthenticatedButNotOnboarded -> {
+                    OnboardingScreen(modifier = modifierWithPaddingValues)
+                }
+
+                RootNavigationState.AuthenticatedAndOnboarded -> {
+                    LaunchedEffect(Unit) {
+                        navigateSingleTop(DailyPleasureRoute)
+                    }
+                }
+
+                else -> {}
+            }
         }
 
         composable<DailyPleasureRoute> {
@@ -124,10 +138,7 @@ fun NavGraph(navController: NavHostController, paddingValues: PaddingValues) {
                 onEvent = viewModel::onEvent,
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
                 onNavigateToStatistics = { navController.navigate(StatisticsRoute) },
-                onDisconnect = {
-                    FirebaseAuth.getInstance().signOut()
-                    navigateSingleTop(LoginRoute)
-                }
+                onSignOut = { navigateSingleTop(RootRoute) }
             )
         }
 

@@ -50,7 +50,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
@@ -60,10 +60,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Co
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel = viewModel(),
-    onNavigateToHome: () -> Unit
-) {
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -73,21 +70,13 @@ fun LoginScreen(
     val credentialManager = remember { CredentialManager.create(context) }
 
     val googleIdOption = GetGoogleIdOption.Builder()
-        .setServerClientId("251003841383-uiaqo6aq7himht7bt3d78aeaqga456h3.apps.googleusercontent.com")
+        .setServerClientId("251003841383-uiaqo6aq7himht7bt3d78aeaqga456h3.apps.googleusercontent.com") // TODO EXPORT
         .setFilterByAuthorizedAccounts(false)
         .build()
 
     val request = GetCredentialRequest.Builder()
         .addCredentialOption(googleIdOption)
         .build()
-
-    LaunchedEffect(Unit) {
-        viewModel.navigationEvents.collect { event ->
-            if (event is LoginNavigationEvent.NavigateToHome) {
-                onNavigateToHome()
-            }
-        }
-    }
 
     LaunchedEffect(uiState) {
         if (uiState is LoginUiState.Error) {
@@ -132,7 +121,8 @@ fun LoginScreen(
                             }
                         } catch (e: Exception) {
                             snackbarHostState.showSnackbar(
-                                e.localizedMessage ?: context.getString(R.string.login_google_failed)
+                                e.localizedMessage
+                                    ?: context.getString(R.string.login_google_failed)
                             )
                         }
                     }
@@ -299,7 +289,7 @@ private fun GoogleSignInButton(
 private fun LoginScreenPreview() {
     DailyJoyTheme {
         Surface {
-            LoginScreen(onNavigateToHome = {})
+            LoginScreen()
         }
     }
 }
