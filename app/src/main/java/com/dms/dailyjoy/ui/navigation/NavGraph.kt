@@ -1,7 +1,12 @@
 package com.dms.dailyjoy.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -70,9 +76,55 @@ fun NavGraph(
         }
     }
 
+    val enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards EnterTransition?) =
+        {
+            fadeIn(
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+        }
+
+    val exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards ExitTransition?) =
+        {
+            fadeOut(
+                animationSpec = tween(
+                    durationMillis = 150,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+        }
+
+    val popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards EnterTransition?) =
+        {
+            fadeIn(
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+        }
+
+    val popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards ExitTransition?) =
+        {
+            fadeOut(
+                animationSpec = tween(
+                    durationMillis = 150,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+        }
+
+    // TODO CUSTOM TRANSITION
     NavHost(
         navController = navController,
-        startDestination = RootRoute
+        startDestination = RootRoute,
+        // enterTransition = enterTransition
+        /* enterTransition = enterTransition,
+         exitTransition = exitTransition,
+         popEnterTransition = popEnterTransition,
+         popExitTransition = popExitTransition */
     ) {
         composable<RootRoute> {
             when (rootNavigationState) {
@@ -94,7 +146,7 @@ fun NavGraph(
             }
         }
 
-        composable<DailyPleasureRoute> {
+        composable<DailyPleasureRoute>{
             val viewModel: DailyPleasureViewModel = hiltViewModel()
             val dailyPleasureUiState by viewModel.uiState.collectAsState()
 

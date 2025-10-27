@@ -57,7 +57,7 @@ fun DailyPleasureCompletedContent() {
 
     LaunchedEffect(Unit) {
         if (!hasPlayed) {
-            delay(300)
+            delay(400)
             playAnimation = true
         }
     }

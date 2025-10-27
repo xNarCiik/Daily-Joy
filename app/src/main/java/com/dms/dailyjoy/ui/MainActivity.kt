@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dms.dailyjoy.domain.model.RootNavigationState
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.BottomNavBar
+import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
 import com.dms.dailyjoy.ui.navigation.NavGraph
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
@@ -91,13 +92,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (rootNavigationState == RootNavigationState.Loading) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
+                    LoadingState()
                     return@Surface
                 }
 

@@ -76,10 +76,6 @@ fun DailyPleasureScreen(
             contentAlignment = Alignment.Center
         ) {
             when (screenState) {
-                is DailyPleasureScreenState.Loading -> {
-                    LoadingState()
-                }
-
                 is DailyPleasureScreenState.SetupRequired -> {
                     DailyPleasureSetupContent(
                         currentPleasureCount = screenState.pleasureCount,
@@ -98,8 +94,14 @@ fun DailyPleasureScreen(
                 is DailyPleasureScreenState.Completed -> {
                     DailyPleasureCompletedContent()
                 }
+
+                else -> {}
             }
         }
+    }
+
+    if (screenState is DailyPleasureScreenState.Loading) {
+        LoadingState()
     }
 }
 

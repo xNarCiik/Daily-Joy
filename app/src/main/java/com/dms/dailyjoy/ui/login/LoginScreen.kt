@@ -7,6 +7,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -52,6 +52,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.dailyjoy.R
+import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -70,7 +71,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
     val credentialManager = remember { CredentialManager.create(context) }
 
     val googleIdOption = GetGoogleIdOption.Builder()
-        .setServerClientId("251003841383-uiaqo6aq7himht7bt3d78aeaqga456h3.apps.googleusercontent.com") // TODO EXPORT
+        .setServerClientId("251003841383-uiaqo6aq7himht7bt3d78aeaqga456h3.apps.googleusercontent.com")
         .setFilterByAuthorizedAccounts(false)
         .build()
 
@@ -93,16 +94,27 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        listOf(
-                            Color(0xFFFFF9E6),
-                            Color(0xFFFFF0F5),
-                            Color(0xFFE8F4F8)
-                        )
+                        colors = if (isSystemInDarkTheme()) {
+                            listOf(
+                                Color(0xFF1A1A2E),
+                                Color(0xFF16213E),
+                                Color(0xFF0F3460)
+                            )
+                        } else {
+                            listOf(
+                                Color(0xFFFFF9E6),
+                                Color(0xFFFFF0F5),
+                                Color(0xFFE8F4F8)
+                            )
+                        }
                     )
                 )
                 .padding(padding)
         ) {
+            val isLoading = uiState is LoginUiState.Loading
+
             LoginContent(
+                isLoading = isLoading,
                 onGoogleSignInClick = {
                     coroutineScope.launch {
                         try {
@@ -130,29 +142,23 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
             )
 
             AnimatedVisibility(
-                visible = uiState is LoginUiState.Loading,
+                visible = isLoading,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(56.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp
-                    )
-                }
+                LoadingState()
             }
         }
     }
 }
 
 @Composable
-private fun LoginContent(onGoogleSignInClick: () -> Unit) {
+private fun LoginContent(
+    isLoading: Boolean,
+    onGoogleSignInClick: () -> Unit
+) {
+    val isDarkTheme = isSystemInDarkTheme()
+
     val scale by animateFloatAsState(
         targetValue = 1f,
         animationSpec = spring(
@@ -180,10 +186,17 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
                 }
                 .background(
                     brush = Brush.radialGradient(
-                        colors = listOf(
-                            Color(0xFFFFD700).copy(alpha = 0.3f),
-                            Color(0xFFFFB6C1).copy(alpha = 0.2f)
-                        )
+                        colors = if (isDarkTheme) {
+                            listOf(
+                                Color(0xFFFF6B9D).copy(alpha = 0.3f),
+                                Color(0xFFFF6B9D).copy(alpha = 0.1f)
+                            )
+                        } else {
+                            listOf(
+                                Color(0xFFFFD700).copy(alpha = 0.3f),
+                                Color(0xFFFFB6C1).copy(alpha = 0.2f)
+                            )
+                        }
                     ),
                     shape = RoundedCornerShape(30.dp)
                 ),
@@ -193,7 +206,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
                 imageVector = Icons.Default.Favorite,
                 contentDescription = stringResource(id = R.string.login_daily_joy_logo),
                 modifier = Modifier.size(64.dp),
-                tint = Color(0xFFFF6B9D)
+                tint = if (isDarkTheme) Color(0xFFFF6B9D) else Color(0xFFFF6B9D)
             )
         }
 
@@ -203,7 +216,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
             text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF2C3E50)
+            color = if (isDarkTheme) Color(0xFFECF0F1) else Color(0xFF2C3E50)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -211,7 +224,7 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
         Text(
             text = stringResource(id = R.string.login_start_day_with_joy),
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF7F8C8D),
+            color = if (isDarkTheme) Color(0xFFBDC3C7) else Color(0xFF7F8C8D),
             textAlign = TextAlign.Center
         )
 
@@ -220,20 +233,23 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
         Text(
             text = stringResource(id = R.string.login_daily_happiness),
             style = MaterialTheme.typography.bodyLarge,
-            color = Color(0xFFBDC3C7),
+            color = if (isDarkTheme) Color(0xFF95A5A6) else Color(0xFFBDC3C7),
             textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.weight(1.5f))
 
-        GoogleSignInButton(onClick = onGoogleSignInClick)
+        GoogleSignInButton(
+            onClick = onGoogleSignInClick,
+            enabled = !isLoading
+        )
 
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
             text = stringResource(id = R.string.login_terms_and_conditions),
             style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFFBDC3C7),
+            color = if (isDarkTheme) Color(0xFF7F8C8D) else Color(0xFFBDC3C7),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -244,22 +260,27 @@ private fun LoginContent(onGoogleSignInClick: () -> Unit) {
 
 @Composable
 private fun GoogleSignInButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
-            contentColor = Color(0xFF2C3E50)
+            contentColor = Color(0xFF2C3E50),
+            disabledContainerColor = Color.White.copy(alpha = 0.6f),
+            disabledContentColor = Color(0xFF2C3E50).copy(alpha = 0.6f)
         ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 4.dp,
-            pressedElevation = 8.dp
+            pressedElevation = 8.dp,
+            disabledElevation = 2.dp
         )
     ) {
         Row(
