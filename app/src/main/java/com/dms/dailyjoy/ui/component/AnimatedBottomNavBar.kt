@@ -12,8 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
-import com.dms.dailyjoy.ui.util.navigationAnimationDuration
+
+private const val fadeInContentAnimationDuration = 1000
+private const val navigationAnimationDuration = 900
 
 @Composable
 fun AnimatedBottomNavBar(
@@ -26,7 +27,7 @@ fun AnimatedBottomNavBar(
     val offsetY by transition.animateDp(
         transitionSpec = {
             tween(
-                durationMillis = if(visible) fadeInContentAnimationDuration else navigationAnimationDuration,
+                durationMillis = if (visible) fadeInContentAnimationDuration else navigationAnimationDuration,
                 easing = LinearOutSlowInEasing
             )
         },
@@ -37,7 +38,10 @@ fun AnimatedBottomNavBar(
 
     val currentAlpha by transition.animateFloat(
         transitionSpec = {
-            tween(durationMillis = if(visible) fadeInContentAnimationDuration else navigationAnimationDuration, easing = LinearOutSlowInEasing)
+            tween(
+                durationMillis = if (visible) fadeInContentAnimationDuration else navigationAnimationDuration,
+                easing = LinearOutSlowInEasing
+            )
         },
         label = "alphaAnim"
     ) { isVisible ->

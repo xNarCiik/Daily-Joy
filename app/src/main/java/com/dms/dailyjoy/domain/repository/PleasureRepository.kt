@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface PleasureRepository {
     fun getAllPleasures(): Flow<List<Pleasure>>
     fun getPleasuresCount(): Flow<Int>
-    fun getPleasureCategories(): Flow<List<PleasureCategory>>
     fun getRandomPleasure(category: PleasureCategory?): Flow<Pleasure>
     suspend fun insert(pleasure: Pleasure)
     suspend fun update(pleasure: Pleasure)

@@ -3,6 +3,7 @@ package com.dms.dailyjoy.ui.settings
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dms.dailyjoy.data.repository.AuthRepository
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.domain.usecase.settings.GetDailyReminderStateUseCase
 import com.dms.dailyjoy.domain.usecase.settings.GetReminderTimeUseCase
@@ -30,7 +31,8 @@ class SettingsViewModel @Inject constructor(
     private val setDailyReminderStateUseCase: SetDailyReminderStateUseCase,
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val setReminderTimeUseCase: SetReminderTimeUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -70,6 +72,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.OnThemeChanged -> onThemeChange(event.theme)
             is SettingsEvent.OnDailyReminderEnabledChanged -> onDailyReminderEnabledChange(event.enabled)
             is SettingsEvent.OnReminderTimeChanged -> onReminderTimeChange(event.time)
+            is SettingsEvent.OnSignOut -> signOut()
         }
     }
 
@@ -89,5 +92,9 @@ class SettingsViewModel @Inject constructor(
     private fun onReminderTimeChange(time: String) = viewModelScope.launch {
         setReminderTimeUseCase(time)
         dailyReminderManager.schedule(time)
+    }
+
+    private fun signOut() {
+        authRepository.signOut()
     }
 }

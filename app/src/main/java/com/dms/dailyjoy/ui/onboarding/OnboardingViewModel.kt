@@ -3,6 +3,7 @@ package com.dms.dailyjoy.ui.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.model.Pleasure
+import com.dms.dailyjoy.domain.usecase.onboarding.SaveOnboardingStatusUseCase
 import com.dms.dailyjoy.domain.usecase.pleasures.GetPleasuresUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
+    private val saveOnboardingStatusUseCase: SaveOnboardingStatusUseCase,
     private val getPleasuresUseCase: GetPleasuresUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(OnboardingUiState())
@@ -71,9 +73,10 @@ class OnboardingViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(reminderTime = time)
     }
 
-    fun completeOnboarding() {
-        _uiState.value = _uiState.value.copy(isCompleted = true)
-        // TODO: Sauvegarder les préférences (username, pleasures, notifications)
+    fun completeOnboarding() = viewModelScope.launch {
+        // TODO: Sauvegarder les préférences (pleasures, notifications)
+        saveOnboardingStatusUseCase(username = _uiState.value.username)
+        _uiState.value = _uiState.value.copy(username = _uiState.value.username, currentStep = OnboardingStep.COMPLETE)
     }
 
     private fun loadPleasures() = viewModelScope.launch {

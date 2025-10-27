@@ -3,12 +3,13 @@ package com.dms.dailyjoy.ui.onboarding
 import com.dms.dailyjoy.data.model.Pleasure
 
 data class OnboardingUiState(
+    val isLoading: Boolean = true,
+    val error: String? = null,
     val currentStep: OnboardingStep = OnboardingStep.WELCOME,
     val username: String = "",
     val availablePleasures: List<Pleasure> = emptyList(),
     val notificationEnabled: Boolean = false,
-    val reminderTime: String = "08:00",
-    val isCompleted: Boolean = false
+    val reminderTime: String = "11:00"
 )
 
 enum class OnboardingStep {

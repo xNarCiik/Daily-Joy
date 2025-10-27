@@ -1,19 +1,20 @@
 package com.dms.dailyjoy.ui.dailypleasure.component
 
 import android.content.Context
-import android.media.MediaPlayer
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -50,11 +51,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +71,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.airbnb.lottie.RenderMode
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -80,7 +84,6 @@ import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreenState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
-import com.dms.dailyjoy.ui.util.rotationCardAnimationDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -96,8 +99,8 @@ fun DailyPleasureContent(
     var showConfettiAnimation by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
-    // --- Vibrator setup ---
-    val vibrator = remember {
+    // --- Vibrator
+    val vibrator = remember(context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val manager =
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
@@ -108,52 +111,61 @@ fun DailyPleasureContent(
         }
     }
 
-    // --- Lottie confetti ---
-    val confettiComposition by rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(R.raw.confetti)
-    )
+    // --- SoundPool
+    val (soundPool, soundId) = remember(context) {
+        val attrs = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        val sp = SoundPool.Builder().setMaxStreams(1).setAudioAttributes(attrs).build()
+        val id = sp.load(context, R.raw.done, 1)
+        sp to id
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { soundPool.release() }
+    }
+
+    // --- Lottie confetti
+    val confettiComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
+    val confettiIsPlaying by rememberUpdatedState(showConfettiAnimation)
     val confettiProgress by animateLottieCompositionAsState(
         composition = confettiComposition,
-        isPlaying = showConfettiAnimation,
-        restartOnPlay = false
+        isPlaying = confettiIsPlaying,
+        restartOnPlay = false,
+        iterations = 1
     )
 
-    // --- Play sound & vibration when confetti starts ---
-    LaunchedEffect(showConfettiAnimation) {
-        if (showConfettiAnimation) {
-            // Sound
-            try {
-                MediaPlayer.create(context, R.raw.done).apply {
-                    setOnCompletionListener { it.release() }
-                    setVolume(0.25f, 0.25f)
-                    start()
-                }
-            } catch (_: Exception) {
-            }
+    LaunchedEffect(confettiIsPlaying) {
+        if (confettiIsPlaying) {
+            soundPool.setVolume(soundId, 0.25f, 0.25f)
+            soundPool.play(soundId, 0.25f, 0.25f, 1, 0, 1f)
 
-            // Vibration
             if (vibrator.hasVibrator()) {
-                val duration = 400L
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator.vibrate(
-                        VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE)
+                        VibrationEffect.createOneShot(220L, VibrationEffect.DEFAULT_AMPLITUDE)
                     )
                 } else {
                     @Suppress("DEPRECATION")
-                    vibrator.vibrate(duration)
+                    vibrator.vibrate(220L)
                 }
             }
         }
     }
+    LaunchedEffect(confettiProgress) {
+        if (showConfettiAnimation && confettiProgress >= 1f) {
+            showConfettiAnimation = false
+        }
+    }
 
-    // --- Hint animation ---
+    // --- Hint
     val (hintOffsetX, hintRotation) = swipeHintAnimation()
 
-    // --- Swipe animations ---
+    // --- Swipe physics
     val animatedOffsetX = remember { Animatable(0f) }
     val animatedRotationZ = remember { Animatable(0f) }
 
-    // --- Dialog categories ---
     if (showCategoryDialog) {
         CategorySelectionDialog(
             categories = uiState.availableCategories,
@@ -179,56 +191,77 @@ fun DailyPleasureContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- carte + confetti ---
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            // Carte
             PleasureCard(
                 modifier = Modifier
                     .draggable(
                         orientation = Orientation.Horizontal,
                         enabled = uiState.isCardFlipped,
                         state = rememberDraggableState { delta ->
+                            // amorti + rotation proportionnelle
+                            val friction = 0.22f
+                            val next = animatedOffsetX.value + (delta * friction)
                             scope.launch {
-                                val friction = 0.25f
-                                animatedOffsetX.snapTo(animatedOffsetX.value + delta * friction)
+                                animatedOffsetX.snapTo(next.coerceIn(-1000f, 1000f))
                                 animatedRotationZ.snapTo(
-                                    (animatedOffsetX.value / 20f).coerceIn(
+                                    (animatedOffsetX.value / 24f).coerceIn(
                                         -5f,
                                         15f
                                     )
                                 )
                             }
                         },
-                        onDragStopped = {
+                        onDragStopped = { velocity ->
                             scope.launch {
                                 val threshold = 180f
                                 val offset = animatedOffsetX.value
+                                val v = velocity
 
-                                if (offset > threshold) {
+                                val shouldComplete =
+                                    offset > threshold || (v > 2500f && offset > 0f)
+                                if (shouldComplete) {
+                                    // départ vers la droite, easing fluide
+                                    val target = 1200f
                                     launch {
                                         animatedOffsetX.animateTo(
-                                            1000f, tween(600, easing = LinearOutSlowInEasing)
+                                            target,
+                                            animationSpec = tween(
+                                                durationMillis = 520,
+                                                easing = LinearOutSlowInEasing
+                                            )
                                         )
                                     }
-                                    launch { animatedRotationZ.animateTo(15f, tween(600)) }
-                                    delay(300)
+                                    launch {
+                                        animatedRotationZ.animateTo(
+                                            15f, animationSpec = tween(520, easing = EaseInOut)
+                                        )
+                                    }
+                                    delay(260)
                                     onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
                                 } else {
+                                    val stiffness = 500f
+                                    val damping = 0.78f
                                     launch {
                                         animatedOffsetX.animateTo(
                                             0f,
-                                            spring(dampingRatio = 0.7f)
+                                            animationSpec = spring(
+                                                stiffness = stiffness,
+                                                dampingRatio = damping
+                                            )
                                         )
                                     }
                                     launch {
                                         animatedRotationZ.animateTo(
                                             0f,
-                                            spring(dampingRatio = 0.7f)
+                                            animationSpec = spring(
+                                                stiffness = stiffness,
+                                                dampingRatio = damping
+                                            )
                                         )
                                     }
                                 }
@@ -239,12 +272,11 @@ fun DailyPleasureContent(
                     .graphicsLayer {
                         rotationZ =
                             animatedRotationZ.value + if (uiState.isCardFlipped) hintRotation else 0f
-                        alpha = 1f - (abs(animatedOffsetX.value) / 800f).coerceIn(0f, 1f)
-                        cameraDistance = 8 * density
+                        alpha = 1f - (abs(animatedOffsetX.value) / 900f).coerceIn(0f, 1f)
                     },
                 pleasure = uiState.dailyPleasure,
                 flipped = uiState.isCardFlipped,
-                durationRotation = rotationCardAnimationDuration,
+                durationRotation = 1300,
                 onCardFlipped = {
                     showConfettiAnimation = true
                     onEvent(DailyPleasureEvent.OnCardFlipped)
@@ -276,13 +308,14 @@ fun DailyPleasureContent(
         Spacer(modifier = Modifier.height(16.dp))
     }
 
+    // --- Overlay confetti
     if (showConfettiAnimation) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             LottieAnimation(
-                modifier = Modifier
-                    .size(350.dp),
+                modifier = Modifier.size(320.dp),
                 composition = confettiComposition,
                 progress = { confettiProgress },
+                renderMode = RenderMode.HARDWARE // 🔥 évite de charger le CPU sur le main thread
             )
         }
     }
@@ -290,45 +323,41 @@ fun DailyPleasureContent(
 
 @Composable
 fun swipeHintAnimation(): Pair<Float, Float> {
-    val infiniteTransition = rememberInfiniteTransition(label = "swipeHint")
-
-    val hintOffsetX by infiniteTransition.animateFloat(
+    val infinite = androidx.compose.animation.core.rememberInfiniteTransition(label = "swipeHint")
+    val hintOffsetX by infinite.animateFloat(
         initialValue = 0f,
-        targetValue = 20f,
+        targetValue = 18f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
-                durationMillis = 3000
+                durationMillis = 3600
                 0f at 0
-                0f at 1000
-                20f at 1500
-                0f at 2000
-                0f at 3000
+                0f at 1200
+                18f at 1700
+                0f at 2400
+                0f at 3600
             },
             repeatMode = RepeatMode.Restart
         ),
         label = "hintOffset"
     )
-
-    val hintRotation by infiniteTransition.animateFloat(
+    val hintRotation by infinite.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = keyframes {
-                durationMillis = 3000
+                durationMillis = 3600
                 0f at 0
-                0f at 1000
-                3f at 1500
-                0f at 2000
-                0f at 3000
+                0f at 1200
+                3f at 1700
+                0f at 2400
+                0f at 3600
             },
             repeatMode = RepeatMode.Restart
         ),
         label = "hintRotation"
     )
-
-    return Pair(hintOffsetX, hintRotation)
+    return hintOffsetX to hintRotation
 }
-
 
 @Composable
 private fun CurrentCategoryButton(
@@ -355,14 +384,12 @@ private fun CurrentCategoryButton(
                 modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-
             Text(
                 text = stringResource(category.label),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
@@ -461,7 +488,6 @@ private fun CategoryDialogItem(
                     modifier = Modifier.size(28.dp),
                     tint = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
                 AnimatedVisibility(
                     visible = isSelected,
                     enter = scaleIn() + fadeIn(),
@@ -483,7 +509,6 @@ private fun CategoryDialogItem(
                     }
                 }
             }
-
             Text(
                 text = stringResource(category.label),
                 style = MaterialTheme.typography.labelLarge,

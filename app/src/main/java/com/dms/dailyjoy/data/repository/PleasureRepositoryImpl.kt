@@ -8,7 +8,6 @@ import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.domain.repository.PleasureRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -26,10 +25,6 @@ class PleasureRepositoryImpl @Inject constructor(
         return getAllPleasures().map { pleasures ->
             pleasures.count { it.isEnabled }
         }
-    }
-
-    override fun getPleasureCategories(): Flow<List<PleasureCategory>> {
-        return flowOf(PleasureCategory.entries.filter { it == PleasureCategory.ALL })
     }
 
     override fun getRandomPleasure(category: PleasureCategory?): Flow<Pleasure> {

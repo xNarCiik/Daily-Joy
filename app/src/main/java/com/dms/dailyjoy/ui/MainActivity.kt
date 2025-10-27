@@ -11,7 +11,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,27 +25,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.dms.dailyjoy.domain.model.RootNavigationState
 import com.dms.dailyjoy.domain.model.Theme
 import com.dms.dailyjoy.ui.component.AnimatedBottomNavBar
 import com.dms.dailyjoy.ui.navigation.DailyPleasureRoute
-import com.dms.dailyjoy.ui.navigation.WeeklyRoute
 import com.dms.dailyjoy.ui.navigation.NavGraph
 import com.dms.dailyjoy.ui.navigation.SettingsRoute
 import com.dms.dailyjoy.ui.navigation.SocialRoute
+import com.dms.dailyjoy.ui.navigation.WeeklyRoute
 import com.dms.dailyjoy.ui.settings.SettingsViewModel
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
-import com.dms.dailyjoy.ui.util.fadeInContentAnimationDuration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,12 +55,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         splashScreen.setKeepOnScreenCondition {
-            !viewModel.isReady.value
+            mainViewModel.rootNavigationState.value == RootNavigationState.Loading
         }
 
         enableEdgeToEdge()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
+            val rootNavigationState by mainViewModel.rootNavigationState.collectAsState()
+
             val settingsViewModel: SettingsViewModel = hiltViewModel()
             val settingsUiState by settingsViewModel.uiState.collectAsState()
             val useDarkTheme = when (settingsUiState.theme) {
@@ -63,49 +70,67 @@ class MainActivity : ComponentActivity() {
                 Theme.DARK -> true
                 Theme.SYSTEM -> isSystemInDarkTheme()
             }
-            MainActivityContent(useDarkTheme = useDarkTheme)
+            MainActivityContent(
+                useDarkTheme = useDarkTheme,
+                rootNavigationState = rootNavigationState
+            )
         }
     }
-}
 
-@Composable
-fun MainActivityContent(useDarkTheme: Boolean) {
-    DailyJoyTheme(darkTheme = useDarkTheme) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            var contentVisible by remember { mutableStateOf(false) }
-
-            LaunchedEffect(Unit) {
-                contentVisible = true
-            }
-
-            AnimatedVisibility(
-                visible = contentVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = fadeInContentAnimationDuration))
+    @Composable
+    fun MainActivityContent(useDarkTheme: Boolean, rootNavigationState: RootNavigationState) {
+        DailyJoyTheme(darkTheme = useDarkTheme) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
             ) {
-                val navController = rememberNavController()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
+                var contentVisible by remember { mutableStateOf(false) }
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        val visible = currentRoute in listOf(
-                            DailyPleasureRoute::class.qualifiedName,
-                            WeeklyRoute::class.qualifiedName,
-                            SocialRoute::class.qualifiedName,
-                            SettingsRoute::class.qualifiedName
-                        )
+                LaunchedEffect(Unit) {
+                    contentVisible = true
+                }
 
-                        AnimatedBottomNavBar(
-                            navController = navController,
-                            visible = visible
+                if (rootNavigationState == RootNavigationState.Loading) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                ) { innerPadding ->
-                    NavGraph(navController = navController, paddingValues = innerPadding)
+                    return@Surface
+                }
+
+                AnimatedVisibility(
+                    visible = contentVisible,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 1000))
+                ) {
+                    val navController = rememberNavController()
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentRoute = navBackStackEntry?.destination?.route
+
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        bottomBar = {
+                            val visible = currentRoute in listOf(
+                                DailyPleasureRoute::class.qualifiedName,
+                                WeeklyRoute::class.qualifiedName,
+                                SocialRoute::class.qualifiedName,
+                                SettingsRoute::class.qualifiedName
+                            )
+
+                            AnimatedBottomNavBar(
+                                navController = navController,
+                                visible = visible
+                            )
+                        }
+                    ) { innerPadding ->
+                        NavGraph(
+                            navController = navController,
+                            paddingValues = innerPadding,
+                            rootNavigationState = rootNavigationState
+                        )
+                    }
                 }
             }
         }

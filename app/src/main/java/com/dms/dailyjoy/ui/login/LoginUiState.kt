@@ -5,7 +5,3 @@ sealed interface LoginUiState {
     data object Loading : LoginUiState
     data class Error(val message: String) : LoginUiState
 }
-
-sealed interface LoginNavigationEvent {
-    data object NavigateToHome : LoginNavigationEvent
-}
