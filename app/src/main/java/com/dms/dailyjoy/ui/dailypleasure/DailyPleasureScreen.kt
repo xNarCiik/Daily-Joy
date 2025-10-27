@@ -55,6 +55,11 @@ fun DailyPleasureScreen(
         }
     }
 
+    if (screenState is DailyPleasureScreenState.Loading) {
+        LoadingState()
+        return
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -76,10 +81,6 @@ fun DailyPleasureScreen(
             contentAlignment = Alignment.Center
         ) {
             when (screenState) {
-                is DailyPleasureScreenState.Loading -> {
-                    LoadingState()
-                }
-
                 is DailyPleasureScreenState.SetupRequired -> {
                     DailyPleasureSetupContent(
                         currentPleasureCount = screenState.pleasureCount,
@@ -98,6 +99,8 @@ fun DailyPleasureScreen(
                 is DailyPleasureScreenState.Completed -> {
                     DailyPleasureCompletedContent()
                 }
+
+                else -> {}
             }
         }
     }
