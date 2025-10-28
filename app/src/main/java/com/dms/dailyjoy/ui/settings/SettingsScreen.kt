@@ -292,21 +292,23 @@ private fun UserHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Avatar
-            Box(
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) {
-                if (userInfo.avatarUrl != null) {
-                    GlideImage(
-                        modifier = Modifier.size(48.dp),
-                        contentScale = ContentScale.Crop,
-                        model = userInfo.avatarUrl,
-                        contentDescription = ""
-                    )
-                } else {
+            if (userInfo.avatarUrl != null) {
+                GlideImage(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    model = userInfo.avatarUrl,
+                    contentDescription = ""
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = null,
