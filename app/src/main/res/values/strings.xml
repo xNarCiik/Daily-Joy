@@ -145,7 +145,7 @@
     <string name="social_add_friend_label">Ajouter un ami</string>
     <string name="social_username_placeholder">Nom d\'utilisateur</string>
     <string name="social_add_friend_button">Ajouter</string>
-    <string name="social_no_pleasure_today">Aucun plaisir aujourd\'hui</string>
+    <string name="no_pleasure_today">Aucun plaisir aujourd\'hui</string>
     <string name="social_empty_state_title">Aucun ami pour le moment</string>
     <string name="social_empty_state_subtitle">Ajoutez votre premier ami pour voir ses progrès !</string>
     <string name="social_friend_options_title">Options</string>

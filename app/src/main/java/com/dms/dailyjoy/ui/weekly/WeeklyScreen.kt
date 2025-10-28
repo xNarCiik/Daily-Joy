@@ -33,7 +33,6 @@ import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
-import com.dms.dailyjoy.ui.theme.dailyJoyGradients
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.weekly.component.WeeklyPleasuresList
 import com.dms.dailyjoy.ui.weekly.component.WeeklyStatsCard
@@ -63,7 +62,7 @@ fun WeeklyScreen(
 
             else -> {
                 WeeklyContent(
-                    history = uiState.history,
+                    weeklyDays = uiState.weeklyDays,
                     onEvent = onEvent
                 )
             }
@@ -73,8 +72,6 @@ fun WeeklyScreen(
 
 @Composable
 private fun EmptyWeeklyState(modifier: Modifier = Modifier) {
-    val gradients = dailyJoyGradients()
-
     Column(
         modifier = modifier.padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -134,7 +131,7 @@ private fun EmptyWeeklyState(modifier: Modifier = Modifier) {
 @Composable
 private fun WeeklyContent(
     modifier: Modifier = Modifier,
-    history: List<PleasureHistoryEntry>,
+    weeklyDays: List<WeeklyDay>,
     onEvent: (WeeklyEvent) -> Unit
 ) {
     Column(
@@ -144,6 +141,7 @@ private fun WeeklyContent(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        val history = weeklyDays.mapNotNull { it.historyEntry }
         val completedCount = history.count { it.isCompleted }
         WeeklyStatsCard(
             completedCount = completedCount,
@@ -171,7 +169,7 @@ private fun WeeklyContent(
         Spacer(modifier = Modifier.height(28.dp))
 
         WeeklyPleasuresList(
-            items = history,
+            items = weeklyDays,
             onCardClicked = { item -> onEvent(WeeklyEvent.OnCardClicked(item)) }
         )
     }
@@ -203,33 +201,31 @@ private fun WeeklyPreview() {
         ) {
             WeeklyScreen(
                 uiState = WeeklyUiState(
-                    history = listOf(
-                        PleasureHistoryEntry(
-                            id = 1,
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis(),
-                            isCompleted = true,
-                            pleasureTitle = "Boire un café chaud",
-                            pleasureDescription = "Savourer un bon café le matin.",
-                            category = PleasureCategory.ALL
+                    weeklyDays = listOf(
+                        WeeklyDay(
+                            dayName = "Lundi",
+                            historyEntry = PleasureHistoryEntry(
+                                id = 1,
+                                dayIdentifier = "",
+                                dateDrawn = System.currentTimeMillis(),
+                                isCompleted = true,
+                                pleasureTitle = "Boire un café chaud",
+                                pleasureDescription = "Savourer un bon café le matin.",
+                                category = PleasureCategory.ALL
+                            )
                         ),
-                        PleasureHistoryEntry(
-                            id = 2,
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis(),
-                            isCompleted = false,
-                            pleasureTitle = "Faire une promenade",
-                            pleasureDescription = "Marcher dans le parc pendant 30 minutes.",
-                            category = PleasureCategory.OUTDOOR
-                        ),
-                        PleasureHistoryEntry(
-                            id = 3,
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis(),
-                            isCompleted = true,
-                            pleasureTitle = "Lire un livre",
-                            pleasureDescription = "Lire un chapitre de mon livre préféré.",
-                            category = PleasureCategory.LEARNING
+                        WeeklyDay(dayName = "Mardi", historyEntry = null),
+                        WeeklyDay(
+                            dayName = "Mercredi",
+                            historyEntry = PleasureHistoryEntry(
+                                id = 3,
+                                dayIdentifier = "",
+                                dateDrawn = System.currentTimeMillis(),
+                                isCompleted = true,
+                                pleasureTitle = "Lire un livre",
+                                pleasureDescription = "Lire un chapitre de mon livre préféré.",
+                                category = PleasureCategory.LEARNING
+                            )
                         )
                     )
                 ),

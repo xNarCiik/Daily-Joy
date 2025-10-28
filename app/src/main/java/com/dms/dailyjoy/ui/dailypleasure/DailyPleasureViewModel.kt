@@ -41,7 +41,7 @@ class DailyPleasureViewModel @Inject constructor(
         viewModelScope.launch {
             val pleasures = getPleasuresUseCase().first()
 
-            if(randomDailyMessage.value.isBlank()) {
+            if (randomDailyMessage.value.isBlank()) {
                 randomDailyMessage.value = getRandomDailyMessageUseCase()
             }
 
@@ -127,7 +127,8 @@ class DailyPleasureViewModel @Inject constructor(
                     markAsCompleted = true
                 )
                 _uiState.value = _uiState.value.copy(
-                    screenState = DailyPleasureScreenState.Completed
+                    screenState = DailyPleasureScreenState.Completed,
+                    "Félicitations pour cette belle journée ! 🎉"
                 )
             }
         }

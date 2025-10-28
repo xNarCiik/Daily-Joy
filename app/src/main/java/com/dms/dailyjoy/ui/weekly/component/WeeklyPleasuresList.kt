@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DoNotDisturb
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,20 +46,23 @@ import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
 import com.dms.dailyjoy.ui.util.LightDarkPreview
+import com.dms.dailyjoy.ui.weekly.WeeklyDay
 import kotlinx.coroutines.delay
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 private enum class ItemStatus {
     COMPLETED,
     MISSED,
-    IN_PROGRESS
+    IN_PROGRESS,
+    EMPTY
 }
 
 @Composable
-private fun getItemStatus(item: PleasureHistoryEntry): ItemStatus {
+private fun getItemStatus(item: PleasureHistoryEntry?): ItemStatus {
+    if (item == null) {
+        return ItemStatus.EMPTY
+    }
+
     val calendar = Calendar.getInstance()
     val today = calendar.get(Calendar.DAY_OF_YEAR)
     val year = calendar.get(Calendar.YEAR)
@@ -76,46 +81,19 @@ private fun getItemStatus(item: PleasureHistoryEntry): ItemStatus {
 }
 
 @Composable
-private fun getDayText(dateDrawn: Long): String {
-    val calendar = Calendar.getInstance()
-    val today = calendar.clone() as Calendar
-
-    calendar.timeInMillis = dateDrawn
-
-    val isToday = today.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
-            today.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
-
-    if (isToday) {
-        return "Aujourd'hui"
-    }
-
-    val yesterday = Calendar.getInstance()
-    yesterday.add(Calendar.DAY_OF_YEAR, -1)
-    val isYesterday = yesterday.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
-            yesterday.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
-
-    if (isYesterday) {
-        return "Hier"
-    }
-
-    val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-    return dateFormat.format(Date(dateDrawn)).replaceFirstChar { it.uppercase() }
-}
-
-@Composable
 fun WeeklyPleasuresList(
     modifier: Modifier = Modifier,
-    items: List<PleasureHistoryEntry>,
+    items: List<WeeklyDay>,
     onCardClicked: (PleasureHistoryEntry) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        items.forEachIndexed { index, item ->
+        items.forEachIndexed { index, weeklyDay ->
             AnimatedPleasureItem(
-                item = item,
-                onClick = { onCardClicked(item) },
+                weeklyDay = weeklyDay,
+                onClick = { weeklyDay.historyEntry?.let(onCardClicked) },
                 animationDelay = index * 50
             )
         }
@@ -124,7 +102,7 @@ fun WeeklyPleasuresList(
 
 @Composable
 private fun AnimatedPleasureItem(
-    item: PleasureHistoryEntry,
+    weeklyDay: WeeklyDay,
     onClick: () -> Unit,
     animationDelay: Int = 0
 ) {
@@ -141,14 +119,13 @@ private fun AnimatedPleasureItem(
         label = "alpha"
     )
 
-    val status = getItemStatus(item)
-    val day = getDayText(item.dateDrawn)
+    val status = getItemStatus(weeklyDay.historyEntry)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .alpha(alpha)
-            .clickable { onClick() }
+            .clickable(enabled = weeklyDay.historyEntry != null) { onClick() }
             .padding(vertical = 12.dp)
     ) {
         Row(
@@ -169,19 +146,22 @@ private fun AnimatedPleasureItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = day,
+                        text = weeklyDay.dayName,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    StatusBadge(status = status)
+                    if (weeklyDay.historyEntry != null) {
+                        StatusBadge(status = status)
+                    }
                 }
 
                 Text(
-                    text = item.pleasureTitle,
+                    text = weeklyDay.historyEntry?.pleasureTitle
+                        ?: stringResource(R.string.no_pleasure_today),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = if (weeklyDay.historyEntry != null) FontWeight.Medium else FontWeight.Normal,
+                    color = if (weeklyDay.historyEntry != null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outline,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -245,6 +225,17 @@ private fun StatusIcon(
                 )
             )
         )
+
+        ItemStatus.EMPTY -> Triple(
+            Icons.Default.DoNotDisturb,
+            MaterialTheme.colorScheme.outline,
+            Brush.radialGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                    MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+                )
+            )
+        )
     }
 
     Box(
@@ -294,20 +285,24 @@ private fun StatusBadge(
             MaterialTheme.colorScheme.secondary,
             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
         )
+
+        ItemStatus.EMPTY -> Triple(null, Color.Transparent, Color.Transparent)
     }
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(backgroundColor)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
-    ) {
-        Text(
-            text = stringResource(textRes),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = color
-        )
+    if (textRes != null) {
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(backgroundColor)
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = stringResource(textRes),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
+        }
     }
 }
 
@@ -321,47 +316,48 @@ private fun WeeklyPleasuresListPreview() {
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 val previewItems = listOf(
-                    PleasureHistoryEntry(
-                        id = 1,
-                        dayIdentifier = "",
-                        dateDrawn = System.currentTimeMillis() - 86400000 * 2,
-                        isCompleted = true,
-                        pleasureTitle = "Aller au cinéma voir un bon film",
-                        pleasureDescription = "Et si on se faisait un bon film ?",
-                        category = PleasureCategory.ENTERTAINMENT
+                    WeeklyDay(
+                        dayName = "Lundi",
+                        historyEntry = PleasureHistoryEntry(
+                            id = 1,
+                            dayIdentifier = "",
+                            dateDrawn = System.currentTimeMillis() - 86400000 * 2,
+                            isCompleted = true,
+                            pleasureTitle = "Aller au cinéma voir un bon film",
+                            pleasureDescription = "Et si on se faisait un bon film ?",
+                            category = PleasureCategory.ENTERTAINMENT
+                        )
                     ),
-                    PleasureHistoryEntry(
-                        id = 2,
-                        dayIdentifier = "",
-                        dateDrawn = System.currentTimeMillis() - 86400000,
-                        isCompleted = false,
-                        pleasureTitle = "Faire une bouffe XXL entre amis",
-                        pleasureDescription = "Ce soir, on mange sans regrêt",
-                        category = PleasureCategory.FOOD
+                    WeeklyDay(
+                        dayName = "Mardi",
+                        historyEntry = null
                     ),
-                    PleasureHistoryEntry(
-                        id = 3,
-                        dayIdentifier = "",
-                        dateDrawn = System.currentTimeMillis(),
-                        isCompleted = false,
-                        pleasureTitle = "Promenade dans le parc",
-                        pleasureDescription = "Profiter de la nature",
-                        category = PleasureCategory.OUTDOOR
+                    WeeklyDay(
+                        dayName = "Mercredi",
+                        historyEntry = PleasureHistoryEntry(
+                            id = 2,
+                            dayIdentifier = "",
+                            dateDrawn = System.currentTimeMillis() - 86400000,
+                            isCompleted = false,
+                            pleasureTitle = "Faire une bouffe XXL entre amis",
+                            pleasureDescription = "Ce soir, on mange sans regrêt",
+                            category = PleasureCategory.FOOD
+                        )
                     ),
-                    PleasureHistoryEntry(
-                        id = 4,
-                        dayIdentifier = "",
-                        dateDrawn = System.currentTimeMillis() - 86400000 * 3,
-                        isCompleted = true,
-                        pleasureTitle = "Méditation et yoga",
-                        pleasureDescription = "Moment de détente",
-                        category = PleasureCategory.WELLNESS
+                    WeeklyDay(
+                        dayName = "Jeudi",
+                        historyEntry = PleasureHistoryEntry(
+                            id = 3,
+                            dayIdentifier = "",
+                            dateDrawn = System.currentTimeMillis(),
+                            isCompleted = false,
+                            pleasureTitle = "Promenade dans le parc",
+                            pleasureDescription = "Profiter de la nature",
+                            category = PleasureCategory.OUTDOOR
+                        )
                     )
                 )
-                WeeklyPleasuresList(
-                    items = previewItems,
-                    onCardClicked = {}
-                )
+                WeeklyPleasuresList(items = previewItems, onCardClicked = { })
             }
         }
     }

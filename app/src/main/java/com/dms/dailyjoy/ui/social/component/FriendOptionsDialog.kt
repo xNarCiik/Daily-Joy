@@ -239,7 +239,7 @@ private fun TodayPleasureSection(friend: Friend) {
         }
 
         val pleasureText = pleasure?.title?.let { "\"$it\"" }
-            ?: stringResource(R.string.social_no_pleasure_today)
+            ?: stringResource(R.string.no_pleasure_today)
 
         Text(
             text = pleasureText,

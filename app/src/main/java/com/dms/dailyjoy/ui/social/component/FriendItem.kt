@@ -152,7 +152,7 @@ fun FriendItem(
                     val isCompleted = friend.currentPleasure?.status == PleasureStatus.COMPLETED
                     val pleasureTitle = friend.currentPleasure?.title
                     val pleasureText =
-                        if (pleasureTitle == null) stringResource(R.string.social_no_pleasure_today) else
+                        if (pleasureTitle == null) stringResource(R.string.no_pleasure_today) else
                             "\"${pleasureTitle}\""
                     Icon(
                         imageVector = if (isCompleted) {

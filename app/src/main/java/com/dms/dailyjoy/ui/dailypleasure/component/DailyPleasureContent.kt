@@ -21,13 +21,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +44,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
@@ -72,6 +70,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.airbnb.lottie.RenderMode
@@ -185,15 +184,13 @@ fun DailyPleasureContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 12.dp, bottom = 24.dp),
+            .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AnimatedVisibility(visible = !uiState.isCardFlipped) {
-            CurrentCategoryButton(
-                category = uiState.selectedCategory,
-                onClick = { showCategoryDialog = true }
-            )
-        }
+        CurrentCategoryButton(
+            category = uiState.selectedCategory,
+            onClick = { showCategoryDialog = true }
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -203,105 +200,110 @@ fun DailyPleasureContent(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                PleasureCard(
-                    modifier = Modifier
-                        .draggable(
-                            orientation = Orientation.Horizontal,
-                            enabled = uiState.isCardFlipped,
-                            state = rememberDraggableState { delta ->
-                                val friction = 0.22f
-                                val next = animatedOffsetX.value + (delta * friction)
-                                scope.launch {
-                                    animatedOffsetX.snapTo(next.coerceIn(-1000f, 1000f))
-                                    animatedRotationZ.snapTo(
-                                        (animatedOffsetX.value / 24f).coerceIn(-5f, 15f)
-                                    )
-                                }
-                            },
-                            onDragStopped = { velocity ->
-                                scope.launch {
-                                    val threshold = 180f
-                                    val offset = animatedOffsetX.value
-                                    val v = velocity
+            PleasureCard(
+                modifier = Modifier
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        enabled = uiState.isCardFlipped,
+                        state = rememberDraggableState { delta ->
+                            val friction = 0.22f
+                            val next = animatedOffsetX.value + (delta * friction)
+                            scope.launch {
+                                animatedOffsetX.snapTo(next.coerceIn(-1000f, 1000f))
+                                animatedRotationZ.snapTo(
+                                    (animatedOffsetX.value / 24f).coerceIn(-5f, 15f)
+                                )
+                            }
+                        },
+                        onDragStopped = { velocity ->
+                            scope.launch {
+                                val threshold = 180f
+                                val offset = animatedOffsetX.value
+                                val v = velocity
 
-                                    val shouldComplete =
-                                        offset > threshold || (v > 2500f && offset > 0f)
-                                    if (shouldComplete) {
-                                        val target = 1200f
-                                        launch {
-                                            animatedOffsetX.animateTo(
-                                                target,
-                                                animationSpec = tween(
-                                                    durationMillis = 520,
-                                                    easing = LinearOutSlowInEasing
-                                                )
+                                val shouldComplete =
+                                    offset > threshold || (v > 2500f && offset > 0f)
+                                if (shouldComplete) {
+                                    val target = 1200f
+                                    launch {
+                                        animatedOffsetX.animateTo(
+                                            target,
+                                            animationSpec = tween(
+                                                durationMillis = 520,
+                                                easing = LinearOutSlowInEasing
                                             )
-                                        }
-                                        launch {
-                                            animatedRotationZ.animateTo(
-                                                15f, animationSpec = tween(520, easing = EaseInOut)
+                                        )
+                                    }
+                                    launch {
+                                        animatedRotationZ.animateTo(
+                                            15f, animationSpec = tween(520, easing = EaseInOut)
+                                        )
+                                    }
+                                    delay(260)
+                                    onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
+                                } else {
+                                    val stiffness = 500f
+                                    val damping = 0.78f
+                                    launch {
+                                        animatedOffsetX.animateTo(
+                                            0f,
+                                            animationSpec = spring(
+                                                stiffness = stiffness,
+                                                dampingRatio = damping
                                             )
-                                        }
-                                        delay(260)
-                                        onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
-                                    } else {
-                                        val stiffness = 500f
-                                        val damping = 0.78f
-                                        launch {
-                                            animatedOffsetX.animateTo(
-                                                0f,
-                                                animationSpec = spring(
-                                                    stiffness = stiffness,
-                                                    dampingRatio = damping
-                                                )
+                                        )
+                                    }
+                                    launch {
+                                        animatedRotationZ.animateTo(
+                                            0f,
+                                            animationSpec = spring(
+                                                stiffness = stiffness,
+                                                dampingRatio = damping
                                             )
-                                        }
-                                        launch {
-                                            animatedRotationZ.animateTo(
-                                                0f,
-                                                animationSpec = spring(
-                                                    stiffness = stiffness,
-                                                    dampingRatio = damping
-                                                )
-                                            )
-                                        }
+                                        )
                                     }
                                 }
                             }
-                        )
-                        .offset(x = (animatedOffsetX.value + if (uiState.isCardFlipped) hintOffsetX else 0f).dp)
-                        .graphicsLayer {
-                            rotationZ =
-                                animatedRotationZ.value + if (uiState.isCardFlipped) hintRotation else 0f
-                            alpha = 1f - (abs(animatedOffsetX.value) / 900f).coerceIn(0f, 1f)
-                        },
-                    pleasure = uiState.dailyPleasure,
-                    flipped = uiState.isCardFlipped,
-                    durationRotation = 1300,
-                    onCardFlipped = {
-                        showConfettiAnimation = true
-                        onEvent(DailyPleasureEvent.OnCardFlipped)
+                        }
+                    )
+                    .offset(x = (animatedOffsetX.value + if (uiState.isCardFlipped) hintOffsetX else 0f).dp)
+                    .graphicsLayer {
+                        rotationZ =
+                            animatedRotationZ.value + if (uiState.isCardFlipped) hintRotation else 0f
+                        alpha = 1f - (abs(animatedOffsetX.value) / 900f).coerceIn(0f, 1f)
                     },
-                    onClick = { onEvent(DailyPleasureEvent.OnCardClicked) }
-                )
-
-                AnimatedVisibility(
-                    visible = uiState.isCardFlipped,
-                    enter = slideInVertically(
-                        initialOffsetY = { it / 2 }
-                    ) + fadeIn(),
-                    exit = slideOutVertically(
-                        targetOffsetY = { it / 2 }
-                    ) + fadeOut()
-                ) {
-                    SwipeCompletionHint()
-                }
-            }
+                pleasure = uiState.dailyPleasure,
+                flipped = uiState.isCardFlipped,
+                durationRotation = 1300,
+                onCardFlipped = {
+                    showConfettiAnimation = true
+                    onEvent(DailyPleasureEvent.OnCardFlipped)
+                },
+                onClick = { onEvent(DailyPleasureEvent.OnCardClicked) }
+            )
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = if (!uiState.isCardFlipped)
+                    stringResource(R.string.pleasure_tap_card_text)
+                else
+                    stringResource(R.string.pleasure_swip_card_text),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     // --- Overlay confetti
@@ -313,60 +315,6 @@ fun DailyPleasureContent(
                 progress = { confettiProgress },
                 renderMode = RenderMode.HARDWARE
             )
-        }
-    }
-}
-
-@Composable
-private fun SwipeCompletionHint(modifier: Modifier = Modifier) {
-    val infinite = androidx.compose.animation.core.rememberInfiniteTransition(label = "swipeCompletionHint")
-    val arrowOffset by infinite.animateFloat(
-        initialValue = 0f,
-        targetValue = 12f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = EaseInOut),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "arrowOffset"
-    )
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 40.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-
-                .clip(RoundedCornerShape(24.dp))
-                .background(Color.White.copy(alpha = 0.12f))
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Swipe une fois réalisé",//stringResource(R.string.swipe_to_complete),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            )
-
-            Box {
-                repeat(3) { index ->
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .offset(x = (arrowOffset + (index * 8)).dp)
-                            .graphicsLayer {
-                                alpha = (1f - (index * 0.25f)) * 0.7f
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
         }
     }
 }
@@ -420,14 +368,15 @@ private fun CurrentCategoryButton(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
-            .background(gradients.background)
+            .background(gradients.accent)
             .clickable(onClick = onClick)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Icône dans cercle blanc
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -438,7 +387,7 @@ private fun CurrentCategoryButton(
                 Icon(
                     imageVector = category.icon,
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(20.dp),
                     tint = Color.White
                 )
             }
@@ -514,7 +463,11 @@ private fun CategoryDialogItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isDark = isSystemInDarkTheme()
+
+    // Gradient unifié pour les items
     val itemBackground = if (isSelected) {
+        // Item sélectionné : gradient coloré avec la couleur de la catégorie
         Brush.linearGradient(
             colors = listOf(
                 category.iconTint.copy(alpha = 0.85f),
@@ -522,6 +475,7 @@ private fun CategoryDialogItem(
             )
         )
     } else {
+        // Item non sélectionné : surface neutre
         Brush.linearGradient(
             colors = listOf(
                 MaterialTheme.colorScheme.surfaceVariant,
@@ -547,9 +501,10 @@ private fun CategoryDialogItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
+                // Icône dans cercle
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
                         .background(
                             if (isSelected)
@@ -562,11 +517,12 @@ private fun CategoryDialogItem(
                     Icon(
                         imageVector = category.icon,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(24.dp),
                         tint = if (isSelected) Color.White else category.iconTint
                     )
                 }
 
+                // Checkmark animé
                 AnimatedVisibility(
                     visible = isSelected,
                     enter = scaleIn() + fadeIn(),

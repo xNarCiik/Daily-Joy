@@ -144,7 +144,7 @@
     <string name="social_add_friend_label">Add a friend</string>
     <string name="social_username_placeholder">Username</string>
     <string name="social_add_friend_button">Add</string>
-    <string name="social_no_pleasure_today">No pleasure today</string>
+    <string name="no_pleasure_today">No pleasure today</string>
     <string name="social_empty_state_title">No friends yet</string>
     <string name="social_empty_state_subtitle">Add your first friend to see their progress!</string>
     <string name="social_friend_options_title">Options</string>
