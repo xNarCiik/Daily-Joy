@@ -44,6 +44,9 @@
     <string name="status_in_progress">En cours</string>
 
     <!-- Settings Screen -->
+    <string name="settings_total_pleasures">Plaisirs</string>
+    <string name="settings_current_streak">Série</string>
+    <string name="settings_friends_count">Amis</string>
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Rappel quotidien</string>
     <string name="settings_daily_reminder_subtitle">Recevoir une suggestion de plaisir chaque jour.</string>
@@ -62,6 +65,7 @@
     <string name="settings_statistics_subtitle">Consultez votre progression</string>
     <string name="settings_header_subtitle">Personnalisez votre expérience Daily Joy</string>
     <string name="privacy_policy_url" translatable="false">https://privacy-policy-url.com</string>
+    <string name="settings_sign_out">Se déconnecter</string>
 
     <!-- Theme Dialog -->
     <string name="settings_theme_dialog_title">Choisir un thème</string>

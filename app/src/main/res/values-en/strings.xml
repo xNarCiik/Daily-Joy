@@ -44,6 +44,9 @@
     <string name="status_in_progress">In progress</string>
 
     <!-- Settings Screen -->
+    <string name="settings_total_pleasures">Pleasures</string>
+    <string name="settings_current_streak">Streak</string>
+    <string name="settings_friends_count">Friends</string>
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Daily reminder</string>
     <string name="settings_daily_reminder_subtitle">Receive a daily pleasure suggestion.</string>
@@ -61,6 +64,7 @@
     <string name="settings_statistics_title">Statistics</string>
     <string name="settings_statistics_subtitle">Check your progress</string>
     <string name="settings_header_subtitle">Customize your Daily Joy experience</string>
+    <string name="settings_sign_out">Sign out</string>
 
     <!-- Theme Dialog -->
     <string name="settings_theme_dialog_title">Choose a theme</string>
