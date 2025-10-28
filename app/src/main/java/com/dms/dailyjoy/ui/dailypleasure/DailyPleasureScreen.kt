@@ -2,28 +2,26 @@ package com.dms.dailyjoy.ui.dailypleasure
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.PleasureCategory
-import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureCompletedContent
 import com.dms.dailyjoy.ui.dailypleasure.component.DailyPleasureContent
@@ -59,15 +57,12 @@ fun DailyPleasureScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 22.dp),
     ) {
-        AppHeader(
-            title = stringResource(R.string.daily_pleasure_title),
-            subtitle = uiState.headerMessage,
-            icon = Icons.Default.Favorite
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        // Header Message
+        if (uiState.headerMessage.isNotBlank()) {
+            HeaderMessage(message = uiState.headerMessage)
+        }
 
         val contentModifier = Modifier
             .fillMaxWidth()
@@ -108,6 +103,28 @@ fun DailyPleasureScreen(
     }
 }
 
+@Composable
+private fun HeaderMessage(
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 20.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            lineHeight = MaterialTheme.typography.titleLarge.lineHeight * 1.2
+        )
+    }
+}
+
 @LightDarkPreview
 @Composable
 fun DailyPleasureSetupScreenPreview() {
@@ -115,6 +132,7 @@ fun DailyPleasureSetupScreenPreview() {
         Surface {
             DailyPleasureScreen(
                 uiState = DailyPleasureUiState(
+                    headerMessage = "Prenez le temps de savourer les petits plaisirs de la vie 🌟",
                     screenState = DailyPleasureScreenState.SetupRequired(
                         pleasureCount = 1
                     )
@@ -131,6 +149,7 @@ fun DailyPleasureNotCompletedScreenPreview() {
         Surface {
             DailyPleasureScreen(
                 uiState = DailyPleasureUiState(
+                    headerMessage = "Chaque petit moment de bonheur compte ✨",
                     screenState = DailyPleasureScreenState.Ready(
                         availableCategories = PleasureCategory.entries,
                         dailyPleasure = previewDailyPleasure
@@ -146,7 +165,12 @@ fun DailyPleasureNotCompletedScreenPreview() {
 fun DailyPleasureCompletedScreenPreview() {
     DailyJoyTheme {
         Surface {
-            DailyPleasureScreen(uiState = DailyPleasureUiState(screenState = DailyPleasureScreenState.Completed))
+            DailyPleasureScreen(
+                uiState = DailyPleasureUiState(
+                    headerMessage = "Félicitations pour cette belle journée ! 🎉",
+                    screenState = DailyPleasureScreenState.Completed
+                )
+            )
         }
     }
 }
@@ -158,6 +182,7 @@ fun DailyPleasureFlippedScreenPreview() {
         Surface {
             DailyPleasureScreen(
                 uiState = DailyPleasureUiState(
+                    headerMessage = "La joie est dans les détails du quotidien 💫",
                     screenState = DailyPleasureScreenState.Ready(
                         availableCategories = PleasureCategory.entries,
                         dailyPleasure = previewDailyPleasure,

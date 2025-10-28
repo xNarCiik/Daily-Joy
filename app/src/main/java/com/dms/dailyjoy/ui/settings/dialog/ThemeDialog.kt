@@ -40,12 +40,6 @@ fun ThemeDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        icon = {
-            Icon(
-                imageVector = Icons.Outlined.Palette,
-                contentDescription = null
-            )
-        },
         title = {
             Text(
                 text = stringResource(R.string.settings_theme_dialog_title),

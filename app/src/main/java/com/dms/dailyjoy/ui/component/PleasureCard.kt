@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.data.model.Pleasure
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.theme.dailyJoyGradients
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
 import kotlinx.coroutines.delay
@@ -131,7 +132,7 @@ fun PleasureCard(
                 translationY = jumpOffset
             },
         shape = RoundedCornerShape(size = 32.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -155,34 +156,29 @@ private fun overshootEasing(t: Float, tension: Float = 3f) =
 
 @Composable
 private fun PleasureBackCard() {
+    val gradients = dailyJoyGradients()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF6366F1),
-                        Color(0xFF8B5CF6),
-                        Color(0xFFEC4899)
-                    )
-                )
-            )
+            .background(gradients.primary)
     ) {
+        // Decorative pattern - Plus subtil
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            repeat(3) {
+            repeat(4) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    repeat(3) {
+                    repeat(4) {
                         Box(
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.1f))
+                                .background(Color.White.copy(alpha = 0.08f))
                         )
                     }
                 }
@@ -192,67 +188,81 @@ private fun PleasureBackCard() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 22.dp),
+                .padding(horizontal = 24.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Icon with light effect
+            // Icon avec effet lumineux amélioré
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(140.dp)
                     .clip(CircleShape)
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.3f),
-                                Color.White.copy(alpha = 0.1f),
+                                Color.White.copy(alpha = 0.25f),
+                                Color.White.copy(alpha = 0.12f),
                                 Color.Transparent
                             )
                         )
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.TouchApp,
-                    contentDescription = null,
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.White
-                )
+                Box(
+                    modifier = Modifier
+                        .size(90.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.TouchApp,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = Color.White
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Text(
                 text = stringResource(R.string.pleasure_card_back_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                lineHeight = 32.sp
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(R.string.pleasure_card_back_subtitle),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.9f),
-                textAlign = TextAlign.Center
+                color = Color.White.copy(alpha = 0.92f),
+                textAlign = TextAlign.Center,
+                lineHeight = 24.sp
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
-            // Animation dots
+            // Animation dots - Plus élégants
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 repeat(3) { index ->
                     Box(
                         modifier = Modifier
-                            .size(12.dp)
+                            .size(if (index == 1) 10.dp else 8.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.6f))
+                            .background(
+                                Color.White.copy(
+                                    alpha = if (index == 1) 0.8f else 0.5f
+                                )
+                            )
                     )
                 }
             }
@@ -262,28 +272,23 @@ private fun PleasureBackCard() {
 
 @Composable
 private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasure) {
+    val gradients = dailyJoyGradients()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
-                    )
-                )
-            )
+            .background(gradients.card)
     ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Category chip
             CategoryChip(category = pleasure.category)
 
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(20.dp))
 
             Box(
                 modifier = Modifier
@@ -292,50 +297,68 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+                                Color.Transparent
                             )
                         )
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "🎉",
-                    fontSize = 38.sp
-                )
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.60f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "🎉",
+                        fontSize = 36.sp
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Title
             Text(
                 text = pleasure.title,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                lineHeight = 32.sp
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                lineHeight = 30.sp,
+                maxLines = 3
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Description
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 text = pleasure.description,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                lineHeight = 24.sp
+                lineHeight = 22.sp,
+                maxLines = 4
             )
 
             Spacer(Modifier.weight(1f))
 
+            // Footer section
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.padding(bottom = 4.dp)
             ) {
+                // Progress dots
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -343,12 +366,24 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                     repeat(5) { index ->
                         Box(
                             modifier = Modifier
-                                .size(if (index == 2) 10.dp else 6.dp)
+                                .size(if (index == 2) 10.dp else 7.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    MaterialTheme.colorScheme.primary.copy(
-                                        alpha = if (index == 2) 0.6f else 0.3f
-                                    )
+                                    if (index == 2) {
+                                        Brush.radialGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.primary,
+                                                MaterialTheme.colorScheme.secondary
+                                            )
+                                        )
+                                    } else {
+                                        Brush.radialGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                                            )
+                                        )
+                                    }
                                 )
                         )
                     }
@@ -357,8 +392,8 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
                 Text(
                     text = stringResource(R.string.pleasure_card_id, pleasure.id),
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     letterSpacing = 1.5.sp
                 )
             }
@@ -370,13 +405,21 @@ private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasur
 @Composable
 private fun NotFlippedPleasureCardPreview() {
     DailyJoyTheme {
-        PleasureCard(
-            pleasure = previewDailyPleasure,
-            durationRotation = 0,
-            flipped = false,
-            onCardFlipped = {},
-            onClick = {}
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            PleasureCard(
+                pleasure = previewDailyPleasure,
+                durationRotation = 0,
+                flipped = false,
+                onCardFlipped = {},
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -384,12 +427,20 @@ private fun NotFlippedPleasureCardPreview() {
 @Composable
 private fun FlippedPleasureCardPreview() {
     DailyJoyTheme {
-        PleasureCard(
-            pleasure = previewDailyPleasure,
-            durationRotation = 0,
-            flipped = true,
-            onCardFlipped = {},
-            onClick = {}
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            PleasureCard(
+                pleasure = previewDailyPleasure,
+                durationRotation = 0,
+                flipped = true,
+                onCardFlipped = {},
+                onClick = {}
+            )
+        }
     }
 }

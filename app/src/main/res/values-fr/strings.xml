@@ -144,8 +144,12 @@
     <string name="social_no_pleasure_today">Aucun plaisir aujourd\'hui</string>
     <string name="social_empty_state_title">Aucun ami pour le moment</string>
     <string name="social_empty_state_subtitle">Ajoutez votre premier ami pour voir ses progrès !</string>
-    <string name="social_friend_options_view_stats">Voir les stats</string>
-    <string name="social_friend_options_remove">Supprimer l\'ami</string>
+    <string name="social_friend_options_title">Options</string>
+    <string name="social_days_streak">jours de série</string>
+    <string name="status_completed">Terminé</string>
+    <string name="status_pending">En attente</string>
+    <string name="social_friend_options_view_stats">Voir les statistiques</string>
+    <string name="social_friend_options_remove">Retirer cet ami</string>
     <string name="social_error_username_empty">Le nom d\'utilisateur ne peut pas être vide</string>
     <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
     <string name="social_error_remove_friend">Erreur lors de la suppression</string>

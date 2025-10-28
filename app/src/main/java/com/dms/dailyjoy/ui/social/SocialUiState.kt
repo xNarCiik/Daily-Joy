@@ -1,6 +1,7 @@
 package com.dms.dailyjoy.ui.social
 
 import androidx.annotation.StringRes
+import com.dms.dailyjoy.data.model.PleasureCategory
 
 
 data class SocialUiState(
@@ -31,6 +32,7 @@ data class Friend(
 
 data class FriendPleasure(
     val title: String,
+    val category: PleasureCategory,
     val status: PleasureStatus
 )
 

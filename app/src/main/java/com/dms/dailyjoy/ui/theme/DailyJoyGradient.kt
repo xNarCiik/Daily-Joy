@@ -1,68 +1,130 @@
 package com.dms.dailyjoy.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 object DailyJoyGradient {
-
-    @Composable
-    fun primary(useDarkTheme: Boolean = isSystemInDarkTheme()): Brush {
-        return if (useDarkTheme) {
-            Brush.verticalGradient(
-                listOf(
-                    Color(0xFF1A1A2E),
-                    Color(0xFF16213E),
-                    Color(0xFF0F3460)
-                )
+    fun background(isDark: Boolean): Brush {
+        val colors = if(isDark) {
+            listOf(
+                Color(0xFF1A1A2E),
+                Color(0xFF16213E),
+                Color(0xFF0F3460)
             )
         } else {
-            Brush.verticalGradient(
-                listOf(
-                    Color(0xFFFFF9E6),
-                    Color(0xFFFFF0F5),
-                    Color(0xFFE8F4F8)
-                )
+            listOf(
+                Color(0xFFFFF9E6),
+                Color(0xFFFFF0F5),
+                Color(0xFFE8F4F8)
             )
         }
+
+        return Brush.verticalGradient(colors)
     }
 
-    @Composable
-    fun secondary(useDarkTheme: Boolean = isSystemInDarkTheme()): Brush {
-        return if (useDarkTheme) {
-            Brush.horizontalGradient(
-                listOf(
-                    Color(0xFF0F3460),
-                    Color(0xFF53354A)
-                )
+    // Primary Gradient (Indigo -> Purple)
+    fun primary(isDark: Boolean): Brush {
+        val colors = if (isDark) {
+            listOf(
+                Color(0xFF6366F1), // Indigo
+                Color(0xFF8B5CF6), // Purple
+                Color(0xFFA78BFA)  // Light Purple
             )
         } else {
-            Brush.horizontalGradient(
-                listOf(
-                    Color(0xFFFFD8E4),
-                    Color(0xFFFFF5B1)
-                )
+            listOf(
+                Color(0xFF6366F1), // Indigo
+                Color(0xFF8B5CF6), // Purple
+                Color(0xFF7C3AED)  // Violet
             )
         }
+        return Brush.horizontalGradient(colors)
     }
 
-    @Composable
-    fun accent(useDarkTheme: Boolean = isSystemInDarkTheme()): Brush {
-        return if (useDarkTheme) {
-            Brush.radialGradient(
-                listOf(
-                    Color(0xFFFF6B9D).copy(alpha = 0.3f),
-                    Color(0xFF1A1A2E)
-                )
+    // Secondary Gradient (Pink -> Orange)
+    fun secondary(isDark: Boolean): Brush {
+        val colors = if (isDark) {
+            listOf(
+                Color(0xFFF472B6), // Pink
+                Color(0xFFFBBF24), // Amber
+                Color(0xFFFCD34D)  // Light Amber
             )
         } else {
-            Brush.radialGradient(
-                listOf(
-                    Color(0xFFFFB6C1).copy(alpha = 0.25f),
-                    Color(0xFFFFF9E6)
-                )
+            listOf(
+                Color(0xFFEC4899), // Pink
+                Color(0xFFF59E0B), // Amber
+                Color(0xFFF97316)  // Orange
             )
         }
+        return Brush.horizontalGradient(colors)
+    }
+
+    // Accent Gradient (Purple -> Pink)
+    fun accent(isDark: Boolean): Brush {
+        val colors = if (isDark) {
+            listOf(
+                Color(0xFF8B5CF6), // Purple
+                Color(0xFFF472B6)  // Pink
+            )
+        } else {
+            listOf(
+                Color(0xFF7C3AED), // Violet
+                Color(0xFFEC4899)  // Pink
+            )
+        }
+        return Brush.horizontalGradient(colors)
+    }
+
+    // Card/Container Gradient
+    fun card(isDark: Boolean): Brush {
+        val colors = if (isDark) {
+            listOf(
+                Color(0xFF312E81).copy(alpha = 0.7f),
+                Color(0xFF9F1239).copy(alpha = 0.6f),
+                Color(0xFF92400E).copy(alpha = 0.5f)
+            )
+        } else {
+            listOf(
+                Color(0xFFE0E7FF).copy(alpha = 0.8f),
+                Color(0xFFFCE7F3).copy(alpha = 0.7f),
+                Color(0xFFFEF3C7).copy(alpha = 0.6f)
+            )
+        }
+        return Brush.verticalGradient(colors)
+    }
+
+    // Header Gradient (plus vibrant)
+    fun header(isDark: Boolean): Brush {
+        val colors = if (isDark) {
+            listOf(
+                Color(0xFF4338CA), // Indigo profond
+                Color(0xFF7C3AED), // Purple
+                Color(0xFF9333EA)  // Fuchsia
+            )
+        } else {
+            listOf(
+                Color(0xFF6366F1), // Indigo
+                Color(0xFF8B5CF6), // Purple
+                Color(0xFFEC4899)  // Pink
+            )
+        }
+        return Brush.horizontalGradient(colors)
+    }
+
+    // Success/Completed Gradient
+    fun success(isDark: Boolean): Brush {
+        val colors = if (isDark) {
+            listOf(
+                Color(0xFF4338CA).copy(alpha = 0.8f),
+                Color(0xFF7C3AED).copy(alpha = 0.7f),
+                Color(0xFF9333EA).copy(alpha = 0.6f)
+            )
+        } else {
+            listOf(
+                Color(0xFF6366F1).copy(alpha = 0.7f),
+                Color(0xFF8B5CF6).copy(alpha = 0.6f),
+                Color(0xFFEC4899).copy(alpha = 0.5f)
+            )
+        }
+        return Brush.verticalGradient(colors)
     }
 }

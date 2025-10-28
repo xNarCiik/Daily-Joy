@@ -34,8 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -102,7 +102,6 @@ private fun getDayText(dateDrawn: Long): String {
     return dateFormat.format(Date(dateDrawn)).replaceFirstChar { it.uppercase() }
 }
 
-
 @Composable
 fun WeeklyPleasuresList(
     modifier: Modifier = Modifier,
@@ -117,7 +116,7 @@ fun WeeklyPleasuresList(
             AnimatedPleasureItem(
                 item = item,
                 onClick = { onCardClicked(item) },
-                animationDelay = index * 60
+                animationDelay = index * 50
             )
         }
     }
@@ -150,17 +149,20 @@ private fun AnimatedPleasureItem(
             .fillMaxWidth()
             .alpha(alpha)
             .clickable { onClick() }
-            .padding(vertical = 14.dp)
+            .padding(vertical = 12.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
             StatusIcon(status = status)
 
             Spacer(modifier = Modifier.width(14.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -168,36 +170,39 @@ private fun AnimatedPleasureItem(
                 ) {
                     Text(
                         text = day,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     StatusBadge(status = status)
                 }
 
-                Spacer(modifier = Modifier.height(6.dp))
-
                 Text(
                     text = item.pleasureTitle,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontStyle = FontStyle.Italic
-                    ),
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
 
-        // Divider
-        Spacer(modifier = Modifier.height(14.dp))
+        // Divider avec gradient
+        Spacer(modifier = Modifier.height(12.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 62.dp)
-                .height(0.5.dp)
-                .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                .padding(start = 56.dp)
+                .height(1.dp)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
+                        )
+                    )
+                )
         )
     }
 }
@@ -211,38 +216,53 @@ private fun StatusIcon(
         ItemStatus.COMPLETED -> Triple(
             Icons.Default.CheckCircle,
             MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            Brush.radialGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                )
+            )
         )
 
         ItemStatus.MISSED -> Triple(
             Icons.Default.HighlightOff,
             MaterialTheme.colorScheme.error,
-            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+            Brush.radialGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.error.copy(alpha = 0.2f),
+                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+                )
+            )
         )
 
         ItemStatus.IN_PROGRESS -> Triple(
-            Icons.Default.CheckCircle, // Placeholder icon
+            Icons.Default.CheckCircle,
             MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+            Brush.radialGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+                    MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                )
+            )
         )
     }
 
     Box(
         modifier = modifier
-            .size(48.dp)
+            .size(42.dp)
             .clip(CircleShape)
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
         if (status == ItemStatus.IN_PROGRESS) {
             CircularProgressIndicator(
-                modifier = Modifier.size(22.dp),
-                strokeWidth = 2.dp,
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.5.dp,
                 color = tint
             )
         } else {
             Icon(
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(20.dp),
                 imageVector = icon,
                 contentDescription = null,
                 tint = tint
@@ -256,27 +276,36 @@ private fun StatusBadge(
     status: ItemStatus,
     modifier: Modifier = Modifier
 ) {
-    val (textRes, color) = when (status) {
-        ItemStatus.COMPLETED ->
-            R.string.status_done_checked to MaterialTheme.colorScheme.primary
+    val (textRes, color, backgroundColor) = when (status) {
+        ItemStatus.COMPLETED -> Triple(
+            R.string.status_done_checked,
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+        )
 
-        ItemStatus.MISSED ->
-            R.string.status_missed to MaterialTheme.colorScheme.error
+        ItemStatus.MISSED -> Triple(
+            R.string.status_missed,
+            MaterialTheme.colorScheme.error,
+            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+        )
 
-        ItemStatus.IN_PROGRESS ->
-            R.string.status_in_progress to MaterialTheme.colorScheme.secondary
+        ItemStatus.IN_PROGRESS -> Triple(
+            R.string.status_in_progress,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
+        )
     }
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(color.copy(alpha = 0.15f))
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(backgroundColor)
+            .padding(horizontal = 10.dp, vertical = 4.dp)
     ) {
         Text(
             text = stringResource(textRes),
             style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.Bold,
             color = color
         )
     }
@@ -286,40 +315,54 @@ private fun StatusBadge(
 @Composable
 private fun WeeklyPleasuresListPreview() {
     DailyJoyTheme {
-        Surface(modifier = Modifier.fillMaxWidth()) {
-            val previewItems = listOf(
-                PleasureHistoryEntry(
-                    id = 1,
-                    dayIdentifier = "",
-                    dateDrawn = System.currentTimeMillis() - 86400000 * 2, // 2 days ago
-                    isCompleted = true,
-                    pleasureTitle = "Aller au cinéma",
-                    pleasureDescription = "Et si on se faisait un bon film ?",
-                    category = PleasureCategory.ALL
-                ),
-                PleasureHistoryEntry(
-                    id = 2,
-                    dayIdentifier = "",
-                    dateDrawn = System.currentTimeMillis() - 86400000, // Yesterday
-                    isCompleted = false,
-                    pleasureTitle = "Faire une bouffe XXL",
-                    pleasureDescription = "Ce soir, on mange sans regrêt",
-                    category = PleasureCategory.ALL
-                ),
-                PleasureHistoryEntry(
-                    id = 3,
-                    dayIdentifier = "",
-                    dateDrawn = System.currentTimeMillis(),
-                    isCompleted = false,
-                    pleasureTitle = "Aller au cinéma",
-                    pleasureDescription = "Et si on se faisait un bon film ?",
-                    category = PleasureCategory.ALL
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                val previewItems = listOf(
+                    PleasureHistoryEntry(
+                        id = 1,
+                        dayIdentifier = "",
+                        dateDrawn = System.currentTimeMillis() - 86400000 * 2,
+                        isCompleted = true,
+                        pleasureTitle = "Aller au cinéma voir un bon film",
+                        pleasureDescription = "Et si on se faisait un bon film ?",
+                        category = PleasureCategory.ENTERTAINMENT
+                    ),
+                    PleasureHistoryEntry(
+                        id = 2,
+                        dayIdentifier = "",
+                        dateDrawn = System.currentTimeMillis() - 86400000,
+                        isCompleted = false,
+                        pleasureTitle = "Faire une bouffe XXL entre amis",
+                        pleasureDescription = "Ce soir, on mange sans regrêt",
+                        category = PleasureCategory.FOOD
+                    ),
+                    PleasureHistoryEntry(
+                        id = 3,
+                        dayIdentifier = "",
+                        dateDrawn = System.currentTimeMillis(),
+                        isCompleted = false,
+                        pleasureTitle = "Promenade dans le parc",
+                        pleasureDescription = "Profiter de la nature",
+                        category = PleasureCategory.OUTDOOR
+                    ),
+                    PleasureHistoryEntry(
+                        id = 4,
+                        dayIdentifier = "",
+                        dateDrawn = System.currentTimeMillis() - 86400000 * 3,
+                        isCompleted = true,
+                        pleasureTitle = "Méditation et yoga",
+                        pleasureDescription = "Moment de détente",
+                        category = PleasureCategory.WELLNESS
+                    )
                 )
-            )
-            WeeklyPleasuresList(
-                items = previewItems,
-                onCardClicked = {}
-            )
+                WeeklyPleasuresList(
+                    items = previewItems,
+                    onCardClicked = {}
+                )
+            }
         }
     }
 }

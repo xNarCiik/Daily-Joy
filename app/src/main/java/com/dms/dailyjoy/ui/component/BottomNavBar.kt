@@ -2,14 +2,13 @@ package com.dms.dailyjoy.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -94,15 +92,16 @@ fun BottomNavBar(
     Surface(
         modifier = modifier
             .fillMaxWidth()
+            .navigationBarsPadding()
             .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                elevation = 12.dp,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
             ),
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 3.dp
+        tonalElevation = 2.dp
     ) {
         Box(
             modifier = Modifier
@@ -111,7 +110,7 @@ fun BottomNavBar(
                     Brush.verticalGradient(
                         colors = listOf(
                             MaterialTheme.colorScheme.surface,
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
                         )
                     )
                 )
@@ -119,14 +118,16 @@ fun BottomNavBar(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(horizontal = 8.dp),
+                    .padding(
+                        horizontal = 8.dp,
+                        vertical = 10.dp
+                    ),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 tabBarItems.forEach { tabBarItem ->
-                    val isSelected = currentDestination?.route == tabBarItem.route::class.qualifiedName
-
+                    val isSelected =
+                        currentDestination?.route == tabBarItem.route::class.qualifiedName
                     NavBarItem(
                         isSelected = isSelected,
                         icon = if (isSelected) tabBarItem.selectedIcon else tabBarItem.unselectedIcon,
@@ -156,29 +157,19 @@ private fun NavBarItem(
     label: String,
     onClick: () -> Unit
 ) {
-    val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.15f else 1f,
-        animationSpec = spring(dampingRatio = 0.7f),
-        label = "scale"
-    )
-
-    val iconColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary
-        else MaterialTheme.colorScheme.onSurfaceVariant,
-        label = "iconColor"
-    )
-
     val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.95f)
-        else Color.Transparent,
+        targetValue = if (isSelected)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.95f)
+        else
+            Color.Transparent,
         label = "backgroundColor"
     )
 
     Surface(
         onClick = onClick,
         modifier = Modifier
-            .scale(scale)
-            .padding(horizontal = 6.dp, vertical = 4.dp),
+            .padding(horizontal = 6.dp, vertical = 4.dp)
+            .height(44.dp),
         shape = RoundedCornerShape(18.dp),
         color = backgroundColor
     ) {
@@ -192,23 +183,25 @@ private fun NavBarItem(
                 imageVector = icon,
                 contentDescription = label,
                 modifier = Modifier.size(if (isSelected) 24.dp else 22.dp),
-                tint = iconColor
+                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            AnimatedVisibility(visible = isSelected) {
+            AnimatedVisibility(
+                visible = isSelected,
+                label = "labelVisibility"
+            ) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
                     color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 6.dp)
                 )
             }
         }
     }
 }
-
 
 @LightDarkPreview
 @Composable

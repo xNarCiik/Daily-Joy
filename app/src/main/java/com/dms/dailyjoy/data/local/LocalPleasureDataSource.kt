@@ -17,7 +17,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_1_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 2,
@@ -25,7 +25,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_culture_2_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.CULTURE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 3,
@@ -33,7 +33,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_3_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 4,
@@ -41,7 +41,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_creative_4_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.CREATIVE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 5,
@@ -49,7 +49,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_social_5_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.SOCIAL,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 6,
@@ -57,7 +57,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_food_6_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.FOOD,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 7,
@@ -65,7 +65,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_7_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 8,
@@ -73,7 +73,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_game_8_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.ENTERTAINMENT,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 9,
@@ -81,7 +81,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_nature_9_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.OUTDOOR,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 10,
@@ -89,7 +89,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_creative_10_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.CREATIVE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 11,
@@ -97,7 +97,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_food_11_description),
             type = PleasureType.BIG,
             category = PleasureCategory.FOOD,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 12,
@@ -105,7 +105,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_12_description),
             type = PleasureType.BIG,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 13,
@@ -113,7 +113,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_nature_13_description),
             type = PleasureType.BIG,
             category = PleasureCategory.OUTDOOR,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 14,
@@ -121,7 +121,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_shopping_14_description),
             type = PleasureType.BIG,
             category = PleasureCategory.SHOPPING,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 15,
@@ -129,7 +129,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_culture_15_description),
             type = PleasureType.BIG,
             category = PleasureCategory.CULTURE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 16,
@@ -137,7 +137,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_social_16_description),
             type = PleasureType.BIG,
             category = PleasureCategory.SOCIAL,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 17,
@@ -145,7 +145,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_17_description),
             type = PleasureType.BIG,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 18,
@@ -153,7 +153,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_culture_18_description),
             type = PleasureType.BIG,
             category = PleasureCategory.CULTURE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 19,
@@ -161,7 +161,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_creative_19_description),
             type = PleasureType.BIG,
             category = PleasureCategory.CREATIVE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 20,
@@ -169,7 +169,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_food_20_description),
             type = PleasureType.BIG,
             category = PleasureCategory.FOOD,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 21,
@@ -177,7 +177,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_21_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 22,
@@ -185,7 +185,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_creative_22_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.CREATIVE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 23,
@@ -193,7 +193,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_nature_23_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.OUTDOOR,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 24,
@@ -201,7 +201,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_social_24_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.SOCIAL,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 25,
@@ -209,7 +209,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_food_25_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.FOOD,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 26,
@@ -217,7 +217,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_sport_26_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.SPORT,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 27,
@@ -225,7 +225,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_culture_27_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.CULTURE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 28,
@@ -233,7 +233,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_creative_28_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.CREATIVE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 29,
@@ -241,7 +241,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_nature_29_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.OUTDOOR,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 30,
@@ -249,7 +249,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_30_description),
             type = PleasureType.SMALL,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 31,
@@ -257,7 +257,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_culture_31_description),
             type = PleasureType.BIG,
             category = PleasureCategory.CULTURE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 32,
@@ -265,7 +265,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_nature_32_description),
             type = PleasureType.BIG,
             category = PleasureCategory.OUTDOOR,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 33,
@@ -273,7 +273,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_social_33_description),
             type = PleasureType.BIG,
             category = PleasureCategory.SOCIAL,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 34,
@@ -281,7 +281,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_creative_34_description),
             type = PleasureType.BIG,
             category = PleasureCategory.CREATIVE,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 35,
@@ -289,7 +289,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_relax_35_description),
             type = PleasureType.BIG,
             category = PleasureCategory.WELLNESS,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 36,
@@ -297,7 +297,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_sport_36_description),
             type = PleasureType.BIG,
             category = PleasureCategory.SPORT,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 37,
@@ -305,7 +305,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_food_37_description),
             type = PleasureType.BIG,
             category = PleasureCategory.FOOD,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 38,
@@ -313,7 +313,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_social_38_description),
             type = PleasureType.BIG,
             category = PleasureCategory.SOCIAL,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 39,
@@ -321,7 +321,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_shopping_39_description),
             type = PleasureType.BIG,
             category = PleasureCategory.SHOPPING,
-            isEnabled = true
+            isEnabled = false
         ),
         Pleasure(
             id = 40,
@@ -329,7 +329,7 @@ class LocalPleasureDataSource @Inject constructor(
             description = resources.getString(R.string.pleasure_culture_40_description),
             type = PleasureType.BIG,
             category = PleasureCategory.CULTURE,
-            isEnabled = true
+            isEnabled = false
         )
     )
 }

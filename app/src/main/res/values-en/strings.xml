@@ -143,7 +143,11 @@
     <string name="social_no_pleasure_today">No pleasure today</string>
     <string name="social_empty_state_title">No friends yet</string>
     <string name="social_empty_state_subtitle">Add your first friend to see their progress!</string>
-    <string name="social_friend_options_view_stats">View stats</string>
+    <string name="social_friend_options_title">Options</string>
+    <string name="social_days_streak">days streak</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_pending">Pending</string>
+    <string name="social_friend_options_view_stats">View statistics</string>
     <string name="social_friend_options_remove">Remove friend</string>
     <string name="social_error_username_empty">Username cannot be empty</string>
     <string name="social_error_add_friend">Could not add this friend</string>

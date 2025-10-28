@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,6 +33,7 @@ import com.dms.dailyjoy.data.database.entity.PleasureHistoryEntry
 import com.dms.dailyjoy.data.model.PleasureCategory
 import com.dms.dailyjoy.ui.component.LoadingState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.theme.dailyJoyGradients
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.weekly.component.WeeklyPleasuresList
 import com.dms.dailyjoy.ui.weekly.component.WeeklyStatsCard
@@ -70,40 +73,58 @@ fun WeeklyScreen(
 
 @Composable
 private fun EmptyWeeklyState(modifier: Modifier = Modifier) {
+    val gradients = dailyJoyGradients()
+
     Column(
-        modifier = modifier.padding(32.dp),
+        modifier = modifier.padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)),
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            MaterialTheme.colorScheme.background
+                        )
+                    )
+                ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.CalendarMonth,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CalendarMonth,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(44.dp)
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Text(
             text = stringResource(R.string.weekly_empty_pleasures),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(R.string.weekly_start_today),
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -129,17 +150,25 @@ private fun WeeklyContent(
             totalCount = history.size
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .height(2.dp)
-                .clip(RoundedCornerShape(1.dp))
-                .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                .fillMaxWidth(0.4f)
+                .height(3.dp)
+                .clip(RoundedCornerShape(1.5.dp))
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                        )
+                    )
+                )
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         WeeklyPleasuresList(
             items = history,
@@ -152,7 +181,10 @@ private fun WeeklyContent(
 @Composable
 private fun WeeklyEmptyPreview() {
     DailyJoyTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             WeeklyScreen(
                 uiState = WeeklyUiState(),
                 onEvent = {}
@@ -165,7 +197,10 @@ private fun WeeklyEmptyPreview() {
 @Composable
 private fun WeeklyPreview() {
     DailyJoyTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             WeeklyScreen(
                 uiState = WeeklyUiState(
                     history = listOf(
@@ -177,6 +212,24 @@ private fun WeeklyPreview() {
                             pleasureTitle = "Boire un café chaud",
                             pleasureDescription = "Savourer un bon café le matin.",
                             category = PleasureCategory.ALL
+                        ),
+                        PleasureHistoryEntry(
+                            id = 2,
+                            dayIdentifier = "",
+                            dateDrawn = System.currentTimeMillis(),
+                            isCompleted = false,
+                            pleasureTitle = "Faire une promenade",
+                            pleasureDescription = "Marcher dans le parc pendant 30 minutes.",
+                            category = PleasureCategory.OUTDOOR
+                        ),
+                        PleasureHistoryEntry(
+                            id = 3,
+                            dayIdentifier = "",
+                            dateDrawn = System.currentTimeMillis(),
+                            isCompleted = true,
+                            pleasureTitle = "Lire un livre",
+                            pleasureDescription = "Lire un chapitre de mon livre préféré.",
+                            category = PleasureCategory.LEARNING
                         )
                     )
                 ),

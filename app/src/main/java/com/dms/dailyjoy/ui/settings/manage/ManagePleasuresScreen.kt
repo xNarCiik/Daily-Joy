@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -74,14 +73,14 @@ fun ManagePleasuresScreen(
                         )
                     }
                 },
-                actions = {
+              /*  actions = {
                     IconButton(onClick = { showTypeFilterDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.FilterList,
                             contentDescription = stringResource(R.string.manage_pleasures_filter_by_type_description)
                         )
                     }
-                },
+                },*/ // TODO Maybe letter
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )

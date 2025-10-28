@@ -21,6 +21,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -40,8 +42,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
@@ -68,7 +72,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.airbnb.lottie.RenderMode
@@ -82,6 +85,7 @@ import com.dms.dailyjoy.ui.component.PleasureCard
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureEvent
 import com.dms.dailyjoy.ui.dailypleasure.DailyPleasureScreenState
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.theme.dailyJoyGradients
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import com.dms.dailyjoy.ui.util.previewDailyPleasure
 import kotlinx.coroutines.delay
@@ -181,13 +185,15 @@ fun DailyPleasureContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 16.dp),
+            .padding(top = 12.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CurrentCategoryButton(
-            category = uiState.selectedCategory,
-            onClick = { showCategoryDialog = true }
-        )
+        AnimatedVisibility(visible = !uiState.isCardFlipped) {
+            CurrentCategoryButton(
+                category = uiState.selectedCategory,
+                onClick = { showCategoryDialog = true }
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -197,115 +203,105 @@ fun DailyPleasureContent(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            PleasureCard(
-                modifier = Modifier
-                    .draggable(
-                        orientation = Orientation.Horizontal,
-                        enabled = uiState.isCardFlipped,
-                        state = rememberDraggableState { delta ->
-                            // amorti + rotation proportionnelle
-                            val friction = 0.22f
-                            val next = animatedOffsetX.value + (delta * friction)
-                            scope.launch {
-                                animatedOffsetX.snapTo(next.coerceIn(-1000f, 1000f))
-                                animatedRotationZ.snapTo(
-                                    (animatedOffsetX.value / 24f).coerceIn(
-                                        -5f,
-                                        15f
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                PleasureCard(
+                    modifier = Modifier
+                        .draggable(
+                            orientation = Orientation.Horizontal,
+                            enabled = uiState.isCardFlipped,
+                            state = rememberDraggableState { delta ->
+                                val friction = 0.22f
+                                val next = animatedOffsetX.value + (delta * friction)
+                                scope.launch {
+                                    animatedOffsetX.snapTo(next.coerceIn(-1000f, 1000f))
+                                    animatedRotationZ.snapTo(
+                                        (animatedOffsetX.value / 24f).coerceIn(-5f, 15f)
                                     )
-                                )
-                            }
-                        },
-                        onDragStopped = { velocity ->
-                            scope.launch {
-                                val threshold = 180f
-                                val offset = animatedOffsetX.value
-                                val v = velocity
+                                }
+                            },
+                            onDragStopped = { velocity ->
+                                scope.launch {
+                                    val threshold = 180f
+                                    val offset = animatedOffsetX.value
+                                    val v = velocity
 
-                                val shouldComplete =
-                                    offset > threshold || (v > 2500f && offset > 0f)
-                                if (shouldComplete) {
-                                    // départ vers la droite, easing fluide
-                                    val target = 1200f
-                                    launch {
-                                        animatedOffsetX.animateTo(
-                                            target,
-                                            animationSpec = tween(
-                                                durationMillis = 520,
-                                                easing = LinearOutSlowInEasing
+                                    val shouldComplete =
+                                        offset > threshold || (v > 2500f && offset > 0f)
+                                    if (shouldComplete) {
+                                        val target = 1200f
+                                        launch {
+                                            animatedOffsetX.animateTo(
+                                                target,
+                                                animationSpec = tween(
+                                                    durationMillis = 520,
+                                                    easing = LinearOutSlowInEasing
+                                                )
                                             )
-                                        )
-                                    }
-                                    launch {
-                                        animatedRotationZ.animateTo(
-                                            15f, animationSpec = tween(520, easing = EaseInOut)
-                                        )
-                                    }
-                                    delay(260)
-                                    onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
-                                } else {
-                                    val stiffness = 500f
-                                    val damping = 0.78f
-                                    launch {
-                                        animatedOffsetX.animateTo(
-                                            0f,
-                                            animationSpec = spring(
-                                                stiffness = stiffness,
-                                                dampingRatio = damping
+                                        }
+                                        launch {
+                                            animatedRotationZ.animateTo(
+                                                15f, animationSpec = tween(520, easing = EaseInOut)
                                             )
-                                        )
-                                    }
-                                    launch {
-                                        animatedRotationZ.animateTo(
-                                            0f,
-                                            animationSpec = spring(
-                                                stiffness = stiffness,
-                                                dampingRatio = damping
+                                        }
+                                        delay(260)
+                                        onEvent(DailyPleasureEvent.OnCardMarkedAsDone)
+                                    } else {
+                                        val stiffness = 500f
+                                        val damping = 0.78f
+                                        launch {
+                                            animatedOffsetX.animateTo(
+                                                0f,
+                                                animationSpec = spring(
+                                                    stiffness = stiffness,
+                                                    dampingRatio = damping
+                                                )
                                             )
-                                        )
+                                        }
+                                        launch {
+                                            animatedRotationZ.animateTo(
+                                                0f,
+                                                animationSpec = spring(
+                                                    stiffness = stiffness,
+                                                    dampingRatio = damping
+                                                )
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                    )
-                    .offset(x = (animatedOffsetX.value + if (uiState.isCardFlipped) hintOffsetX else 0f).dp)
-                    .graphicsLayer {
-                        rotationZ =
-                            animatedRotationZ.value + if (uiState.isCardFlipped) hintRotation else 0f
-                        alpha = 1f - (abs(animatedOffsetX.value) / 900f).coerceIn(0f, 1f)
+                        )
+                        .offset(x = (animatedOffsetX.value + if (uiState.isCardFlipped) hintOffsetX else 0f).dp)
+                        .graphicsLayer {
+                            rotationZ =
+                                animatedRotationZ.value + if (uiState.isCardFlipped) hintRotation else 0f
+                            alpha = 1f - (abs(animatedOffsetX.value) / 900f).coerceIn(0f, 1f)
+                        },
+                    pleasure = uiState.dailyPleasure,
+                    flipped = uiState.isCardFlipped,
+                    durationRotation = 1300,
+                    onCardFlipped = {
+                        showConfettiAnimation = true
+                        onEvent(DailyPleasureEvent.OnCardFlipped)
                     },
-                pleasure = uiState.dailyPleasure,
-                flipped = uiState.isCardFlipped,
-                durationRotation = 1300,
-                onCardFlipped = {
-                    showConfettiAnimation = true
-                    onEvent(DailyPleasureEvent.OnCardFlipped)
-                },
-                onClick = { onEvent(DailyPleasureEvent.OnCardClicked) }
-            )
+                    onClick = { onEvent(DailyPleasureEvent.OnCardClicked) }
+                )
+
+                AnimatedVisibility(
+                    visible = uiState.isCardFlipped,
+                    enter = slideInVertically(
+                        initialOffsetY = { it / 2 }
+                    ) + fadeIn(),
+                    exit = slideOutVertically(
+                        targetOffsetY = { it / 2 }
+                    ) + fadeOut()
+                ) {
+                    SwipeCompletionHint()
+                }
+            }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = if (!uiState.isCardFlipped)
-                    stringResource(R.string.pleasure_tap_card_text)
-                else
-                    stringResource(R.string.pleasure_swip_card_text),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 
     // --- Overlay confetti
@@ -315,8 +311,62 @@ fun DailyPleasureContent(
                 modifier = Modifier.size(320.dp),
                 composition = confettiComposition,
                 progress = { confettiProgress },
-                renderMode = RenderMode.HARDWARE // 🔥 évite de charger le CPU sur le main thread
+                renderMode = RenderMode.HARDWARE
             )
+        }
+    }
+}
+
+@Composable
+private fun SwipeCompletionHint(modifier: Modifier = Modifier) {
+    val infinite = androidx.compose.animation.core.rememberInfiniteTransition(label = "swipeCompletionHint")
+    val arrowOffset by infinite.animateFloat(
+        initialValue = 0f,
+        targetValue = 12f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200, easing = EaseInOut),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "arrowOffset"
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 40.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+
+                .clip(RoundedCornerShape(24.dp))
+                .background(Color.White.copy(alpha = 0.12f))
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Swipe une fois réalisé",//stringResource(R.string.swipe_to_complete),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+
+            Box {
+                repeat(3) { index ->
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .offset(x = (arrowOffset + (index * 8)).dp)
+                            .graphicsLayer {
+                                alpha = (1f - (index * 0.25f)) * 0.7f
+                            },
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
         }
     }
 }
@@ -365,36 +415,46 @@ private fun CurrentCategoryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
+    val gradients = dailyJoyGradients()
+
+    Box(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shadowElevation = 2.dp
+            .clip(RoundedCornerShape(24.dp))
+            .background(gradients.background)
+            .clickable(onClick = onClick)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = category.icon,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.25f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = category.icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.White
+                )
+            }
+
             Text(
                 text = stringResource(category.label),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
+
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                modifier = Modifier.size(22.dp),
+                tint = Color.White.copy(alpha = 0.9f)
             )
         }
     }
@@ -409,30 +469,30 @@ private fun CategorySelectionDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            shape = RoundedCornerShape(28.dp),
+            shape = RoundedCornerShape(32.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                    .padding(28.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Text(
                     text = stringResource(R.string.daily_pleasure_choose_category),
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.height(320.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.height(380.dp)
                 ) {
                     items(categories, key = { it }) { category ->
                         CategoryDialogItem(
@@ -454,24 +514,29 @@ private fun CategoryDialogItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val itemBackground = if (isSelected) {
+        Brush.linearGradient(
+            colors = listOf(
+                category.iconTint.copy(alpha = 0.85f),
+                category.iconTint.copy(alpha = 0.95f)
+            )
+        )
+    } else {
+        Brush.linearGradient(
+            colors = listOf(
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.surfaceVariant
+            )
+        )
+    }
+
     Box(
         modifier = modifier
-            .height(100.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(
-                if (isSelected) {
-                    Brush.verticalGradient(category.gradientColors)
-                } else {
-                    Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.surfaceContainerHigh,
-                            MaterialTheme.colorScheme.surfaceContainerHigh
-                        )
-                    )
-                }
-            )
+            .height(110.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(itemBackground)
             .clickable(onClick = onClick)
-            .padding(16.dp)
+            .padding(18.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -482,12 +547,26 @@ private fun CategoryDialogItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Icon(
-                    imageVector = category.icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(28.dp),
-                    tint = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isSelected)
+                                Color.White.copy(alpha = 0.25f)
+                            else
+                                category.iconTint.copy(alpha = 0.15f)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = category.icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = if (isSelected) Color.White else category.iconTint
+                    )
+                }
+
                 AnimatedVisibility(
                     visible = isSelected,
                     enter = scaleIn() + fadeIn(),
@@ -495,20 +574,21 @@ private fun CategoryDialogItem(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(24.dp)
-                            .clip(RoundedCornerShape(12.dp))
+                            .size(28.dp)
+                            .clip(CircleShape)
                             .background(Color.White.copy(alpha = 0.3f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(18.dp),
                             tint = Color.White
                         )
                     }
                 }
             }
+
             Text(
                 text = stringResource(category.label),
                 style = MaterialTheme.typography.labelLarge,
@@ -524,14 +604,16 @@ private fun CategoryDialogItem(
 @Composable
 private fun DailyPleasureContentPreview() {
     DailyJoyTheme {
-        DailyPleasureContent(
-            uiState = DailyPleasureScreenState.Ready(
-                availableCategories = PleasureCategory.entries,
-                dailyPleasure = previewDailyPleasure,
-                isCardFlipped = true,
-                selectedCategory = PleasureCategory.entries.first()
-            ),
-            onEvent = {}
-        )
+        Surface(color = MaterialTheme.colorScheme.background) {
+            DailyPleasureContent(
+                uiState = DailyPleasureScreenState.Ready(
+                    availableCategories = PleasureCategory.entries,
+                    dailyPleasure = previewDailyPleasure,
+                    isCardFlipped = true,
+                    selectedCategory = PleasureCategory.entries.first()
+                ),
+                onEvent = {}
+            )
+        }
     }
 }

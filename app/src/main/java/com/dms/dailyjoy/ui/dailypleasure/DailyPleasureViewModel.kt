@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.dailyjoy.data.database.mapper.toPleasure
 import com.dms.dailyjoy.data.model.PleasureCategory
+import com.dms.dailyjoy.domain.usecase.GetRandomDailyMessageUseCase
 import com.dms.dailyjoy.domain.usecase.dailypleasure.GetRandomPleasureUseCase
 import com.dms.dailyjoy.domain.usecase.history.GetTodayHistoryEntryUseCase
 import com.dms.dailyjoy.domain.usecase.history.SaveHistoryEntryUseCase
@@ -20,11 +21,14 @@ const val MinimumPleasuresCount = 7
 
 @HiltViewModel
 class DailyPleasureViewModel @Inject constructor(
+    private val getRandomDailyMessageUseCase: GetRandomDailyMessageUseCase,
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val getRandomPleasureUseCase: GetRandomPleasureUseCase,
     private val saveHistoryEntryUseCase: SaveHistoryEntryUseCase,
     private val getTodayHistoryEntryUseCase: GetTodayHistoryEntryUseCase
 ) : ViewModel() {
+
+    private val randomDailyMessage = MutableStateFlow("")
 
     private val _uiState = MutableStateFlow(DailyPleasureUiState())
     val uiState: StateFlow<DailyPleasureUiState> = _uiState.asStateFlow()
@@ -37,6 +41,10 @@ class DailyPleasureViewModel @Inject constructor(
         viewModelScope.launch {
             val pleasures = getPleasuresUseCase().first()
 
+            if(randomDailyMessage.value.isBlank()) {
+                randomDailyMessage.value = getRandomDailyMessageUseCase()
+            }
+
             val enabledPleasures = pleasures.count { it.isEnabled }
             val isSetupRequired = enabledPleasures < MinimumPleasuresCount
 
@@ -45,7 +53,8 @@ class DailyPleasureViewModel @Inject constructor(
                     DailyPleasureUiState(
                         screenState = DailyPleasureScreenState.SetupRequired(
                             pleasureCount = enabledPleasures
-                        )
+                        ),
+                        headerMessage = "À deux pas de l'aventure..."
                     )
                 return@launch
             }
@@ -53,7 +62,9 @@ class DailyPleasureViewModel @Inject constructor(
             val todayHistoryPleasure = getTodayHistoryEntryUseCase().first()
             if (todayHistoryPleasure?.isCompleted == true) {
                 _uiState.value = _uiState.value.copy(
-                    screenState = DailyPleasureScreenState.Completed
+                    screenState = DailyPleasureScreenState.Completed,
+                    headerMessage = "Félicitations pour cette belle journée ! 🎉"
+
                 )
             } else {
                 _uiState.value = DailyPleasureUiState(
@@ -61,7 +72,8 @@ class DailyPleasureViewModel @Inject constructor(
                         availableCategories = PleasureCategory.entries,
                         dailyPleasure = todayHistoryPleasure?.toPleasure(),
                         isCardFlipped = todayHistoryPleasure != null
-                    )
+                    ),
+                    headerMessage = randomDailyMessage.value
                 )
             }
         }

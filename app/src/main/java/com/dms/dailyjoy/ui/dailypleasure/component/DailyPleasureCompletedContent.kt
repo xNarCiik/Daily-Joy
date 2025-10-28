@@ -25,7 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,11 +36,15 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.dailyjoy.R
 import com.dms.dailyjoy.ui.theme.DailyJoyTheme
+import com.dms.dailyjoy.ui.theme.dailyJoyGradients
 import com.dms.dailyjoy.ui.util.LightDarkPreview
 import kotlinx.coroutines.delay
 
 @Composable
-fun DailyPleasureCompletedContent() {
+fun DailyPleasureCompletedContent(
+    modifier: Modifier = Modifier
+) {
+    val gradients = dailyJoyGradients()
     var hasPlayed by rememberSaveable { mutableStateOf(false) }
     var playAnimation by remember { mutableStateOf(false) }
 
@@ -68,56 +72,58 @@ fun DailyPleasureCompletedContent() {
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
-                    )
-                )
-            )
-            .padding(vertical = 48.dp, horizontal = 24.dp)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(32.dp))
+                .background(gradients.card)
+                .padding(vertical = 48.dp, horizontal = 32.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.pleasure_completed_title),
-                style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                LottieAnimation(
-                    modifier = Modifier.fillMaxSize(),
-                    composition = successComposition,
-                    progress = { if(hasPlayed) 1f else successProgress }
+                Box(
+                    modifier = Modifier
+                        .size(160.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LottieAnimation(
+                        modifier = Modifier.size(140.dp),
+                        composition = successComposition,
+                        progress = { if (hasPlayed) 1f else successProgress }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Titre
+                Text(
+                    text = stringResource(id = R.string.pleasure_completed_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                // Sous-titre
+                Text(
+                    text = stringResource(id = R.string.pleasure_completed_subtitle),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    color = Color.White.copy(alpha = 0.85f),
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = stringResource(id = R.string.pleasure_completed_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
@@ -126,7 +132,7 @@ fun DailyPleasureCompletedContent() {
 @Composable
 private fun DailyPleasureCompletedContentPreview() {
     DailyJoyTheme {
-        Surface {
+        Surface(color = MaterialTheme.colorScheme.background) {
             DailyPleasureCompletedContent()
         }
     }

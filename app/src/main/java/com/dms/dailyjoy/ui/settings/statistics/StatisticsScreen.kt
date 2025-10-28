@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
@@ -31,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dms.dailyjoy.R
-import com.dms.dailyjoy.ui.component.AppHeader
 import com.dms.dailyjoy.ui.settings.statistics.component.CategoryStatsCard
 import com.dms.dailyjoy.ui.settings.statistics.component.DetailedStatsCard
 import com.dms.dailyjoy.ui.settings.statistics.component.MonthlyProgressCard
@@ -74,16 +72,9 @@ fun StatisticsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp),
+                .padding(all = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AppHeader(
-                title = stringResource(id = R.string.statistics_header_title),
-                subtitle = stringResource(id = R.string.statistics_header_subtitle),
-                icon = Icons.Default.BarChart
-            )
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
