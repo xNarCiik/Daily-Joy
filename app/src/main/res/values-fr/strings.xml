@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Daily Joy</string>
+    <string name="app_name">Flip</string>
     <!-- Bottom Nav Bar -->
     <string name="daily_pleasure_title">Mon Plaisir</string>
     <string name="weekly_title">Cette semaine</string>
@@ -174,7 +174,7 @@
 
     <!-- Login Screen -->
     <string name="login_google_failed">Connexion Google échouée</string>
-    <string name="login_daily_joy_logo">DailyJoy Logo</string>
+    <string name="login_daily_joy_logo">Flip Logo</string>
     <string name="login_start_day_with_joy">Commencez votre journée avec joie</string>
     <string name="login_daily_happiness">Votre dose de bonheur quotidienne</string>
     <string name="login_terms_and_conditions">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité</string>

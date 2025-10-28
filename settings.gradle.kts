@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DailyJoy"
+rootProject.name = "Flip"
 include(":app")
  

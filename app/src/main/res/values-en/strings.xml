@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Daily Joy</string>
+    <string name="app_name">Flip</string>
     <!-- Bottom Nav Bar -->
     <string name="daily_pleasure_title">My Pleasure</string>
     <string name="weekly_title">This week</string>
@@ -173,7 +173,7 @@
 
     <!-- Login Screen -->
     <string name="login_google_failed">Google login failed</string>
-    <string name="login_daily_joy_logo">DailyJoy Logo</string>
+    <string name="login_daily_joy_logo">Flip Logo</string>
     <string name="login_start_day_with_joy">Start your day with joy</string>
     <string name="login_daily_happiness">Your daily dose of happiness</string>
     <string name="login_terms_and_conditions">By continuing, you accept our terms of use and our privacy policy</string>

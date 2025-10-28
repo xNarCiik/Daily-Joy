@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.dms.dailyjoy"
+    namespace = "com.dms.flip"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.dms.dailyjoy"
+        applicationId = "com.dms.flip"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
