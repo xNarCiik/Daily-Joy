@@ -29,21 +29,20 @@ class ManagePleasuresViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        loadAndFilterPleasures()
+        loadPleasures()
     }
 
-    private fun loadAndFilterPleasures() = viewModelScope.launch {
+    private fun loadPleasures() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
         try {
             getPleasuresUseCase().collectLatest { pleasures ->
                 _uiState.update {
                     it.copy(
-                        allPleasures = pleasures,
+                        pleasures = pleasures,
                         isLoading = false,
                         error = null
                     )
                 }
-                updateFilteredPleasures()
             }
         } catch (e: Exception) {
             _uiState.update {
@@ -53,20 +52,6 @@ class ManagePleasuresViewModel @Inject constructor(
                     error = e.message ?: "Une erreur est survenue"
                 )
             }
-        }
-    }
-
-    private fun updateFilteredPleasures() {
-        _uiState.update { state ->
-            val filtered = state.allPleasures.filter { pleasure ->
-                val typeMatches = when (state.selectedTab) {
-                    ManagePleasuresTab.SMALL -> pleasure.type == PleasureType.SMALL
-                    ManagePleasuresTab.BIG -> pleasure.type == PleasureType.BIG
-                }
-                val categoryMatches = state.selectedCategories.contains(pleasure.category)
-                typeMatches && categoryMatches
-            }
-            state.copy(filteredPleasures = filtered)
         }
     }
 
@@ -96,26 +81,24 @@ class ManagePleasuresViewModel @Inject constructor(
             }
 
             is ManagePleasuresEvent.OnSavePleasureClicked -> savePleasure()
-            is ManagePleasuresEvent.OnDeletePleasureClicked -> _uiState.update {
-                it.copy(
-                    pleasureToDelete = event.pleasure,
-                    showDeleteConfirmation = true
-                )
+            is ManagePleasuresEvent.OnDeleteMultiplePleasuresClicked -> {
+                _uiState.update {
+                    it.copy(
+                        pleasures = _uiState.value.pleasures.filter { pleasure ->
+                            event.pleasuresId.contains(
+                                pleasure.id
+                            )
+                        }
+                    )
+                }
+                // TODO
             }
 
             is ManagePleasuresEvent.OnDeleteConfirmed -> confirmDelete()
             is ManagePleasuresEvent.OnDeleteCancelled -> cancelDelete()
-            is ManagePleasuresEvent.OnTabSelected -> {
-                _uiState.update { it.copy(selectedTab = event.tab) }
-                updateFilteredPleasures()
-            }
 
-            is ManagePleasuresEvent.OnCategoryFilterChanged -> {
-                toggleCategoryFilter(event.category)
-                updateFilteredPleasures()
-            }
 
-            is ManagePleasuresEvent.OnRetryClicked -> loadAndFilterPleasures()
+            is ManagePleasuresEvent.OnRetryClicked -> loadPleasures()
         }
     }
 
@@ -157,18 +140,13 @@ class ManagePleasuresViewModel @Inject constructor(
 
         if (hasError) return
 
-        val type = when (state.selectedTab) {
-            ManagePleasuresTab.SMALL -> PleasureType.SMALL
-            ManagePleasuresTab.BIG -> PleasureType.BIG
-        }
-
         viewModelScope.launch {
             try {
                 addCustomPleasureUseCase(
                     title = state.newPleasureTitle.trim(),
                     description = state.newPleasureDescription.trim(),
                     category = state.newPleasureCategory,
-                    type = type
+                    type = PleasureType.SMALL
                 )
                 dismissBottomSheet()
             } catch (e: Exception) {
@@ -178,7 +156,7 @@ class ManagePleasuresViewModel @Inject constructor(
     }
 
     private fun confirmDelete() {
-        _uiState.value.pleasureToDelete?.let { pleasure ->
+       /* _uiState.value.pleasureToDelete?.let { pleasure ->
             viewModelScope.launch {
                 try {
                     deleteCustomPleasureUseCase(pleasure)
@@ -191,22 +169,10 @@ class ManagePleasuresViewModel @Inject constructor(
                 }
             }
         }
-        cancelDelete()
+        cancelDelete() */
     }
 
     private fun cancelDelete() {
-        _uiState.update { it.copy(showDeleteConfirmation = false, pleasureToDelete = null) }
-    }
-
-    private fun toggleCategoryFilter(category: PleasureCategory) {
-        _uiState.update { state ->
-            val updatedCategories = state.selectedCategories.toMutableSet()
-            if (category in updatedCategories) {
-                updatedCategories.remove(category)
-            } else {
-                updatedCategories.add(category)
-            }
-            state.copy(selectedCategories = updatedCategories)
-        }
+        _uiState.update { it.copy(showDeleteConfirmation = false) } // TODO
     }
 }

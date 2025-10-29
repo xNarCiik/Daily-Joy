@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,15 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
-import com.dms.flip.ui.settings.manage.ManagePleasuresTab
-import com.dms.flip.ui.settings.manage.emptyStateMessage
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 
 @Composable
 fun ManagePleasuresEmptyState(
-    type: ManagePleasuresTab,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -41,16 +40,20 @@ fun ManagePleasuresEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = null,
+        IconButton(
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .padding(20.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            onClick = onAddClick
+        ) {
+            Icon(
+                modifier = Modifier.size(50.dp),
+                imageVector = Icons.Default.Add,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -63,7 +66,7 @@ fun ManagePleasuresEmptyState(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = type.emptyStateMessage,
+            text = stringResource(R.string.empty_state_message),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -84,7 +87,7 @@ fun ManagePleasuresEmptyState(
 private fun ManagePleasuresEmptyStatePreview() {
     FlipTheme {
         Surface {
-            ManagePleasuresEmptyState(type = ManagePleasuresTab.SMALL)
+            ManagePleasuresEmptyState(onAddClick = {})
         }
     }
 }

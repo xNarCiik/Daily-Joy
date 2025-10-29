@@ -1,39 +1,107 @@
 <resources>
+    <!-- App & Bottom Nav -->
     <string name="app_name">Flip</string>
-    <!-- Bottom Nav Bar -->
-    <string name="history_title">Historique</string>
     <string name="my_flip_title">Mon Flip</string>
+    <string name="history_title">Historique</string>
+    <string name="social_title">Mes amis</string>
     <string name="settings_title">Paramètres</string>
 
-    <!-- DailyPleasure Setup State -->
+    <!-- Login Screen -->
+    <string name="login_google_failed">Connexion Google échouée</string>
+    <string name="login_daily_joy_logo">Flip Logo</string>
+    <string name="login_start_day_with_joy">Commencez votre journée avec joie</string>
+    <string name="login_daily_happiness">Votre dose de bonheur quotidienne</string>
+    <string name="login_terms_and_conditions">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité</string>
+    <string name="login_google_logo">Google Logo</string>
+    <string name="login_continue_with_google">Continuer avec Google</string>
+
+    <!-- Onboarding -->
+    <!-- Welcome Step -->
+    <string name="onboarding_welcome_emoji" translatable="false">🎉</string>
+    <string name="onboarding_welcome_title">Bienvenue dans Daily Joy !</string>
+    <string name="onboarding_welcome_subtitle">Configurons ensemble votre expérience pour profiter pleinement de vos plaisirs quotidiens.</string>
+    <string name="onboarding_welcome_feature1_emoji" translatable="false">📝</string>
+    <string name="onboarding_welcome_feature1_text">Personnalisez votre nom</string>
+    <string name="onboarding_welcome_feature2_emoji" translatable="false">✨</string>
+    <string name="onboarding_welcome_feature2_text">Choisissez vos plaisirs préférés</string>
+    <string name="onboarding_welcome_feature3_emoji" translatable="false">🔔</string>
+    <string name="onboarding_welcome_feature3_text">Configurez vos rappels</string>
+    <!-- Username Step -->
+    <string name="onboarding_username_title">Comment voulez-vous qu\'on vous appelle ?</string>
+    <string name="onboarding_username_subtitle">Ce nom sera utilisé pour personnaliser votre expérience.</string>
+    <string name="onboarding_username_label">Votre prénom</string>
+    <string name="onboarding_username_placeholder">Ex: Marie</string>
+    <!-- Pleasures Step -->
+    <string name="onboarding_pleasures_title">Sélectionnez vos plaisirs</string>
+    <string name="onboarding_pleasures_subtitle">Choisissez les activités qui vous apportent de la joie. Vous pourrez modifier cette liste plus tard.</string>
+    <!-- Notification Step -->
+    <string name="onboarding_notification_title">Configurez vos rappels</string>
+    <string name="onboarding_notification_subtitle">Recevez une notification quotidienne pour découvrir votre plaisir du jour.</string>
+    <string name="onboarding_notification_daily_reminder">Rappel quotidien</string>
+    <string name="onboarding_notification_daily_reminder_subtitle">Ne manquez aucun plaisir</string>
+    <string name="onboarding_notification_reminder_time">Heure du rappel</string>
+
+    <!-- Daily Flip Screen -->
+    <!-- Setup State -->
     <string name="setup_title">Prêt à commencer ?</string>
     <string name="setup_subtitle">Pour commencer à piocher une carte chaque jour, vous devez d\'abord configurer au moins %d plaisirs.</string>
     <string name="setup_button_text">Configurer mes plaisirs</string>
     <string name="daily_flip_setup_pleasures_configured">Plaisirs configurés :</string>
-
-    <!-- DailyPleasure Content -->
+    <!-- Card -->
     <string name="your_flip_daily">Votre plaisir du jour</string>
     <string name="category_selector_title">Catégorie : %s</string>
     <string name="choose_category">Choisir une catégorie</string>
-
-    <!-- DailyPleasure Completed Content -->
+    <string name="pleasure_card_back_title">Prêt pour votre moment de joie ?</string>
+    <string name="pleasure_card_back_subtitle">Touchez pour découvrir votre plaisir du jour</string>
+    <!-- Completed State -->
     <string name="daily_flip_completed_title">Félicitations !</string>
     <string name="daily_flip_completed_subtitle">Vous avez pris un moment pour vous aujourd\'hui, c\'est génial !</string>
     <string name="daily_flip_completed_next_draw">Prochain tirage</string>
     <string name="daily_flip_completed_next_draw_subtitle">Votre prochaine carte sera disponible demain.</string>
     <string name="daily_flip_completed_share_button">Partager ce moment</string>
 
-    <!-- Weekly Screen -->
-    <string name="full_day_monday">Lundi</string>
-    <string name="full_day_tuesday">Mardi</string>
-    <string name="full_day_wednesday">Mercredi</string>
-    <string name="full_day_thursday">Jeudi</string>
-    <string name="full_day_friday">Vendredi</string>
-    <string name="full_day_saturday">Samedi</string>
-    <string name="full_day_sunday">Dimanche</string>
-
+    <!-- History Screen -->
+    <string name="history_previous_week">Semaine précédente</string>
+    <string name="history_next_week">Semaine suivante</string>
+    <string name="history_pleasures_this_week">Plaisirs de la semaine</string>
+    <string name="history_streak_days">Jours de série</string>
+    <string name="history_ready_for_joy">Prêt(e) pour votre joie du jour ?</string>
+    <string name="history_discover_button">Découvrir</string>
+    <string name="history_day_locked">Jour verrouillé</string>
     <string name="status_done_checked">Fait ✓</string>
 
+    <!-- Social Screen -->
+    <string name="social_error_remove_friend">Erreur lors de la suppression</string>
+    <string name="social_invitations_title">Invitations à compléter un plaisir</string>
+    <string name="social_invitation_from">%1$s vous invite à :</string>
+    <string name="social_accept">Accepter</string>
+    <string name="social_decline">Refuser</string>
+    <string name="social_search_placeholder">Rechercher un ami</string>
+    <string name="social_no_pleasure_today">Pas encore de plaisir aujourd\'hui</string>
+    <string name="social_streak_days">%d jours d\'affilé</string>
+    <string name="status_completed_short">Fait</string>
+    <string name="status_in_progress">En cours</string>
+    <string name="status_completed">Complété</string>
+    <string name="social_invite_to_pleasure">Inviter à compléter un plaisir</string>
+    <string name="social_pleasure_of_the_day">Plaisir du jour</string>
+    <string name="social_view_stats">Voir les statistiques</string>
+    <string name="social_remove_friend">Retirer des amis</string>
+    <string name="dialog_close">Fermer</string>
+    <string name="social_empty_title">Aucun ami pour le moment</string>
+    <string name="social_error_load_friends">Impossible de charger vos amis</string>
+    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
+    <string name="social_friend_requests">Demandes d\'amis</string>
+    <string name="social_add_friend_title">Ajouter un ami</string>
+    <string name="social_add_friend">Ajouter</string>
+    <string name="social_add_friend_placeholder">Nom d\'utilisateur</string>
+    <string name="social_received_requests">Demandes reçues</string>
+    <string name="social_sent_requests">Demandes envoyées</string>
+    <string name="social_wants_to_add_you">Veut vous ajouter</string>
+    <string name="social_request_pending">En attente</string>
+    <string name="social_cancel">Annuler</string>
+    <string name="social_no_requests">Aucune demande en cours</string>
+    <string name="social_no_requests_subtitle">Ajoutez des amis pour partager vos plaisirs ensemble !</string>
+    <string name="social_empty_subtitle">Commencez à ajouter des amis pour partager vos plaisirs quotidiens ensemble</string>
     <!-- Settings Screen -->
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Rappel quotidien</string>
@@ -43,55 +111,35 @@
     <string name="settings_privacy_policy">Politique de confidentialité</string>
     <string name="privacy_policy_url" translatable="false">https://privacy-policy-url.com</string>
     <string name="settings_sign_out">Se déconnecter</string>
-
-    <!-- Theme Dialog -->
-    <string name="settings_theme_dialog_title">Choisir un thème</string>
-    <string name="settings_theme_light">Clair</string>
-    <string name="settings_theme_dark">Sombre</string>
-    <string name="settings_theme_system">Système</string>
-    <string name="settings_theme_light_description">Thème clair pour le jour</string>
-    <string name="settings_theme_dark_description">Thème sombre pour la nuit</string>
-    <string name="settings_theme_system_description">Suit les paramètres du système</string>
+    <string name="settings_back">Retour</string>
+    <string name="settings_theme_title">Thème</string>
+    <string name="settings_terms_conditions">Conditions d\'utilisation</string>
+    <string name="settings_app_version">Version de l\'application</string>
+    <string name="settings_edit_profile">Modifier le profil</string>
+    <string name="settings_delete_account">Supprimer mon compte</string>
 
     <!-- Manage Pleasures Screen -->
     <string name="manage_pleasures_title">Gérer mes plaisirs</string>
     <string name="back">Retour</string>
+    <string name="edit_mode">Mode édition</string>
+    <string name="manage_pleasures_info_card_title">Vos plaisirs, votre bien-être</string>
+    <string name="manage_pleasures_info_card_subtitle">Ajoutez, modifiez ou supprimez vos plaisirs pour qu\'ils correspondent à vos envies du moment. C\'est votre jardin secret !</string>
     <string name="add_pleasure">Ajouter un plaisir</string>
-    <string name="small_pleasures">Petits Plaisirs</string>
-    <string name="big_pleasures">Gros Plaisirs</string>
-    <string name="delete_pleasure">Supprimer le plaisir</string>
+    <string name="add_new_pleasure_button">Ajouter un nouveau plaisir</string>
+    <string name="delete_pleasures_button">Supprimer (%d)</string>
     <string name="title">Titre</string>
     <string name="description">Description</string>
     <string name="category">Catégorie</string>
     <string name="save">Sauvegarder</string>
     <string name="cancel">Annuler</string>
-    <string name="manage_pleasures_pleasure_type">Type de plaisir</string>
+    <string name="delete">Supprimer</string>
     <string name="manage_pleasures_add_pleasure_placeholder_title">Ex: Boire un bon café</string>
     <string name="manage_pleasures_add_pleasure_placeholder_description">Décrivez ce plaisir…</string>
-    <string name="manage_pleasures_delete_confirmation_title">Supprimer le plaisir ?</string>
-    <string name="manage_pleasures_delete_confirmation_message">Êtes-vous sûr de vouloir supprimer "%1$s" ? Cette action est irréversible.</string>
-    <string name="generic_error_message">Une erreur est survenue</string>
-    <string name="retry">Réessayer</string>
+    <string name="manage_pleasures_delete_selected_confirmation_title">Supprimer ce(s) plaisir(s) ?</string>
+    <string name="manage_pleasures_delete_selected_confirmation_message">Êtes-vous sûr de vouloir le/les supprimer ? Cette action est irréversible.</string>
     <string name="empty_state_title">Aucun plaisir</string>
+    <string name="empty_state_message">Ajoutez vos plaisirs quotidiens</string>
     <string name="empty_state_subtitle">Cliquez sur + pour commencer</string>
-    <string name="small_pleasures_description">Plaisirs rapides du quotidien</string>
-    <string name="big_pleasures_description">Grandes récompenses</string>
-    <string name="small_pleasures_empty_state_message">Ajoutez vos petits plaisirs quotidiens</string>
-    <string name="big_pleasures_empty_state_message">Ajoutez vos grandes récompenses</string>
-
-    <!-- Category -->
-    <string name="category_all">Toutes</string>
-    <string name="category_food">Nourriture</string>
-    <string name="category_entertainment">Divertissement</string>
-    <string name="category_social">Social</string>
-    <string name="category_wellness">Bien-être</string>
-    <string name="category_creative">Créatif</string>
-    <string name="category_outdoor">Extérieur</string>
-    <string name="category_sport">Sport</string>
-    <string name="category_shopping">Shopping</string>
-    <string name="category_culture">Culture</string>
-    <string name="category_learning">Apprentissage</string>
-    <string name="category_other">Autre</string>
 
     <!-- Statistics Screen -->
     <string name="statistics_title">Vos Statistiques</string>
@@ -113,139 +161,39 @@
     <string name="statistics_weekly_average">Moyenne hebdo.</string>
     <string name="statistics_days_unit">jours</string>
 
-    <!-- Social Screen -->
-    <string name="social_title">Mes amis</string>
-    <string name="social_error_remove_friend">Erreur lors de la suppression</string>
+    <!-- Theme Dialog -->
+    <string name="settings_theme_dialog_title">Choisir un thème</string>
+    <string name="settings_theme_light">Clair</string>
+    <string name="settings_theme_dark">Sombre</string>
+    <string name="settings_theme_system">Système</string>
+    <string name="settings_theme_light_description">Thème clair pour le jour</string>
+    <string name="settings_theme_dark_description">Thème sombre pour la nuit</string>
+    <string name="settings_theme_system_description">Suit les paramètres du système</string>
 
-    <!-- Notification -->
+    <!-- Notifications -->
     <string name="notification_channel_name">Rappel quotidien</string>
     <string name="notification_channel_description">Notification pour vous rappeler votre plaisir du jour.</string>
     <string name="notification_title">C\'est l\'heure de votre plaisir du jour !</string>
     <string name="notification_text">N\'oubliez pas votre plaisir du jour ;)</string>
-
-    <!-- Notification Permission Dialog -->
     <string name="notification_permission_dialog_title">Permission requise</string>
     <string name="notification_permission_dialog_text">Pour recevoir des rappels quotidiens, vous devez autoriser les notifications dans les paramètres de l\'application.</string>
     <string name="notification_permission_dialog_settings_button">Ouvrir les paramètres</string>
 
-    <!-- Accessibility-->
+    <!-- Categories -->
+    <string name="category_all">Toutes</string>
+    <string name="category_food">Nourriture</string>
+    <string name="category_entertainment">Divertissement</string>
+    <string name="category_social">Social</string>
+    <string name="category_wellness">Bien-être</string>
+    <string name="category_creative">Créatif</string>
+    <string name="category_outdoor">Extérieur</string>
+    <string name="category_sport">Sport</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_culture">Culture</string>
+    <string name="category_learning">Apprentissage</string>
+    <string name="category_other">Autre</string>
 
-    <!-- Login Screen -->
-    <string name="login_google_failed">Connexion Google échouée</string>
-    <string name="login_daily_joy_logo">Flip Logo</string>
-    <string name="login_start_day_with_joy">Commencez votre journée avec joie</string>
-    <string name="login_daily_happiness">Votre dose de bonheur quotidienne</string>
-    <string name="login_terms_and_conditions">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité</string>
-    <string name="login_google_logo">Google Logo</string>
-    <string name="login_continue_with_google">Continuer avec Google</string>
-
-    <!-- Onboarding Welcome Step -->
-    <string name="onboarding_welcome_emoji" translatable="false">🎉</string>
-    <string name="onboarding_welcome_title">Bienvenue dans Daily Joy !</string>
-    <string name="onboarding_welcome_subtitle">Configurons ensemble votre expérience pour profiter pleinement de vos plaisirs quotidiens.</string>
-    <string name="onboarding_welcome_feature1_emoji" translatable="false">📝</string>
-    <string name="onboarding_welcome_feature1_text">Personnalisez votre nom</string>
-    <string name="onboarding_welcome_feature2_emoji" translatable="false">✨</string>
-    <string name="onboarding_welcome_feature2_text">Choisissez vos plaisirs préférés</string>
-    <string name="onboarding_welcome_feature3_emoji" translatable="false">🔔</string>
-    <string name="onboarding_welcome_feature3_text">Configurez vos rappels</string>
-
-    <!-- Onboarding Username Step -->
-    <string name="onboarding_username_title">Comment voulez-vous qu\'on vous appelle ?</string>
-    <string name="onboarding_username_subtitle">Ce nom sera utilisé pour personnaliser votre expérience.</string>
-    <string name="onboarding_username_label">Votre prénom</string>
-    <string name="onboarding_username_placeholder">Ex: Marie</string>
-
-    <!-- Onboarding Pleasures Step -->
-    <string name="onboarding_pleasures_title">Sélectionnez vos plaisirs</string>
-    <string name="onboarding_pleasures_subtitle">Choisissez les activités qui vous apportent de la joie. Vous pourrez modifier cette liste plus tard.</string>
-
-    <!-- Onboarding Notification Step -->
-    <string name="onboarding_notification_title">Configurez vos rappels</string>
-    <string name="onboarding_notification_subtitle">Recevez une notification quotidienne pour découvrir votre plaisir du jour.</string>
-    <string name="onboarding_notification_daily_reminder">Rappel quotidien</string>
-    <string name="onboarding_notification_daily_reminder_subtitle">Ne manquez aucun plaisir</string>
-    <string name="onboarding_notification_reminder_time">Heure du rappel</string>
-
-
-
-    <!-- New strings -->
-    <string name="settings_back">Retour</string>
-    <string name="settings_theme_title">Thème</string>
-    <string name="settings_terms_conditions">Conditions d\'utilisation</string>
-    <string name="settings_app_version">Version de l\'application</string>
-    <string name="settings_edit_profile">Modifier le profil</string>
-    <string name="settings_delete_account">Supprimer mon compte</string>
-
-
-    <!-- Header -->
-
-    <!-- Invitations -->
-    <string name="social_invitations_title">Invitations à compléter un plaisir</string>
-    <string name="social_invitation_from">%1$s vous invite à :</string>
-    <string name="social_accept">Accepter</string>
-    <string name="social_decline">Refuser</string>
-
-    <!-- Search -->
-    <string name="social_search_placeholder">Rechercher un ami</string>
-
-    <!-- Friend Status -->
-    <string name="social_no_pleasure_today">Pas encore de plaisir aujourd\'hui</string>
-    <string name="social_streak_days">%d jours de série</string>
-    <!-- Status badges (courts) -->
-    <string name="status_completed_short">Fait</string>
-    <string name="status_in_progress">En cours</string>
-    <!-- Status (longs pour dialog) -->
-    <string name="status_completed">Complété</string>
-
-    <!-- Friend Options Dialog -->
-    <string name="social_invite_to_pleasure">Inviter à compléter un plaisir</string>
-    <string name="social_pleasure_of_the_day">Plaisir du jour</string>
-    <string name="social_view_stats">Voir les statistiques</string>
-    <string name="social_remove_friend">Retirer des amis</string>
-    <string name="dialog_close">Fermer</string>
-
-    <!-- Empty State -->
-    <string name="social_empty_title">Aucun ami pour le moment</string>
-    <string name="social_empty_subtitle">Commencez à ajouter des amis pour partager vos plaisirs quotidiens ensemble</string>
-
-    <!-- Error Messages -->
-    <string name="social_error_load_friends">Impossible de charger vos amis</string>
-    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
-
-    <!-- Success Messages -->
-
-    <!-- Accessibility -->
-
-    <string name="social_friend_requests">Demandes d\'amis</string>
-    <string name="social_add_friend_title">Ajouter un ami</string>
-    <string name="social_add_friend">Ajouter</string>
-    <string name="social_add_friend_placeholder">Nom d\'utilisateur</string>
-    <string name="social_received_requests">Demandes reçues</string>
-    <string name="social_sent_requests">Demandes envoyées</string>
-    <string name="social_wants_to_add_you">Veut vous ajouter</string>
-    <string name="social_request_pending">En attente</string>
-    <string name="social_cancel">Annuler</string>
-    <string name="social_no_requests">Aucune demande en cours</string>
-    <string name="social_no_requests_subtitle">Ajoutez des amis pour partager vos plaisirs ensemble !</string>
-
-    <!-- Navigation Header -->
-    <string name="history_previous_week">Semaine précédente</string>
-    <string name="history_next_week">Semaine suivante</string>
-
-    <!-- Stats Cards -->
-    <string name="history_pleasures_this_week">Plaisirs de la semaine</string>
-    <string name="history_streak_days">Jours de série</string>
-
-    <!-- Today Card -->
-    <string name="history_ready_for_joy">Prêt(e) pour votre joie du jour ?</string>
-    <string name="history_discover_button">Découvrir</string>
-
-    <!-- Locked Days -->
-    <string name="history_day_locked">Jour verrouillé</string>
-
-    <!-- Daily Flip Card -->
-    <string name="pleasure_card_back_title">Prêt pour votre moment de joie ?</string>
-    <string name="pleasure_card_back_subtitle">Touchez pour découvrir votre plaisir du jour</string>
-    <!-- Daily Flip - Dialogue de sélection de catégorie -->
+    <!-- Generic -->
+    <string name="generic_error_message">Une erreur est survenue</string>
+    <string name="retry">Réessayer</string>
 </resources>

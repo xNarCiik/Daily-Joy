@@ -2,12 +2,14 @@ package com.dms.flip.ui.settings.manage.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -125,6 +128,13 @@ fun AddPleasureBottomSheet(
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.category)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = category.icon,
+                            contentDescription = stringResource(category.label),
+                            modifier = Modifier.size(22.dp)
+                        )
+                    },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     },
@@ -141,7 +151,20 @@ fun AddPleasureBottomSheet(
                 ) {
                     PleasureCategory.entries.forEach { cat ->
                         DropdownMenuItem(
-                            text = { Text(stringResource(cat.label)) },
+                            text = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = cat.icon,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(22.dp)
+                                    )
+
+                                    Text(stringResource(cat.label))
+                                }
+                            },
                             onClick = {
                                 onCategoryChange(cat)
                                 expanded = false

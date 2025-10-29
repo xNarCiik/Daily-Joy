@@ -67,7 +67,7 @@ fun CategoryChip(
         ) {
             Icon(
                 imageVector = category.icon,
-                contentDescription = null,
+                contentDescription = stringResource(category.label),
                 modifier = Modifier.size(12.dp),
                 tint = category.iconTint
             )
