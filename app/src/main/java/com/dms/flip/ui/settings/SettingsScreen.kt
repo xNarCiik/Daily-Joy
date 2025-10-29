@@ -240,7 +240,7 @@ fun SettingsScreen(
                     ) {
                         SettingsClickableItem(
                             icon = Icons.Outlined.Policy,
-                            title = stringResource(R.string.settings_privacy_policy),
+                            title = stringResource(R.string.privacy_policy),
                             onClick = {
                                 val intent = Intent(
                                     Intent.ACTION_VIEW,
@@ -254,7 +254,7 @@ fun SettingsScreen(
 
                         SettingsClickableItem(
                             icon = Icons.Outlined.Gavel,
-                            title = stringResource(R.string.settings_terms_conditions),
+                            title = stringResource(R.string.terms_of_use),
                             onClick = { /* TODO: Navigate to terms */ }
                         )
 

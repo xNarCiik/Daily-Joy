@@ -77,7 +77,10 @@ fun NavGraph(
         composable<RootRoute> {
             when (rootNavigationState) {
                 RootNavigationState.NotAuthenticated -> {
-                    LoginScreen()
+                    LoginScreen(
+                        navigateToTerms = {},
+                        navigateToPolicy = {}
+                    )// TODO
                 }
 
                 RootNavigationState.AuthenticatedButNotOnboarded -> {

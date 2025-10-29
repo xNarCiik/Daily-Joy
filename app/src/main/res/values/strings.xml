@@ -11,7 +11,9 @@
     <string name="login_daily_joy_logo">Flip Logo</string>
     <string name="login_start_day_with_joy">Commencez votre journée avec joie</string>
     <string name="login_daily_happiness">Votre dose de bonheur quotidienne</string>
-    <string name="login_terms_and_conditions">En continuant, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité</string>
+    <string name="login_terms_and_conditions">En continuant, vous acceptez nos %1$s et notre %2$s.</string>
+    <string name="terms_of_use">Conditions d\'utilisation</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
     <string name="login_google_logo">Google Logo</string>
     <string name="login_continue_with_google">Continuer avec Google</string>
 
@@ -109,12 +111,10 @@
     <string name="settings_reminder_time_title">Heure du rappel</string>
     <string name="settings_about_title">À Propos</string>
     <string name="settings_rate_app">Noter l\'application</string>
-    <string name="settings_privacy_policy">Politique de confidentialité</string>
     <string name="privacy_policy_url" translatable="false">https://privacy-policy-url.com</string>
     <string name="settings_sign_out">Se déconnecter</string>
     <string name="settings_back">Retour</string>
     <string name="settings_theme_title">Thème</string>
-    <string name="settings_terms_conditions">Conditions d\'utilisation</string>
     <string name="settings_app_version">Version de l\'application</string>
     <string name="settings_edit_profile">Modifier le profil</string>
     <string name="settings_delete_account">Supprimer mon compte</string>

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -39,7 +40,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
@@ -56,7 +56,11 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Co
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateToTerms: () -> Unit,
+    navigateToPolicy: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -119,7 +123,9 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                             )
                         }
                     }
-                }
+                },
+                navigateToTerms = navigateToTerms,
+                navigateToPolicy = navigateToPolicy
             )
 
             AnimatedVisibility(
@@ -136,7 +142,9 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 @Composable
 private fun LoginContent(
     isLoading: Boolean,
-    onGoogleSignInClick: () -> Unit
+    onGoogleSignInClick: () -> Unit,
+    navigateToTerms: () -> Unit,
+    navigateToPolicy: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -196,7 +204,10 @@ private fun LoginContent(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            TermsAndConditionsText()
+            TermsAndConditionsText(
+                navigateToTerms = navigateToTerms,
+                navigateToPolicy = navigateToPolicy
+            )
         }
     }
 }
@@ -272,46 +283,77 @@ private fun GoogleSignInButton(
 }
 
 @Composable
-private fun TermsAndConditionsText(modifier: Modifier = Modifier) {
+private fun TermsAndConditionsText(
+    modifier: Modifier = Modifier,
+    navigateToTerms: () -> Unit,
+    navigateToPolicy: () -> Unit
+) {
     val baseColor = MaterialTheme.colorScheme.onSurfaceVariant
     val linkColor = MaterialTheme.colorScheme.primary
 
+    val termsOfUse = stringResource(id = R.string.terms_of_use)
+    val privacyPolicy = stringResource(id = R.string.privacy_policy)
+
     val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = baseColor)) {
-            append("En continuant, vous acceptez nos ")
-        }
-        withStyle(
-            style = SpanStyle(
-                color = linkColor,
-                fontWeight = FontWeight.Medium
+        val fullText = stringResource(id = R.string.login_terms_and_conditions, termsOfUse, privacyPolicy)
+        val termsIndex = fullText.indexOf(termsOfUse)
+        val policyIndex = fullText.indexOf(privacyPolicy)
+
+        append(fullText)
+
+        if (termsIndex != -1) {
+            addStyle(
+                style = SpanStyle(
+                    color = linkColor,
+                    fontWeight = FontWeight.Medium
+                ),
+                start = termsIndex,
+                end = termsIndex + termsOfUse.length
             )
-        ) {
-            append("conditions d'utilisation")
-        }
-        withStyle(style = SpanStyle(color = baseColor)) {
-            append(" et notre ")
-        }
-        withStyle(
-            style = SpanStyle(
-                color = linkColor,
-                fontWeight = FontWeight.Medium
+            addStringAnnotation(
+                tag = "URL",
+                annotation = "TERMS",
+                start = termsIndex,
+                end = termsIndex + termsOfUse.length
             )
-        ) {
-            append("politique de confidentialité")
         }
-        withStyle(style = SpanStyle(color = baseColor)) {
-            append(".")
+
+        if (policyIndex != -1) {
+            addStyle(
+                style = SpanStyle(
+                    color = linkColor,
+                    fontWeight = FontWeight.Medium
+                ),
+                start = policyIndex,
+                end = policyIndex + privacyPolicy.length
+            )
+            addStringAnnotation(
+                tag = "URL",
+                annotation = "POLICY",
+                start = policyIndex,
+                end = policyIndex + privacyPolicy.length
+            )
         }
     }
 
-    Text(
+    ClickableText(
         text = annotatedString,
         style = MaterialTheme.typography.bodySmall.copy(
             fontSize = 12.sp,
-            lineHeight = 18.sp
+            lineHeight = 18.sp,
+            textAlign = TextAlign.Center,
+            color = baseColor
         ),
-        textAlign = TextAlign.Center,
-        modifier = modifier.padding(horizontal = 16.dp)
+        modifier = modifier.padding(horizontal = 16.dp),
+        onClick = { offset ->
+            annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                .firstOrNull()?.let {
+                    when (it.item) {
+                        "TERMS" -> navigateToTerms()
+                        "POLICY" -> navigateToPolicy()
+                    }
+                }
+        }
     )
 }
 
@@ -320,7 +362,10 @@ private fun TermsAndConditionsText(modifier: Modifier = Modifier) {
 private fun LoginScreenPreview() {
     FlipTheme {
         Surface {
-            LoginScreen()
+            LoginScreen(
+                navigateToTerms = {},
+                navigateToPolicy = {}
+            )
         }
     }
 }
