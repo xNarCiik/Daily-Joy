@@ -1,67 +1,89 @@
 package com.dms.flip.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.dms.flip.R
 
-private val poppinsFamily = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_medium, FontWeight.Medium),
-    Font(R.font.poppins_semibold, FontWeight.SemiBold)
+val plusJakartaSansFamily = FontFamily(
+    Font(R.font.plus_jakarta_sans_regular, FontWeight.Normal),
+    Font(R.font.plus_jakarta_sans_medium, FontWeight.Medium),
+    Font(R.font.plus_jakarta_sans_semibold, FontWeight.SemiBold),
+    Font(R.font.plus_jakarta_sans_bold, FontWeight.Bold)
 )
 
-val defaultTypography = Typography()
-
 val AppTypography = Typography(
-    displayLarge = defaultTypography.displayLarge.copy(fontFamily = poppinsFamily),
-    displayMedium = defaultTypography.displayMedium.copy(fontFamily = poppinsFamily),
-    displaySmall = defaultTypography.displaySmall.copy(fontFamily = poppinsFamily),
-
-    headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = poppinsFamily),
-    headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = poppinsFamily),
-    headlineSmall = defaultTypography.headlineSmall.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.SemiBold
+    // ex: Lettre initiale dans grand avatar
+    headlineLarge = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 48.sp,
+        lineHeight = 56.sp
     ),
-
-    titleLarge = defaultTypography.titleLarge.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.SemiBold
+    // ex: "Bravo !", "Amis", "Réglages"
+    headlineMedium = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 28.sp,
+        lineHeight = 36.sp
     ),
-    titleMedium = defaultTypography.titleMedium.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium
+    // ex: "Votre plaisir du jour"
+    headlineSmall = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        lineHeight = 32.sp
     ),
-    titleSmall = defaultTypography.titleSmall.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium
+    // ex: "Observer les nuages"
+    titleLarge = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+        lineHeight = 28.sp
     ),
-
-    bodyLarge = defaultTypography.bodyLarge.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Normal
+    // ex: "Aya Nakamura", "Elodie Dubois"
+    titleMedium = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp
     ),
-    bodyMedium = defaultTypography.bodyMedium.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Normal
+    // ex: "Prenez un moment pour vous..."
+    bodyLarge = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp
     ),
-    bodySmall = defaultTypography.bodySmall.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Normal
+    // ex: "aya.nakamura@email.com", "Savourer un café chaud"
+    bodyMedium = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
     ),
-
-    labelLarge = defaultTypography.labelLarge.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium
+    // ex: Emails secondaires, sous-titres
+    bodySmall = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 16.sp
     ),
-    labelMedium = defaultTypography.labelMedium.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium
+    // ex: "Pleine Conscience", "À demain !"
+    labelLarge = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
     ),
-    labelSmall = defaultTypography.labelSmall.copy(
-        fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium
+    // ex: Labels de la Bottom Nav Bar
+    labelMedium = TextStyle(
+        fontFamily = plusJakartaSansFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 16.sp
     )
 )

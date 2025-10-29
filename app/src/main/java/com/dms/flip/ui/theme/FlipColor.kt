@@ -4,10 +4,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val DarkPrimary = Color(0xFFD0BCFF) // Le violet/mauve du FAB et de la nav
-val DarkOnPrimary = Color(0xFF381E72)
-val DarkPrimaryContainer = Color(0xFF4F378A) // Le tag "Pleine Conscience"
-val DarkOnPrimaryContainer = Color(0xFFEADDFF)
+// ========== DARK THEME COLORS (Basé sur le HTML de la maquette) ==========
+
+val DarkPrimary = Color(0xFFA8C7FA) // Blue accent (#a8c7fa) - CORRIGÉ depuis violet
+val DarkOnPrimary = Color(0xFF00315C) // Bleu très foncé pour texte sur primary
+val DarkPrimaryContainer = Color(0xFF004A9B) // hsl(215, 89%, 35%) converti - Bleu foncé container
+val DarkOnPrimaryContainer = Color(0xFFD4E3FF) // #d4e3ff - Texte sur primary container
 
 val DarkSecondary = Color(0xFF67DFFF) // Le cyan/bleu du bouton "À demain"
 val DarkOnSecondary = Color(0xFF00363D)
@@ -19,16 +21,16 @@ val DarkOnTertiary = Color(0xFF003823)
 val DarkTertiaryContainer = Color(0xFF005235)
 val DarkOnTertiaryContainer = Color(0xFF83FAAE)
 
-val DarkError = Color(0xFFFFB4AB)
-val DarkOnError = Color(0xFF690005)
+val DarkError = Color(0xFFF2B8B5) // #f2b8b5 - CORRIGÉ depuis #FFB4AB
+val DarkOnError = Color(0xFF601410) // #601410
 
-val DarkBackground = Color(0xFF1B1B1F) // Fond de l'app (très sombre)
-val DarkOnBackground = Color(0xFFE5E1E6) // Texte principal (blanc cassé)
-val DarkSurface = Color(0xFF2A292E) // Fond des cartes (ex: "Elodie Dubois")
-val DarkOnSurface = Color(0xFFE5E1E6) // Texte sur les cartes
-val DarkSurfaceVariant = Color(0xFF3B3A40) // Fond plus clair (ex: carte "Aya Nakamura")
-val DarkOnSurfaceVariant = Color(0xFFCAC4D0) // Texte secondaire (ex: "Hors ligne")
-val DarkOutline = Color(0xFF938F99) // Bordures subtiles
+val DarkBackground = Color(0xFF1C1B1F) // #1c1b1f - Fond de l'app
+val DarkOnBackground = Color(0xFFE6E1E5) // #e6e1e5 - CORRIGÉ depuis #E5E1E6
+val DarkSurface = Color(0xFF2A292D) // #2a292d - CORRIGÉ depuis #2A292E - Fond des cartes
+val DarkOnSurface = Color(0xFFE6E1E5) // #e6e1e5 - Texte sur les cartes
+val DarkSurfaceVariant = Color(0xFF3B3A40) // #3B3A40 - Fond plus clair
+val DarkOnSurfaceVariant = Color(0xFFCAC4D0) // #cac4d0 - Texte secondaire
+val DarkOutline = Color(0xFF938F99) // #938f99 - Bordures subtiles
 
 val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
@@ -54,13 +56,13 @@ val DarkColorScheme = darkColorScheme(
     outline = DarkOutline
 )
 
-// 2. Thème Clair (Light Mode) - Généré à partir du Dark
-// Tu peux le personnaliser davantage avec le M3 Theme Builder
+// ========== LIGHT THEME COLORS ==========
+// TODO: À ajuster plus tard si nécessaire pour le mode clair
 
-val LightPrimary = Color(0xFF6750A4)
+val LightPrimary = Color(0xFF2B6CB0) // Bleu moyen pour le light mode
 val LightOnPrimary = Color(0xFFFFFFFF)
-val LightPrimaryContainer = Color(0xFFEADDFF)
-val LightOnPrimaryContainer = Color(0xFF22005D)
+val LightPrimaryContainer = Color(0xFFD4E3FF)
+val LightOnPrimaryContainer = Color(0xFF001B3D)
 
 val LightSecondary = Color(0xFF006874)
 val LightOnSecondary = Color(0xFFFFFFFF)
@@ -75,9 +77,9 @@ val LightOnTertiaryContainer = Color(0xFF002111)
 val LightError = Color(0xFFB3261E)
 val LightOnError = Color(0xFFFFFFFF)
 
-val LightBackground = Color(0xFFFEFBFF) // Fond clair
+val LightBackground = Color(0xFFF6F7F8) // #f6f7f8 du HTML
 val LightOnBackground = Color(0xFF1B1B1F)
-val LightSurface = Color(0xFFF3EDF7) // Fond des cartes claires
+val LightSurface = Color(0xFFFAFAFA) // Fond des cartes claires
 val LightOnSurface = Color(0xFF1B1B1F)
 val LightSurfaceVariant = Color(0xFFE7E0EC) // Fond plus clair
 val LightOnSurfaceVariant = Color(0xFF49454E)

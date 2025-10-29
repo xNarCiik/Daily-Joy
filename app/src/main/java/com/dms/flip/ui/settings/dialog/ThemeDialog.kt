@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DarkMode
@@ -43,12 +43,13 @@ fun ThemeDialog(
         title = {
             Text(
                 text = stringResource(R.string.settings_theme_dialog_title),
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Theme.entries.forEach { theme ->
                     ThemeOption(
@@ -61,7 +62,11 @@ fun ThemeDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.dialog_close))
+                Text(
+                    text = stringResource(R.string.dialog_close),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     )
@@ -77,11 +82,11 @@ private fun ThemeOption(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = onClick)
             .background(
                 if (isSelected) {
-                    MaterialTheme.colorScheme.primaryContainer
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
                 } else {
                     Color.Transparent
                 }
@@ -92,7 +97,8 @@ private fun ThemeOption(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = theme.getIcon(),
@@ -101,7 +107,8 @@ private fun ThemeOption(
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
-                }
+                },
+                modifier = Modifier.size(24.dp)
             )
 
             Column {
@@ -112,7 +119,8 @@ private fun ThemeOption(
                         Theme.SYSTEM -> stringResource(R.string.settings_theme_system)
                     },
                     fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = theme.getDescription(),
@@ -126,7 +134,8 @@ private fun ThemeOption(
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
             )
         }
     }

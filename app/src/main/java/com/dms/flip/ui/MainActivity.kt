@@ -12,9 +12,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -73,6 +79,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainActivityContent(useDarkTheme: Boolean, rootNavigationState: RootNavigationState) {
         FlipTheme(darkTheme = useDarkTheme) {
@@ -101,12 +108,27 @@ class MainActivity : ComponentActivity() {
 
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            /// TODO REMOVE
+                            if(currentRoute == DailyPleasureRoute::class.qualifiedName){
+                                TopAppBar(
+                                    actions = {
+                                        IconButton(onClick = { navController.navigate(SettingsRoute) }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Settings,
+                                                contentDescription = ""
+                                            )
+                                        }
+                                    },
+                                    title = {}
+                                )
+                            }
+                        },
                         bottomBar = {
                             val visible = currentRoute in listOf(
                                 DailyPleasureRoute::class.qualifiedName,
                                 WeeklyRoute::class.qualifiedName,
-                                SocialRoute::class.qualifiedName,
-                                SettingsRoute::class.qualifiedName
+                                SocialRoute::class.qualifiedName
                             )
 
                             if (visible) {

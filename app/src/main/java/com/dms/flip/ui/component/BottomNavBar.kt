@@ -16,11 +16,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,7 +39,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.flip.R
 import com.dms.flip.ui.navigation.DailyPleasureRoute
-import com.dms.flip.ui.navigation.SettingsRoute
 import com.dms.flip.ui.navigation.SocialRoute
 import com.dms.flip.ui.navigation.WeeklyRoute
 import com.dms.flip.ui.theme.FlipTheme
@@ -80,12 +77,6 @@ fun BottomNavBar(
             selectedIcon = Icons.Filled.AccountCircle,
             unselectedIcon = Icons.Outlined.AccountCircle,
             route = SocialRoute
-        ),
-        TabBarItem(
-            title = stringResource(R.string.settings_title),
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings,
-            route = SettingsRoute
         )
     )
 

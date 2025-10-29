@@ -209,4 +209,14 @@
     <string name="onboarding_notification_daily_reminder_subtitle">Ne manquez aucun plaisir</string>
     <string name="onboarding_notification_reminder_time">Heure du rappel</string>
 
+
+
+    <!-- New strings -->
+    <string name="settings_back">Retour</string>
+    <string name="settings_theme_title">Thème</string>
+    <string name="settings_terms_conditions">Conditions d\'utilisation</string>
+    <string name="settings_app_version">Version de l\'application</string>
+    <string name="settings_edit_profile">Modifier le profil</string>
+    <string name="settings_delete_account">Supprimer mon compte</string>
+
 </resources>
