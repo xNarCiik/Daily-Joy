@@ -61,16 +61,16 @@ fun BottomNavBar(
 
     val tabBarItems = listOf(
         TabBarItem(
-            title = stringResource(R.string.daily_pleasure_title),
-            selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Outlined.Favorite,
-            route = DailyPleasureRoute
-        ),
-        TabBarItem(
-            title = stringResource(R.string.weekly_title),
+            title = stringResource(R.string.history_title),
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
             route = WeeklyRoute
+        ),
+        TabBarItem(
+            title = stringResource(R.string.my_flip_title),
+            selectedIcon = Icons.Filled.Favorite,
+            unselectedIcon = Icons.Outlined.Favorite,
+            route = DailyPleasureRoute
         ),
         TabBarItem(
             title = stringResource(R.string.social_title),

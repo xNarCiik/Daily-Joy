@@ -66,8 +66,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.flip.R
 import com.dms.flip.domain.model.Theme
 import com.dms.flip.domain.model.UserInfo
-import com.dms.flip.ui.settings.dialog.NotificationPermissionDialog
-import com.dms.flip.ui.settings.dialog.ThemeDialog
+import com.dms.flip.ui.settings.component.dialog.NotificationPermissionDialog
+import com.dms.flip.ui.settings.component.dialog.ThemeDialog
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 

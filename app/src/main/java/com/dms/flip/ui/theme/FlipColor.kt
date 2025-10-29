@@ -30,6 +30,7 @@ val DarkSurface = Color(0xFF2A292D) // #2a292d - CORRIGÉ depuis #2A292E - Fond 
 val DarkOnSurface = Color(0xFFE6E1E5) // #e6e1e5 - Texte sur les cartes
 val DarkSurfaceVariant = Color(0xFF3B3A40) // #3B3A40 - Fond plus clair
 val DarkOnSurfaceVariant = Color(0xFFCAC4D0) // #cac4d0 - Texte secondaire
+val DarkSurfaceContainer = Color(0xFF3B3A3F) // #3B3A3F - Container cards (entre background et surface)
 val DarkOutline = Color(0xFF938F99) // #938f99 - Bordures subtiles
 
 val DarkColorScheme = darkColorScheme(
@@ -53,6 +54,7 @@ val DarkColorScheme = darkColorScheme(
     onSurface = DarkOnSurface,
     surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = DarkOnSurfaceVariant,
+    surfaceContainer = DarkSurfaceContainer,
     outline = DarkOutline
 )
 
@@ -83,6 +85,7 @@ val LightSurface = Color(0xFFFAFAFA) // Fond des cartes claires
 val LightOnSurface = Color(0xFF1B1B1F)
 val LightSurfaceVariant = Color(0xFFE7E0EC) // Fond plus clair
 val LightOnSurfaceVariant = Color(0xFF49454E)
+val LightSurfaceContainer = Color(0xFFECECEC) // Container cards light
 val LightOutline = Color(0xFF79747E)
 
 val LightColorScheme = lightColorScheme(
@@ -106,5 +109,6 @@ val LightColorScheme = lightColorScheme(
     onSurface = LightOnSurface,
     surfaceVariant = LightSurfaceVariant,
     onSurfaceVariant = LightOnSurfaceVariant,
+    surfaceContainer = LightSurfaceContainer,
     outline = LightOutline
 )

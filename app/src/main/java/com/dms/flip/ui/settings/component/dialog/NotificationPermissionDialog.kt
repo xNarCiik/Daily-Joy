@@ -1,4 +1,4 @@
-package com.dms.flip.ui.settings.dialog
+package com.dms.flip.ui.settings.component.dialog
 
 import android.content.Context
 import android.content.Intent

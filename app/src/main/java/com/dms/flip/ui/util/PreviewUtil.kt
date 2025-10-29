@@ -48,11 +48,6 @@ val previewFriends = listOf(
         id = "3",
         username = "Alisson",
         streak = 2,
-        currentPleasure = FriendPleasure(
-            title = "Faire une bouffe XXL",
-            status = PleasureStatus.IN_PROGRESS,
-            category = PleasureCategory.FOOD
-        ),
         avatarUrl = "https://instagram.frns1-1.fna.fbcdn.net/v/t51.2885-19/525189438_18151745419389304_842152024012543561_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.frns1-1.fna.fbcdn.net&_nc_cat=104&_nc_oc=Q6cZ2QFRY4LwbkbPH1o2W_p0VzGJt1r0vqzYerN_8TsB4PXSNpx5USn-CoIxZ1gM7IioBtJ-XR43LminTMMTURd8ztCY&_nc_ohc=QIvDbT-G2_AQ7kNvwHp6Fza&_nc_gid=fd7JWnTKgdG63EvhrVlNCg&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfdOjvelQI3znS_i6a2z-T1CdP3VPhs26YuZQegoLjO3RA&oe=6905BBC5&_nc_sid=7a9f4b"
     ),
     Friend(

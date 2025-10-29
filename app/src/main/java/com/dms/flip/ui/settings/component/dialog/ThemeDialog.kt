@@ -1,4 +1,4 @@
-package com.dms.flip.ui.settings.dialog
+package com.dms.flip.ui.settings.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

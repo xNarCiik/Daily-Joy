@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Flip</string>
     <!-- Bottom Nav Bar -->
-    <string name="daily_pleasure_title">Mon Plaisir</string>
-    <string name="weekly_title">Cette semaine</string>
-    <string name="social_title">Vos amis</string>
+    <string name="history_title">Historique</string>
+    <string name="my_flip_title">Mon Flip</string>
     <string name="settings_title">Paramètres</string>
 
     <!-- DailyPleasure Setup State -->
@@ -41,7 +40,6 @@
     <string name="label_to_discover">À découvrir</string>
     <string name="status_done_checked">Fait ✓</string>
     <string name="status_missed">Raté</string>
-    <string name="status_in_progress">En cours</string>
 
     <!-- Settings Screen -->
     <string name="settings_total_pleasures">Plaisirs</string>
@@ -72,7 +70,6 @@
     <string name="settings_theme_light">Clair</string>
     <string name="settings_theme_dark">Sombre</string>
     <string name="settings_theme_system">Système</string>
-    <string name="dialog_close">Fermer</string>
     <string name="settings_theme_light_description">Thème clair pour le jour</string>
     <string name="settings_theme_dark_description">Thème sombre pour la nuit</string>
     <string name="settings_theme_system_description">Suit les paramètres du système</string>
@@ -145,17 +142,14 @@
     <string name="social_add_friend_label">Ajouter un ami</string>
     <string name="social_username_placeholder">Nom d\'utilisateur</string>
     <string name="social_add_friend_button">Ajouter</string>
-    <string name="no_pleasure_today">Aucun plaisir aujourd\'hui</string>
     <string name="social_empty_state_title">Aucun ami pour le moment</string>
     <string name="social_empty_state_subtitle">Ajoutez votre premier ami pour voir ses progrès !</string>
     <string name="social_friend_options_title">Options</string>
     <string name="social_days_streak">jours de série</string>
-    <string name="status_completed">Terminé</string>
     <string name="status_pending">En attente</string>
     <string name="social_friend_options_view_stats">Voir les statistiques</string>
     <string name="social_friend_options_remove">Retirer cet ami</string>
     <string name="social_error_username_empty">Le nom d\'utilisateur ne peut pas être vide</string>
-    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
     <string name="social_error_remove_friend">Erreur lors de la suppression</string>
 
     <!-- Notification -->
@@ -218,5 +212,77 @@
     <string name="settings_app_version">Version de l\'application</string>
     <string name="settings_edit_profile">Modifier le profil</string>
     <string name="settings_delete_account">Supprimer mon compte</string>
+
+
+    <!-- Header -->
+    <string name="social_title">Amis</string>
+    <string name="social_search">Rechercher</string>
+    <string name="social_pending_requests">Demandes d\'amis en attente</string>
+
+    <!-- Invitations -->
+    <string name="social_invitations_title">Invitations à compléter un plaisir</string>
+    <string name="social_invitations_subtitle">vous invite à : %1$s</string>
+    <string name="social_invites_you_to">vous invite à :</string>
+    <string name="social_accept">Accepter</string>
+    <string name="social_decline">Refuser</string>
+
+    <!-- Search -->
+    <string name="social_search_placeholder">Rechercher un ami</string>
+    <string name="action_clear">Effacer</string>
+
+    <!-- Friend Status -->
+    <string name="social_online">En ligne</string>
+    <string name="social_offline">Hors ligne</string>
+    <string name="social_streak_days">%d jours de série</string>
+    <string name="status_completed">Complété</string>
+    <string name="status_in_progress">En cours</string>
+    <string name="no_pleasure_today">Aucun plaisir aujourd\'hui</string>
+
+    <!-- Friend Options Dialog -->
+    <string name="social_invite_to_pleasure">Inviter à compléter un plaisir</string>
+    <string name="social_pleasure_of_the_day">Plaisir du jour</string>
+    <string name="social_view_stats">Voir les statistiques</string>
+    <string name="social_remove_friend">Retirer des amis</string>
+    <string name="dialog_close">Fermer</string>
+
+    <!-- Empty State -->
+    <string name="social_empty_title">Aucun ami pour le moment</string>
+    <string name="social_empty_subtitle">Commencez à ajouter des amis pour partager vos plaisirs quotidiens ensemble</string>
+
+    <!-- Error Messages -->
+    <string name="social_error_load_friends">Impossible de charger vos amis</string>
+    <string name="social_error_add_friend">Impossible d\'ajouter cet ami</string>
+    <string name="social_error_user_not_found">Utilisateur non trouvé</string>
+    <string name="social_error_already_friend">Vous êtes déjà amis</string>
+    <string name="social_error_pending_request">Demande d\'ami déjà envoyée</string>
+    <string name="social_error_search_failed">Erreur lors de la recherche</string>
+    <string name="social_error_accept_invitation">Impossible d\'accepter l\'invitation</string>
+    <string name="social_error_decline_invitation">Impossible de refuser l\'invitation</string>
+    <string name="social_error_accept_request">Impossible d\'accepter la demande</string>
+    <string name="social_error_decline_request">Impossible de refuser la demande</string>
+
+    <!-- Success Messages -->
+    <string name="social_friend_added">Ami ajouté avec succès</string>
+    <string name="social_friend_removed">Ami retiré</string>
+    <string name="social_invitation_accepted">Invitation acceptée</string>
+    <string name="social_invitation_declined">Invitation refusée</string>
+    <string name="social_request_sent">Demande d\'ami envoyée</string>
+
+    <!-- Accessibility -->
+    <string name="social_friend_avatar">Photo de profil de %s</string>
+    <string name="social_online_indicator">En ligne</string>
+    <string name="social_status_indicator">Indicateur de statut</string>
+
+    <string name="social_friend_requests">Demandes d\'amis</string>
+    <string name="social_add_friend_title">Ajouter un ami</string>
+    <string name="social_add_friend">Ajouter</string>
+    <string name="social_add_friend_placeholder">Nom d\'utilisateur</string>
+    <string name="social_received_requests">Demandes reçues</string>
+    <string name="social_sent_requests">Demandes envoyées</string>
+    <string name="social_wants_to_add_you">Veut vous ajouter</string>
+    <string name="social_request_pending">En attente</string>
+    <string name="social_cancel">Annuler</string>
+    <string name="social_no_requests">Aucune demande en cours</string>
+    <string name="social_no_requests_subtitle">Ajoutez des amis pour partager vos plaisirs ensemble !</string>
 
 </resources>
