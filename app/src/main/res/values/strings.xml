@@ -197,4 +197,6 @@
     <!-- Generic -->
     <string name="generic_error_message">Une erreur est survenue</string>
     <string name="retry">Réessayer</string>
+    <string name="next">Suivant"</string>
+    <string name="finish">Terminer"</string>
 </resources>

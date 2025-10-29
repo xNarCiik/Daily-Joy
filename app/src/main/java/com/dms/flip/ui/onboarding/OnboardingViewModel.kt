@@ -25,15 +25,44 @@ class OnboardingViewModel @Inject constructor(
         loadPleasures()
     }
 
+    fun onStartClick() = viewModelScope.launch {
+        _uiState.value = _uiState.value.copy(showWelcome = false)
+    }
+
     fun nextStep() {
         viewModelScope.launch {
             val currentStep = _uiState.value.currentStep
+
+            // Logique spéciale pour NOTIFICATIONS
+            if (currentStep == OnboardingStep.NOTIFICATIONS) {
+                if (!_uiState.value.notificationEnabled && !_uiState.value.hasShownNotificationWarning) {
+                    // Afficher l'alerte une seule fois
+                    _uiState.value = _uiState.value.copy(
+                        showNotificationSkipWarning = true,
+                        hasShownNotificationWarning = true
+                    )
+                    return@launch
+                } else if (_uiState.value.notificationEnabled) {
+                    // Si activé, aller vers REMINDER_TIME
+                    _uiState.value = _uiState.value.copy(currentStep = OnboardingStep.REMINDER_TIME)
+                    return@launch
+                } else {
+                    // Si refusé et warning déjà montré, terminer directement
+                    completeOnboarding()
+                    return@launch
+                }
+            }
+
+            // Navigation normale pour les autres steps
             val nextStep = when (currentStep) {
-                OnboardingStep.WELCOME -> OnboardingStep.USERNAME
                 OnboardingStep.USERNAME -> OnboardingStep.PLEASURES
                 OnboardingStep.PLEASURES -> OnboardingStep.NOTIFICATIONS
-                OnboardingStep.NOTIFICATIONS -> OnboardingStep.COMPLETE
-                OnboardingStep.COMPLETE -> OnboardingStep.COMPLETE
+                OnboardingStep.NOTIFICATIONS -> OnboardingStep.NOTIFICATIONS // Géré au-dessus
+                OnboardingStep.REMINDER_TIME -> {
+                    // Terminer après REMINDER_TIME
+                    completeOnboarding()
+                    return@launch
+                }
             }
             _uiState.value = _uiState.value.copy(currentStep = nextStep)
         }
@@ -43,11 +72,10 @@ class OnboardingViewModel @Inject constructor(
         viewModelScope.launch {
             val currentStep = _uiState.value.currentStep
             val previousStep = when (currentStep) {
-                OnboardingStep.WELCOME -> OnboardingStep.WELCOME
-                OnboardingStep.USERNAME -> OnboardingStep.WELCOME
+                OnboardingStep.USERNAME -> OnboardingStep.USERNAME
                 OnboardingStep.PLEASURES -> OnboardingStep.USERNAME
                 OnboardingStep.NOTIFICATIONS -> OnboardingStep.PLEASURES
-                OnboardingStep.COMPLETE -> OnboardingStep.NOTIFICATIONS
+                OnboardingStep.REMINDER_TIME -> OnboardingStep.NOTIFICATIONS
             }
             _uiState.value = _uiState.value.copy(currentStep = previousStep)
         }
@@ -73,10 +101,14 @@ class OnboardingViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(reminderTime = time)
     }
 
+    fun dismissNotificationWarning() {
+        _uiState.value = _uiState.value.copy(showNotificationSkipWarning = false)
+    }
+
     fun completeOnboarding() = viewModelScope.launch {
-        // TODO: Sauvegarder les préférences (pleasures, notifications)
+        // TODO: Sauvegarder les préférences (pleasures, notifications, reminderTime)
         saveOnboardingStatusUseCase(username = _uiState.value.username)
-        _uiState.value = _uiState.value.copy(username = _uiState.value.username, currentStep = OnboardingStep.COMPLETE)
+        _uiState.value = _uiState.value.copy(completed = true)
     }
 
     private fun loadPleasures() = viewModelScope.launch {

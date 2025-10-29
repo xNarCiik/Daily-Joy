@@ -1,5 +1,8 @@
 package com.dms.flip.ui.onboarding.component.step
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,9 +24,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,9 +46,7 @@ fun PleasuresStep(
     onTogglePleasure: (Pleasure) -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -51,7 +55,9 @@ fun PleasuresStep(
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -61,14 +67,16 @@ fun PleasuresStep(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         LazyColumn(
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(
                 items = pleasures,
@@ -88,27 +96,55 @@ private fun PleasureOnboardingItem(
     pleasure: Pleasure,
     onToggle: () -> Unit
 ) {
+    val borderColor by animateColorAsState(
+        targetValue = if (pleasure.isEnabled) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            Color.Transparent
+        },
+        label = "borderColor"
+    )
+
+    val backgroundBrush = if (pleasure.isEnabled) {
+        Brush.horizontalGradient(
+            colors = listOf(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f),
+                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.10f)
+            )
+        )
+    } else {
+        Brush.horizontalGradient(
+            colors = listOf(
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f),
+                MaterialTheme.colorScheme.surface
+            )
+        )
+    }
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 2.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(16.dp)
+            ),
         colors = CardDefaults.cardColors(
-            containerColor = if (pleasure.isEnabled) {
-                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-            }
+            containerColor = Color.Transparent
         ),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .clip(RoundedCornerShape(16.dp))
+                .background(backgroundBrush)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Switch(
                 checked = pleasure.isEnabled,
                 onCheckedChange = { onToggle() },
-                modifier = Modifier.scale(0.85f),
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
                     checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
@@ -119,25 +155,19 @@ private fun PleasureOnboardingItem(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text(
-                    text = pleasure.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = if (pleasure.isEnabled) {
-                        MaterialTheme.colorScheme.onSurface
-                    } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    }
-                )
-
-                CategoryChip(category = pleasure.category)
-            }
+            Text(
+                text = pleasure.title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = if (pleasure.isEnabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                },
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }

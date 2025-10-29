@@ -46,6 +46,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.flip.R
+import com.dms.flip.ui.component.FlipLogo
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.theme.flipGradients
@@ -161,7 +162,6 @@ private fun LoginContent(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center
         ) {
-            // Logo unique de l'app
             FlipLogo()
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -209,29 +209,6 @@ private fun LoginContent(
                 navigateToPolicy = navigateToPolicy
             )
         }
-    }
-}
-
-@Composable
-private fun FlipLogo(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(140.dp)
-            .background(
-                brush = flipGradients().logo,
-                shape = MaterialTheme.shapes.large
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "F",
-            style = MaterialTheme.typography.displayLarge.copy(
-                fontSize = 72.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = (-2).sp
-            ),
-            color = MaterialTheme.colorScheme.surface
-        )
     }
 }
 
