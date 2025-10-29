@@ -285,5 +285,20 @@
     <string name="social_no_requests">Aucune demande en cours</string>
     <string name="social_no_requests_subtitle">Ajoutez des amis pour partager vos plaisirs ensemble !</string>
 
+    <!-- Navigation Header -->
+    <string name="history_this_week">Cette Semaine</string>
+    <string name="history_previous_week">Semaine précédente</string>
+    <string name="history_next_week">Semaine suivante</string>
+
+    <!-- Stats Cards -->
+    <string name="history_pleasures_this_week">Plaisirs de la semaine</string>
+    <string name="history_streak_days">Jours de série</string>
+
+    <!-- Today Card -->
+    <string name="history_ready_for_joy">Prêt(e) pour votre joie du jour ?</string>
+    <string name="history_discover_button">Découvrir</string>
+
+    <!-- Locked Days -->
+    <string name="history_day_locked">Jour verrouillé</string>
 
 </resources>

@@ -3,7 +3,6 @@ package com.dms.flip.ui.history.component
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,13 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.DoNotDisturb
-import androidx.compose.material.icons.filled.HighlightOff
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,23 +42,22 @@ import androidx.compose.ui.unit.dp
 import com.dms.flip.R
 import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.ui.history.WeeklyDay
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
-import com.dms.flip.ui.history.WeeklyDay
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
-private enum class ItemStatus {
-    COMPLETED,
-    MISSED,
-    IN_PROGRESS,
-    EMPTY
+private enum class DayType {
+    COMPLETED,    // Jour complété
+    TODAY,        // Jour actuel (à découvrir)
+    LOCKED        // Jour futur verrouillé
 }
 
 @Composable
-private fun getItemStatus(item: PleasureHistoryEntry?): ItemStatus {
+private fun getDayType(item: PleasureHistoryEntry?): DayType {
     if (item == null) {
-        return ItemStatus.EMPTY
+        return DayType.LOCKED
     }
 
     val calendar = Calendar.getInstance()
@@ -74,9 +71,9 @@ private fun getItemStatus(item: PleasureHistoryEntry?): ItemStatus {
     val isToday = today == itemDay && year == itemYear
 
     return when {
-        item.isCompleted -> ItemStatus.COMPLETED
-        !isToday -> ItemStatus.MISSED
-        else -> ItemStatus.IN_PROGRESS
+        item.isCompleted -> DayType.COMPLETED
+        isToday -> DayType.TODAY
+        else -> DayType.LOCKED
     }
 }
 
@@ -84,16 +81,21 @@ private fun getItemStatus(item: PleasureHistoryEntry?): ItemStatus {
 fun WeeklyPleasuresList(
     modifier: Modifier = Modifier,
     items: List<WeeklyDay>,
-    onCardClicked: (PleasureHistoryEntry) -> Unit
+    onCardClicked: (PleasureHistoryEntry) -> Unit,
+    onDiscoverTodayClicked: () -> Unit = {} // TODO: Lier au ViewModel
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(0.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items.forEachIndexed { index, weeklyDay ->
-            AnimatedPleasureItem(
+            val dayType = getDayType(weeklyDay.historyEntry)
+
+            AnimatedDayItem(
                 weeklyDay = weeklyDay,
+                dayType = dayType,
                 onClick = { weeklyDay.historyEntry?.let(onCardClicked) },
+                onDiscoverClick = onDiscoverTodayClicked,
                 animationDelay = index * 50
             )
         }
@@ -101,9 +103,11 @@ fun WeeklyPleasuresList(
 }
 
 @Composable
-private fun AnimatedPleasureItem(
+private fun AnimatedDayItem(
     weeklyDay: WeeklyDay,
+    dayType: DayType,
     onClick: () -> Unit,
+    onDiscoverClick: () -> Unit,
     animationDelay: Int = 0
 ) {
     var isVisible by remember { mutableStateOf(false) }
@@ -119,193 +123,249 @@ private fun AnimatedPleasureItem(
         label = "alpha"
     )
 
-    val status = getItemStatus(weeklyDay.historyEntry)
+    Box(modifier = Modifier.alpha(alpha)) {
+        when (dayType) {
+            DayType.COMPLETED -> CompletedDayCard(
+                weeklyDay = weeklyDay,
+                onClick = onClick
+            )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(alpha)
-            .clickable(enabled = weeklyDay.historyEntry != null) { onClick() }
-            .padding(vertical = 12.dp)
+            DayType.TODAY -> TodayCard(
+                weeklyDay = weeklyDay,
+                onDiscoverClick = onDiscoverClick
+            )
+
+            DayType.LOCKED -> LockedDayCard(
+                dayName = weeklyDay.dayName
+            )
+        }
+    }
+}
+
+// ========== COMPLETED DAY CARD ==========
+@Composable
+private fun CompletedDayCard(
+    weeklyDay: WeeklyDay,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            StatusIcon(status = status)
-
-            Spacer(modifier = Modifier.width(14.dp))
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f)
             ) {
+                // Icône verte avec fond
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFA5D6A7)), // Success green from mockup
+                    contentAlignment = Alignment.Center
+                ) {
+                    // TODO: Récupérer l'icône de la catégorie depuis weeklyDay.historyEntry?.category
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = weeklyDay.dayName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = weeklyDay.historyEntry?.pleasureTitle ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            // Checkmark vert
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = stringResource(R.string.status_done_checked),
+                tint = Color(0xFFA5D6A7),
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    }
+}
+
+// ========== TODAY CARD (Grande Card avec Gradient) ==========
+@Composable
+private fun TodayCard(
+    weeklyDay: WeeklyDay,
+    onDiscoverClick: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
+        shadowElevation = 4.dp,
+        tonalElevation = 2.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // ========== OPTION A : Grande Image Gradient (Fidèle à la maquette) ==========
+            // Décommente cette section si tu veux la version full-height avec image
+            /*
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(2f) // Aspect ratio 2:1 comme la maquette
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFFB39DDB), // Lavender
+                                Color(0xFF90CAF9)  // Light blue
+                            )
+                        )
+                    )
+            )
+            */
+
+            // ========== OPTION B : Petit Gradient (Compromis Compact) ✅ ACTIF ==========
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp) // Height réduit pour être moins imposant
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFFB39DDB), // Lavender
+                                Color(0xFF90CAF9)  // Light blue
+                            )
+                        )
+                    )
+            )
+
+            // Contenu textuel + bouton
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = weeklyDay.dayName,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = weeklyDay.dayName,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                        text = stringResource(R.string.history_ready_for_joy),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f)
                     )
-                    if (weeklyDay.historyEntry != null) {
-                        StatusBadge(status = status)
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = onDiscoverClick,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        shape = RoundedCornerShape(50.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.history_discover_button),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                }
+            }
+        }
+    }
+}
+
+// ========== LOCKED DAY CARD ==========
+@Composable
+private fun LockedDayCard(
+    dayName: String
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(0.6f)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Icône calendrier grisée
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color.White.copy(alpha = 0.05f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
 
                 Text(
-                    text = weeklyDay.historyEntry?.pleasureTitle
-                        ?: stringResource(R.string.social_no_pleasure_today),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (weeklyDay.historyEntry != null) FontWeight.Medium else FontWeight.Normal,
-                    color = if (weeklyDay.historyEntry != null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outline,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    text = dayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.outline
                 )
             }
-        }
 
-        // Divider avec gradient
-        Spacer(modifier = Modifier.height(12.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 56.dp)
-                .height(1.dp)
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
-                        )
-                    )
-                )
-        )
-    }
-}
-
-@Composable
-private fun StatusIcon(
-    status: ItemStatus,
-    modifier: Modifier = Modifier
-) {
-    val (icon, tint, backgroundColor) = when (status) {
-        ItemStatus.COMPLETED -> Triple(
-            Icons.Default.CheckCircle,
-            MaterialTheme.colorScheme.primary,
-            Brush.radialGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                )
-            )
-        )
-
-        ItemStatus.MISSED -> Triple(
-            Icons.Default.HighlightOff,
-            MaterialTheme.colorScheme.error,
-            Brush.radialGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.error.copy(alpha = 0.2f),
-                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
-                )
-            )
-        )
-
-        ItemStatus.IN_PROGRESS -> Triple(
-            Icons.Default.CheckCircle,
-            MaterialTheme.colorScheme.secondary,
-            Brush.radialGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
-                    MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
-                )
-            )
-        )
-
-        ItemStatus.EMPTY -> Triple(
-            Icons.Default.DoNotDisturb,
-            MaterialTheme.colorScheme.outline,
-            Brush.radialGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                    MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
-                )
-            )
-        )
-    }
-
-    Box(
-        modifier = modifier
-            .size(42.dp)
-            .clip(CircleShape)
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        if (status == ItemStatus.IN_PROGRESS) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                strokeWidth = 2.5.dp,
-                color = tint
-            )
-        } else {
             Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = icon,
-                contentDescription = null,
-                tint = tint
+                imageVector = Icons.Default.Lock,
+                contentDescription = stringResource(R.string.history_day_locked),
+                tint = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.size(24.dp)
             )
         }
     }
 }
 
-@Composable
-private fun StatusBadge(
-    status: ItemStatus,
-    modifier: Modifier = Modifier
-) {
-    val (textRes, color, backgroundColor) = when (status) {
-        ItemStatus.COMPLETED -> Triple(
-            R.string.status_done_checked,
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
-        )
-
-        ItemStatus.MISSED -> Triple(
-            R.string.status_missed,
-            MaterialTheme.colorScheme.error,
-            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
-        )
-
-        ItemStatus.IN_PROGRESS -> Triple(
-            R.string.status_in_progress,
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
-        )
-
-        ItemStatus.EMPTY -> Triple(null, Color.Transparent, Color.Transparent)
-    }
-
-    if (textRes != null) {
-        Box(
-            modifier = modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(backgroundColor)
-                .padding(horizontal = 10.dp, vertical = 4.dp)
-        ) {
-            Text(
-                text = stringResource(textRes),
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = color
-            )
-        }
-    }
-}
-
+// ========== PREVIEWS ==========
 @LightDarkPreview
 @Composable
 private fun WeeklyPleasuresListPreview() {
@@ -323,41 +383,45 @@ private fun WeeklyPleasuresListPreview() {
                             dayIdentifier = "",
                             dateDrawn = System.currentTimeMillis() - 86400000 * 2,
                             isCompleted = true,
-                            pleasureTitle = "Aller au cinéma voir un bon film",
-                            pleasureDescription = "Et si on se faisait un bon film ?",
-                            category = PleasureCategory.ENTERTAINMENT
-                        )
-                    ),
-                    WeeklyDay(
-                        dayName = "Mardi",
-                        historyEntry = null
-                    ),
-                    WeeklyDay(
-                        dayName = "Mercredi",
-                        historyEntry = PleasureHistoryEntry(
-                            id = 2,
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis() - 86400000,
-                            isCompleted = false,
-                            pleasureTitle = "Faire une bouffe XXL entre amis",
-                            pleasureDescription = "Ce soir, on mange sans regrêt",
+                            pleasureTitle = "Savourer un café chaud",
+                            pleasureDescription = "Prendre le temps de déguster",
                             category = PleasureCategory.FOOD
                         )
                     ),
                     WeeklyDay(
-                        dayName = "Jeudi",
+                        dayName = "Mardi",
+                        historyEntry = PleasureHistoryEntry(
+                            id = 2,
+                            dayIdentifier = "",
+                            dateDrawn = System.currentTimeMillis() - 86400000,
+                            isCompleted = true,
+                            pleasureTitle = "Lire quelques pages d'un livre",
+                            pleasureDescription = "Se plonger dans une histoire",
+                            category = PleasureCategory.LEARNING
+                        )
+                    ),
+                    WeeklyDay(
+                        dayName = "Mercredi",
                         historyEntry = PleasureHistoryEntry(
                             id = 3,
                             dayIdentifier = "",
                             dateDrawn = System.currentTimeMillis(),
                             isCompleted = false,
-                            pleasureTitle = "Promenade dans le parc",
-                            pleasureDescription = "Profiter de la nature",
-                            category = PleasureCategory.OUTDOOR
+                            pleasureTitle = "Plaisir du jour",
+                            pleasureDescription = "",
+                            category = PleasureCategory.ALL
                         )
-                    )
+                    ),
+                    WeeklyDay(dayName = "Jeudi", historyEntry = null),
+                    WeeklyDay(dayName = "Vendredi", historyEntry = null),
+                    WeeklyDay(dayName = "Samedi", historyEntry = null),
+                    WeeklyDay(dayName = "Dimanche", historyEntry = null)
                 )
-                WeeklyPleasuresList(items = previewItems, onCardClicked = { })
+                WeeklyPleasuresList(
+                    items = previewItems,
+                    onCardClicked = {},
+                    onDiscoverTodayClicked = {}
+                )
             }
         }
     }

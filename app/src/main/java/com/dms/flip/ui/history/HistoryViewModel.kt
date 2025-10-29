@@ -79,6 +79,10 @@ class HistoryViewModel @Inject constructor(
             is HistoryEvent.OnBottomSheetDismissed -> {
                 _uiState.update { it.copy(selectedHistoryEntry = null) }
             }
+
+            else -> {
+                // TODO: À implémenter dans le ViewModel) ==========
+            }
         }
     }
 }
