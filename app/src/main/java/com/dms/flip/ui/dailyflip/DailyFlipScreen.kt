@@ -30,7 +30,7 @@ import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.component.TopBarIcon
 import com.dms.flip.ui.dailyflip.component.DailyFlipCompletedContent
 import com.dms.flip.ui.dailyflip.component.DailyFlipContent
-import com.dms.flip.ui.dailyflip.component.FlipSetupContent
+import com.dms.flip.ui.dailyflip.component.DailyFlipSetupContent
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 import com.dms.flip.ui.util.previewDailyPleasure
@@ -95,7 +95,7 @@ fun DailyFlipScreen(
             ) {
                 when (screenState) {
                     is DailyFlipScreenState.SetupRequired -> {
-                        FlipSetupContent(
+                        DailyFlipSetupContent(
                             currentPleasureCount = screenState.pleasureCount,
                             requiredCount = MinimumPleasuresCount,
                             onConfigureClick = navigateToManagePleasures

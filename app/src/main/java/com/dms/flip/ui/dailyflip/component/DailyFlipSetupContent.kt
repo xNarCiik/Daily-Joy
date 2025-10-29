@@ -13,13 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,37 +38,28 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dms.flip.R
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
-import kotlinx.coroutines.delay
 
 @Composable
-fun DailyFlipCompletedContent(
+fun DailyFlipSetupContent(
     modifier: Modifier = Modifier,
-    onShareClick: () -> Unit = {}
+    currentPleasureCount: Int,
+    requiredCount: Int = 7,
+    onConfigureClick: () -> Unit
 ) {
-    var hasPlayed by rememberSaveable { mutableStateOf(false) }
-    var playAnimation by remember { mutableStateOf(false) }
+    var playAnimation by rememberSaveable { mutableStateOf(true) }
 
-    val checkmarkComposition by rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(resId = R.raw.checkmark)
+    val plantComposition by rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(resId = R.raw.plant_growing)
     )
-
-    val checkmarkProgress by animateLottieCompositionAsState(
-        composition = checkmarkComposition,
+    val plantProgress by animateLottieCompositionAsState(
+        composition = plantComposition,
         isPlaying = playAnimation,
-        restartOnPlay = false,
-        speed = 0.6f
+        restartOnPlay = false
     )
 
-    LaunchedEffect(Unit) {
-        if (!hasPlayed) {
-            delay(400)
-            playAnimation = true
-        }
-    }
-
-    LaunchedEffect(checkmarkProgress) {
-        if (checkmarkProgress == 1f) {
-            hasPlayed = true
+    LaunchedEffect(plantProgress) {
+        if (plantProgress == 1f) {
+            playAnimation = false
         }
     }
 
@@ -101,17 +86,17 @@ fun DailyFlipCompletedContent(
             ) {
                 LottieAnimation(
                     modifier = Modifier.size(140.dp),
-                    composition = checkmarkComposition,
-                    progress = { if (hasPlayed) 1f else checkmarkProgress }
+                    composition = plantComposition,
+                    progress = { if (playAnimation) plantProgress else 1.0f }
                 )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = stringResource(R.string.daily_flip_completed_title),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.ExtraBold,
+                text = stringResource(R.string.setup_title),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
@@ -119,69 +104,42 @@ fun DailyFlipCompletedContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.daily_flip_completed_subtitle),
+                text = stringResource(R.string.setup_subtitle, requiredCount),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Card(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CalendarToday,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.daily_flip_completed_next_draw),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = stringResource(R.string.daily_flip_completed_next_draw_subtitle),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.daily_flip_setup_pleasures_configured),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "$currentPleasureCount / $requiredCount",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
 
         Button(
-            onClick = onShareClick,
+            onClick = onConfigureClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -196,7 +154,7 @@ fun DailyFlipCompletedContent(
             )
         ) {
             Text(
-                text = stringResource(R.string.daily_flip_completed_share_button),
+                text = stringResource(R.string.setup_button_text),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -206,10 +164,14 @@ fun DailyFlipCompletedContent(
 
 @LightDarkPreview
 @Composable
-private fun DailyFlipCompletedContentPreview() {
+private fun FlipSetupContentPreview() {
     FlipTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            DailyFlipCompletedContent()
+            DailyFlipSetupContent(
+                currentPleasureCount = 3,
+                requiredCount = 7,
+                onConfigureClick = {}
+            )
         }
     }
 }

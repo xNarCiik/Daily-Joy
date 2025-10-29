@@ -213,7 +213,7 @@ private fun CompletedDayCard(
     }
 }
 
-// ========== TODAY CARD (Grande Card avec Gradient) ==========
+// ========== TODAY CARD ==========
 @Composable
 private fun TodayCard(
     weeklyDay: WeeklyDay,

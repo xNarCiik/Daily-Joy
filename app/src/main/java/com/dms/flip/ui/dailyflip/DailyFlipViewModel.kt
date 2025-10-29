@@ -1,7 +1,9 @@
 package com.dms.flip.ui.dailyflip
 
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dms.flip.R
 import com.dms.flip.data.database.mapper.toPleasure
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.domain.usecase.GetRandomDailyMessageUseCase
@@ -21,6 +23,7 @@ const val MinimumPleasuresCount = 7
 
 @HiltViewModel
 class DailyFlipViewModel @Inject constructor(
+    private val resources: Resources,
     private val getRandomDailyMessageUseCase: GetRandomDailyMessageUseCase,
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val getRandomPleasureUseCase: GetRandomPleasureUseCase,
@@ -53,8 +56,7 @@ class DailyFlipViewModel @Inject constructor(
                     DailyFlipUiState(
                         screenState = DailyFlipScreenState.SetupRequired(
                             pleasureCount = enabledPleasures
-                        ),
-                        headerMessage = "À deux pas de l'aventure..."
+                        )
                     )
                 return@launch
             }
@@ -113,7 +115,7 @@ class DailyFlipViewModel @Inject constructor(
         if (currentState is DailyFlipScreenState.Ready) {
             _uiState.value = _uiState.value.copy(
                 screenState = currentState.copy(isCardFlipped = true),
-                headerMessage = "Votre plaisir du jour"
+                headerMessage = resources.getString(R.string.your_flip_daily)
             )
         }
     }

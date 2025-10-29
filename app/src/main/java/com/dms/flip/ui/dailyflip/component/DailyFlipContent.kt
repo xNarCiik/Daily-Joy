@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -380,7 +379,7 @@ fun swipeHintAnimation(): Pair<Float, Float> {
 }
 
 /**
- * Sélecteur de catégorie (ouvre le dialogue)
+ * Sélecteur de catégorie
  */
 @Composable
 private fun CategorySelector(
@@ -403,13 +402,16 @@ private fun CategorySelector(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Text(
-                text = "Catégorie : ${stringResource(selectedCategory.label)}",
+                text = stringResource(
+                    R.string.category_selector_title,
+                    stringResource(selectedCategory.label)
+                ),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Medium
             )
             Icon(
-                imageVector = Icons.Default.ExpandMore,
-                contentDescription = "Choisir une catégorie",
+                imageVector = selectedCategory.icon,
+                contentDescription = stringResource(R.string.choose_category),
                 modifier = Modifier.size(18.dp)
             )
         }
