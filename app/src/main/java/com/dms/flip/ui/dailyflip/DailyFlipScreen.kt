@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +27,7 @@ import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.component.FlipTopBar
 import com.dms.flip.ui.component.LoadingState
+import com.dms.flip.ui.component.TopBarIcon
 import com.dms.flip.ui.dailyflip.component.DailyFlipCompletedContent
 import com.dms.flip.ui.dailyflip.component.DailyFlipContent
 import com.dms.flip.ui.dailyflip.component.FlipSetupContent
@@ -59,7 +62,11 @@ fun DailyFlipScreen(
     Column(modifier = modifier.fillMaxSize()) {
         FlipTopBar(
             title = stringResource(R.string.app_name),
-            onSettingsClick = navigateToSettings
+            endTopBarIcon = TopBarIcon(
+                icon = Icons.Default.Settings,
+                contentDescription = stringResource(R.string.settings_title),
+                onClick = navigateToSettings
+            )
         )
 
         Column(

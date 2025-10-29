@@ -39,7 +39,6 @@ import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -66,6 +65,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.flip.R
 import com.dms.flip.domain.model.Theme
 import com.dms.flip.domain.model.UserInfo
+import com.dms.flip.ui.component.FlipTopBar
+import com.dms.flip.ui.component.TopBarIcon
 import com.dms.flip.ui.settings.component.dialog.NotificationPermissionDialog
 import com.dms.flip.ui.settings.component.dialog.ThemeDialog
 import com.dms.flip.ui.theme.FlipTheme
@@ -127,7 +128,14 @@ fun SettingsScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         // Top App Bar
-        SettingsTopBar(onNavigateBack = onNavigateBack)
+        FlipTopBar(
+            title = stringResource(R.string.settings_title),
+            startTopBarIcon = TopBarIcon(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.settings_back),
+                onClick = onNavigateBack
+            )
+        )
 
         // Content
         LazyColumn(
@@ -325,37 +333,6 @@ fun SettingsScreen(
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
         }
-    }
-}
-
-@Composable
-private fun SettingsTopBar(
-    onNavigateBack: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            onClick = onNavigateBack,
-            modifier = Modifier.size(48.dp)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.settings_back),
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(28.dp)
-            )
-        }
-        Text(
-            text = stringResource(R.string.settings_title),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 8.dp)
-        )
     }
 }
 

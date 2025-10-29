@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -100,8 +101,8 @@ fun SocialScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Header
-            SocialHeader(
+            // Top Bar // TODO Refacto FlipTopBar
+            SocialTopBar(
                 pendingRequestsCount = uiState.pendingRequests.size,
                 onRequestsClick = {
                     scope.launch { drawerState.open() }
@@ -175,40 +176,68 @@ fun SocialScreen(
 }
 
 @Composable
-private fun SocialHeader(
+private fun SocialTopBar(
     pendingRequestsCount: Int,
     onRequestsClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        Text(
-            text = stringResource(R.string.social_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Bouton Start
+            IconButton(
+                onClick = { },
+                modifier = Modifier.size(48.dp),
+                enabled = false
+            ) {
+            }
 
-        // Friend requests button with badge
-        if (pendingRequestsCount > 0) {
-            BadgedBox(
-                badge = {
-                    Badge(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
+            // Titre centré
+            Text(
+                text = "Mes amis",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+
+            // Friend requests button with badge
+            if (pendingRequestsCount > 0) {
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        ) {
+                            Text(
+                                text = pendingRequestsCount.toString(),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                ) {
+                    IconButton(
+                        onClick = onRequestsClick,
+                        modifier = Modifier.size(48.dp)
                     ) {
-                        Text(
-                            text = pendingRequestsCount.toString(),
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold
+                        Icon(
+                            imageVector = Icons.Default.PersonAdd,
+                            contentDescription = stringResource(R.string.social_friend_requests),
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
-            ) {
+            } else {
                 IconButton(
                     onClick = onRequestsClick,
                     modifier = Modifier.size(48.dp)
@@ -220,18 +249,6 @@ private fun SocialHeader(
                         modifier = Modifier.size(24.dp)
                     )
                 }
-            }
-        } else {
-            IconButton(
-                onClick = onRequestsClick,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PersonAdd,
-                    contentDescription = stringResource(R.string.social_friend_requests),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(24.dp)
-                )
             }
         }
     }
@@ -372,7 +389,10 @@ private fun PleasureInvitationCard(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.social_invitation_from, invitation.friendName),
+                    text = stringResource(
+                        R.string.social_invitation_from,
+                        invitation.friendName
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
