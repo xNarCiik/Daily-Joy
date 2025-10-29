@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -34,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -89,7 +86,6 @@ fun SocialScreen(
                     onEvent(SocialEvent.OnDeclineFriendRequest(request))
                 },
                 onCancelRequest = { request ->
-                    // TODO REMOVE ?
                     // TODO: Lier au ViewModel (viewModel.onCancelFriendRequest(request))
                 },
                 onClose = {
@@ -114,7 +110,12 @@ fun SocialScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 32.dp),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 0.dp,
+                    bottom = 32.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Invitations section
@@ -321,12 +322,12 @@ private fun PleasureInvitationCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
+            .clip(MaterialTheme.shapes.large)
+            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f))
+            .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Friend info with avatar
+        // Friend info with avatar and pleasure
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -335,7 +336,7 @@ private fun PleasureInvitationCard(
             if (invitation.friendAvatarUrl != null) {
                 GlideImage(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(56.dp)
                         .clip(CircleShape),
                     model = invitation.friendAvatarUrl,
                     contentScale = ContentScale.Crop,
@@ -344,7 +345,7 @@ private fun PleasureInvitationCard(
             } else {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(56.dp)
                         .clip(CircleShape)
                         .background(
                             Brush.linearGradient(
@@ -358,60 +359,57 @@ private fun PleasureInvitationCard(
                 ) {
                     Text(
                         text = invitation.friendName.firstOrNull()?.uppercase() ?: "?",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
 
-            // Text content
+            // Text content with pleasure
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = invitation.friendName,
-                    style = MaterialTheme.typography.titleMedium,
+                    text = stringResource(R.string.social_invitation_from, invitation.friendName),
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Text(
-                    text = stringResource(
-                        R.string.social_invitations_subtitle,
-                        invitation.pleasureTitle
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    // Category icon with tint
+                    Icon(
+                        imageVector = invitation.pleasureCategory.icon,
+                        contentDescription = null,
+                        tint = invitation.pleasureCategory.iconTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+
+                    Text(
+                        text = invitation.pleasureTitle,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 
         // Action buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextButton(
-                onClick = onDecline,
-                shape = MaterialTheme.shapes.extraLarge,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.social_decline),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
             Button(
                 onClick = onAccept,
+                modifier = Modifier.weight(1f),
                 shape = MaterialTheme.shapes.extraLarge,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -422,6 +420,22 @@ private fun PleasureInvitationCard(
                     text = stringResource(R.string.social_accept),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Button(
+                onClick = onDecline,
+                modifier = Modifier.weight(1f),
+                shape = MaterialTheme.shapes.extraLarge,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.social_decline),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
@@ -513,21 +527,21 @@ private fun FriendItemCard(
                 overflow = TextOverflow.Ellipsis
             )
 
-            // Current pleasure with emoji and category icon
+            // Current pleasure with emoji and category icon WITH TINT
             friend.currentPleasure?.let { pleasure ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    // Category icon
+                    // Category icon with its specific tint
                     Icon(
                         imageVector = pleasure.category.icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        tint = pleasure.category.iconTint,
                         modifier = Modifier.size(16.dp)
                     )
 
-                    // Pleasure text with emoji
+                    // Pleasure text
                     Text(
                         text = pleasure.title,
                         style = MaterialTheme.typography.bodyMedium,
@@ -540,7 +554,7 @@ private fun FriendItemCard(
             } ?: run {
                 // No pleasure yet
                 Text(
-                    text = stringResource(R.string.no_pleasure_today),
+                    text = stringResource(R.string.social_no_pleasure_today),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                     fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
@@ -584,7 +598,7 @@ private fun PleasureStatusBadge(status: PleasureStatus) {
 
         Text(
             text = if (isCompleted)
-                stringResource(R.string.status_completed)
+                stringResource(R.string.status_completed_short)
             else
                 stringResource(R.string.status_in_progress),
             style = MaterialTheme.typography.labelSmall,
@@ -655,8 +669,7 @@ private fun SocialScreenPreview() {
                             friendName = "Léa Martin",
                             friendAvatarUrl = null,
                             pleasureCategory = PleasureCategory.SOCIAL,
-                            pleasureTitle = "Un café au soleil ce matin",
-                            pleasureEmoji = "☕"
+                            pleasureTitle = "Un café au soleil ce matin"
                         )
                     ),
                     pendingRequests = emptyList(),

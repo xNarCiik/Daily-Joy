@@ -40,8 +40,7 @@ class SocialViewModel @Inject constructor(
                     friendName = "Léa Martin",
                     friendAvatarUrl = null,
                     pleasureCategory = PleasureCategory.SOCIAL,
-                    pleasureTitle = "Un café au soleil ce matin",
-                    pleasureEmoji = "☕"
+                    pleasureTitle = "Un café au soleil ce matin"
                 )
             ),
             pendingRequests = listOf(

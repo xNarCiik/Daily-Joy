@@ -36,7 +36,6 @@ data class PleasureInvitation(
     val friendName: String,
     val friendAvatarUrl: String?,
     val pleasureTitle: String,
-    val pleasureEmoji: String,
     val pleasureCategory: PleasureCategory
 )
 

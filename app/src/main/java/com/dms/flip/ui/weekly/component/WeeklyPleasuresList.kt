@@ -158,7 +158,7 @@ private fun AnimatedPleasureItem(
 
                 Text(
                     text = weeklyDay.historyEntry?.pleasureTitle
-                        ?: stringResource(R.string.no_pleasure_today),
+                        ?: stringResource(R.string.social_no_pleasure_today),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = if (weeklyDay.historyEntry != null) FontWeight.Medium else FontWeight.Normal,
                     color = if (weeklyDay.historyEntry != null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outline,
