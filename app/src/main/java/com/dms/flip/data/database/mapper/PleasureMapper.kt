@@ -7,9 +7,7 @@ fun PleasureEntity.toDomain() = Pleasure(
     id = id,
     title = title,
     description = description,
-    type = type,
     category = category,
-    isCustom = isCustom,
     isEnabled = isEnabled
 )
 
@@ -17,8 +15,14 @@ fun Pleasure.toEntity() = PleasureEntity(
     id = id,
     title = title,
     description = description,
-    type = type,
     category = category,
-    isCustom = isCustom,
     isEnabled = isEnabled
+)
+
+fun Pleasure.toFirestoreEntity(): Map<String, Any> = mapOf(
+    "id" to id,
+    "title" to title,
+    "description" to description,
+    "category" to category.name,
+    "isEnabled" to isEnabled
 )

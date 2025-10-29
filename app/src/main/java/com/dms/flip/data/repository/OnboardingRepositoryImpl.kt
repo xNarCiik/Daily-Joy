@@ -1,5 +1,7 @@
 package com.dms.flip.data.repository
 
+import com.dms.flip.data.database.mapper.toFirestoreEntity
+import com.dms.flip.data.model.Pleasure
 import com.dms.flip.domain.repository.onboarding.OnboardingRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,9 +31,15 @@ class OnboardingRepositoryImpl(
         awaitClose { listener.remove() }
     }
 
-    override suspend fun saveOnboardingStatus(username: String) {
+    override suspend fun saveOnboardingStatus(username: String, pleasures: List<Pleasure>) {
         val userId = firebaseAuth.currentUser?.uid ?: return
         val userDoc = firestore.collection("users").document(userId)
         userDoc.set(mapOf("username" to username, "onboarding_completed" to true)).await()
+
+        val pleasuresCollection =
+            firestore.collection("users").document(userId).collection("pleasures")
+        pleasures.forEach { pleasure ->
+            pleasuresCollection.add(pleasure.toFirestoreEntity()).await()
+        }
     }
 }

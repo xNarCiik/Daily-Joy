@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview
 import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
-import com.dms.flip.data.model.PleasureType
 import com.dms.flip.ui.social.Friend
 import com.dms.flip.ui.social.FriendPleasure
 import com.dms.flip.ui.social.PleasureStatus
@@ -17,7 +16,6 @@ val previewDailyPleasure = Pleasure(
     id = 0,
     title = "Pleasure Title",
     description = "Pleasure Description",
-    type = PleasureType.BIG,
     category = PleasureCategory.CREATIVE
 )
 

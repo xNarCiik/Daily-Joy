@@ -1,10 +1,12 @@
 package com.dms.flip.ui.onboarding
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.flip.data.model.Pleasure
 import com.dms.flip.domain.usecase.onboarding.SaveOnboardingStatusUseCase
 import com.dms.flip.domain.usecase.pleasures.GetPleasuresUseCase
+import com.dms.flip.notification.DailyReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,9 +17,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
+    application: Application,
     private val saveOnboardingStatusUseCase: SaveOnboardingStatusUseCase,
     private val getPleasuresUseCase: GetPleasuresUseCase
 ) : ViewModel() {
+    private val dailyReminderManager = DailyReminderManager(application)
+
     private val _uiState = MutableStateFlow(OnboardingUiState())
     val uiState: StateFlow<OnboardingUiState> = _uiState.asStateFlow()
 
@@ -47,7 +52,8 @@ class OnboardingViewModel @Inject constructor(
                         return@launch
                     } else if (_uiState.value.notificationEnabled) {
                         // Si activé, aller vers REMINDER_TIME
-                        _uiState.value = _uiState.value.copy(currentStep = OnboardingStep.REMINDER_TIME)
+                        _uiState.value =
+                            _uiState.value.copy(currentStep = OnboardingStep.REMINDER_TIME)
                         return@launch
                     } else {
                         // Si refusé et warning déjà montré, terminer directement
@@ -55,6 +61,7 @@ class OnboardingViewModel @Inject constructor(
                         return@launch
                     }
                 }
+
                 OnboardingStep.REMINDER_TIME -> {
                     // Terminer après REMINDER_TIME
                     completeOnboarding()
@@ -103,8 +110,20 @@ class OnboardingViewModel @Inject constructor(
     }
 
     fun completeOnboarding() = viewModelScope.launch {
-        // TODO: Sauvegarder les préférences (pleasures, notifications, reminderTime)
-        saveOnboardingStatusUseCase(username = _uiState.value.username)
+        val pleasures = _uiState.value.availablePleasures.filter { it.isEnabled }
+        val hasNotificationsEnabled = _uiState.value.notificationEnabled
+        val reminderTime = _uiState.value.reminderTime
+
+        if (hasNotificationsEnabled) {
+            dailyReminderManager.schedule(reminderTime)
+        }
+
+        saveOnboardingStatusUseCase(
+            username = _uiState.value.username,
+            pleasures = pleasures,
+            notificationEnabled = hasNotificationsEnabled,
+            reminderTime = reminderTime
+        )
         _uiState.value = _uiState.value.copy(completed = true)
     }
 

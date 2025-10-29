@@ -1,7 +1,6 @@
 package com.dms.flip.ui.settings
 
 import android.Manifest
-import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -66,6 +65,7 @@ import com.dms.flip.R
 import com.dms.flip.domain.model.Theme
 import com.dms.flip.domain.model.UserInfo
 import com.dms.flip.ui.component.FlipTopBar
+import com.dms.flip.ui.component.TimePicker
 import com.dms.flip.ui.component.TopBarIcon
 import com.dms.flip.ui.settings.component.dialog.NotificationPermissionDialog
 import com.dms.flip.ui.settings.component.dialog.ThemeDialog
@@ -109,7 +109,7 @@ fun SettingsScreen(
     }
 
     if (showTimePicker) {
-        ShowTimePicker(context, uiState.reminderTime, {
+        TimePicker(context, uiState.reminderTime, {
             onEvent(SettingsEvent.OnReminderTimeChanged(it))
         }) {
             showTimePicker = false
@@ -587,32 +587,6 @@ private fun SettingsDivider() {
             .height(1.dp)
             .background(Color.White.copy(alpha = 0.1f))
     )
-}
-
-@Composable
-private fun ShowTimePicker(
-    context: Context,
-    currentTime: String,
-    onTimeSelected: (String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val timeParts = currentTime.split(":")
-    val hour = timeParts.getOrNull(0)?.toIntOrNull() ?: 8
-    val minute = timeParts.getOrNull(1)?.toIntOrNull() ?: 0
-
-    TimePickerDialog(
-        context,
-        { _, newHour, newMinute ->
-            val newTime = String.format("%02d:%02d", newHour, newMinute)
-            onTimeSelected(newTime)
-        },
-        hour,
-        minute,
-        true
-    ).apply {
-        setOnDismissListener { onDismiss() }
-        show()
-    }
 }
 
 private fun rateApp(context: Context) {

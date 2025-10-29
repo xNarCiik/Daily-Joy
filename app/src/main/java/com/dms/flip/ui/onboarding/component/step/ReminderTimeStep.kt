@@ -1,7 +1,5 @@
 package com.dms.flip.ui.onboarding.component.step
 
-import android.app.TimePickerDialog
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,18 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dms.flip.R
+import com.dms.flip.ui.component.TimePicker
 import com.dms.flip.ui.theme.FlipTheme
-import com.dms.flip.ui.theme.flipGradients
 import com.dms.flip.ui.util.LightDarkPreview
 
 @Composable
@@ -53,22 +47,12 @@ fun ReminderTimeStep(
 ) {
     val context = LocalContext.current
     var showTimePicker by remember { mutableStateOf(false) }
-    val gradients = flipGradients()
 
     if (showTimePicker) {
-        TimePickerDialog(
-            context,
-            { _, hour, minute ->
-                val time = String.format("%02d:%02d", hour, minute)
-                onTimeChange(time)
-                showTimePicker = false
-            },
-            reminderTime.split(":")[0].toIntOrNull() ?: 9,
-            reminderTime.split(":")[1].toIntOrNull() ?: 0,
-            true
-        ).apply {
-            setOnDismissListener { showTimePicker = false }
-            show()
+        TimePicker(context, reminderTime, {
+            onTimeChange(it)
+        }) {
+            showTimePicker = false
         }
     }
 
@@ -155,7 +139,7 @@ fun ReminderTimeStep(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val (hours, minutes) = reminderTime.split(":")
-                    
+
                     Text(
                         text = hours,
                         style = MaterialTheme.typography.displayLarge.copy(
@@ -164,7 +148,7 @@ fun ReminderTimeStep(
                         ),
                         color = MaterialTheme.colorScheme.primary
                     )
-                    
+
                     Text(
                         text = ":",
                         style = MaterialTheme.typography.displayLarge.copy(
@@ -174,7 +158,7 @@ fun ReminderTimeStep(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
-                    
+
                     Text(
                         text = minutes,
                         style = MaterialTheme.typography.displayLarge.copy(

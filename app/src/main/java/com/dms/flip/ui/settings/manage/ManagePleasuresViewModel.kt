@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
-import com.dms.flip.data.model.PleasureType
 import com.dms.flip.domain.usecase.pleasures.AddCustomPleasureUseCase
-import com.dms.flip.domain.usecase.pleasures.DeleteCustomPleasureUseCase
+import com.dms.flip.domain.usecase.pleasures.DeletePleasureUseCase
 import com.dms.flip.domain.usecase.pleasures.GetPleasuresUseCase
 import com.dms.flip.domain.usecase.pleasures.UpdatePleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +21,7 @@ class ManagePleasuresViewModel @Inject constructor(
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val updatePleasureUseCase: UpdatePleasureUseCase,
     private val addCustomPleasureUseCase: AddCustomPleasureUseCase,
-    private val deleteCustomPleasureUseCase: DeleteCustomPleasureUseCase
+    private val deletePleasureUseCase: DeletePleasureUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ManagePleasuresUiState())
@@ -145,8 +144,7 @@ class ManagePleasuresViewModel @Inject constructor(
                 addCustomPleasureUseCase(
                     title = state.newPleasureTitle.trim(),
                     description = state.newPleasureDescription.trim(),
-                    category = state.newPleasureCategory,
-                    type = PleasureType.SMALL
+                    category = state.newPleasureCategory
                 )
                 dismissBottomSheet()
             } catch (e: Exception) {
