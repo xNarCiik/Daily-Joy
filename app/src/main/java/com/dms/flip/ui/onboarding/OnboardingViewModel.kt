@@ -33,31 +33,28 @@ class OnboardingViewModel @Inject constructor(
         viewModelScope.launch {
             val currentStep = _uiState.value.currentStep
 
-            // Logique spéciale pour NOTIFICATIONS
-            if (currentStep == OnboardingStep.NOTIFICATIONS) {
-                if (!_uiState.value.notificationEnabled && !_uiState.value.hasShownNotificationWarning) {
-                    // Afficher l'alerte une seule fois
-                    _uiState.value = _uiState.value.copy(
-                        showNotificationSkipWarning = true,
-                        hasShownNotificationWarning = true
-                    )
-                    return@launch
-                } else if (_uiState.value.notificationEnabled) {
-                    // Si activé, aller vers REMINDER_TIME
-                    _uiState.value = _uiState.value.copy(currentStep = OnboardingStep.REMINDER_TIME)
-                    return@launch
-                } else {
-                    // Si refusé et warning déjà montré, terminer directement
-                    completeOnboarding()
-                    return@launch
-                }
-            }
-
             // Navigation normale pour les autres steps
             val nextStep = when (currentStep) {
                 OnboardingStep.USERNAME -> OnboardingStep.PLEASURES
                 OnboardingStep.PLEASURES -> OnboardingStep.NOTIFICATIONS
-                OnboardingStep.NOTIFICATIONS -> OnboardingStep.NOTIFICATIONS // Géré au-dessus
+                OnboardingStep.NOTIFICATIONS -> {
+                    if (!_uiState.value.notificationEnabled && !_uiState.value.hasShownNotificationWarning) {
+                        // Afficher l'alerte une seule fois
+                        _uiState.value = _uiState.value.copy(
+                            showNotificationSkipWarning = true,
+                            hasShownNotificationWarning = true
+                        )
+                        return@launch
+                    } else if (_uiState.value.notificationEnabled) {
+                        // Si activé, aller vers REMINDER_TIME
+                        _uiState.value = _uiState.value.copy(currentStep = OnboardingStep.REMINDER_TIME)
+                        return@launch
+                    } else {
+                        // Si refusé et warning déjà montré, terminer directement
+                        completeOnboarding()
+                        return@launch
+                    }
+                }
                 OnboardingStep.REMINDER_TIME -> {
                     // Terminer après REMINDER_TIME
                     completeOnboarding()
