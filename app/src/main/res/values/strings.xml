@@ -11,11 +11,7 @@
     <string name="setup_button_text">✨ Configurer mes plaisirs</string>
 
     <!-- DailyPleasure Content -->
-    <string name="daily_pleasure_choose_category">Choisir une catégorie</string>
-    <string name="pleasure_card_back_title">✨ Touchez la carte ✨</string>
-    <string name="pleasure_card_back_subtitle">pour découvrir votre plaisir</string>
     <string name="pleasure_card_id">Plaisir #%1$d</string>
-    <string name="pleasure_tap_card_text">Tape pour découvrir ton plaisir du jour ✨</string>
     <string name="pleasure_swip_card_text">Glisse vers la droite une fois le plaisir effectué 👉</string>
 
     <!-- DailyPleasure Completed Content -->
@@ -301,4 +297,19 @@
     <!-- Locked Days -->
     <string name="history_day_locked">Jour verrouillé</string>
 
+    <!-- Daily Flip Card -->
+    <string name="pleasure_card_back_title">Prêt pour votre moment de joie ?</string>
+    <string name="pleasure_card_back_subtitle">Touchez pour découvrir votre plaisir du jour</string>
+    <string name="daily_flip_favorite_button">Ajouter aux favoris</string>
+    <string name="daily_flip_share_button">Partager</string>
+    <string name="daily_flip_share_dialog_title">Partager via</string>
+    <string name="daily_flip_invite_friend">Inviter un ami à le réaliser</string>
+    <string name="daily_flip_mark_as_done">Marquer comme fait</string>
+    <string name="daily_flip_cancel">Annuler</string>
+    <string name="daily_flip_confirm">Confirmer</string>
+    <string name="pleasure_tap_card_text">Touchez la carte pour découvrir votre plaisir du jour</string>
+    <string name="pleasure_swipe_card_text">Glissez vers la droite pour valider</string>
+    <string name="flip_current_category">"Catégorie : %s</string>
+    <!-- Daily Flip - Dialogue de sélection de catégorie -->
+    <string name="daily_pleasure_choose_category">Choisir une catégorie</string>
 </resources>

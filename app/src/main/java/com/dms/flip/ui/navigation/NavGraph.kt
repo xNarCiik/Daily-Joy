@@ -16,8 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.flip.domain.model.RootNavigationState
-import com.dms.flip.ui.dailypleasure.DailyPleasureScreen
-import com.dms.flip.ui.dailypleasure.DailyPleasureViewModel
+import com.dms.flip.ui.dailyflip.DailyFlipScreen
+import com.dms.flip.ui.dailyflip.DailyFlipViewModel
 import com.dms.flip.ui.history.HistoryScreen
 import com.dms.flip.ui.history.HistoryViewModel
 import com.dms.flip.ui.login.LoginScreen
@@ -95,14 +95,15 @@ fun NavGraph(
         }
 
         composable<DailyPleasureRoute> {
-            val viewModel: DailyPleasureViewModel = hiltViewModel()
+            val viewModel: DailyFlipViewModel = hiltViewModel()
             val dailyPleasureUiState by viewModel.uiState.collectAsState()
 
-            DailyPleasureScreen(
+            DailyFlipScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = dailyPleasureUiState,
                 onEvent = viewModel::onEvent,
-                navigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) }
+                navigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
+                navigateToSettings = { navController.navigate(SettingsRoute) }
             )
         }
 

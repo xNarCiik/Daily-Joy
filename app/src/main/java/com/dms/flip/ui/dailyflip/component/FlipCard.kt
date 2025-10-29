@@ -1,5 +1,11 @@
-package com.dms.flip.ui.component
+package com.dms.flip.ui.dailyflip.component
 
+import android.content.Context
+import android.media.MediaPlayer
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -8,12 +14,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,10 +29,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,11 +70,14 @@ fun PleasureCard(
     onCardFlipped: () -> Unit,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     var isFlipped by remember { mutableStateOf(flipped) }
     var isJumping by remember { mutableStateOf(false) }
     var shouldAnimate by remember { mutableStateOf(false) }
+
+    var swipeOffset by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(flipped) {
         if (isFlipped != flipped) {
@@ -103,35 +115,36 @@ fun PleasureCard(
         finishedListener = { finalValue ->
             if (finalValue == 180f && !flipped) {
                 onCardFlipped()
+                playFlipSoundAndVibration(context)
             }
             shouldAnimate = false
         }
     )
 
     val jumpScale by animateFloatAsState(
-        targetValue = if (isJumping) 1.15f else 1f,
+        targetValue = if (isJumping) 1.05f else 1f,
         animationSpec = tween(2000, easing = { overshootEasing(t = it) }),
         label = "scaleAnimation"
     )
 
     val jumpOffset by animateFloatAsState(
-        targetValue = if (isJumping) (-8f) else 0f,
+        targetValue = if (isJumping) (-6f) else 0f,
         animationSpec = tween(2000, easing = { overshootEasing(t = it) }),
         label = "offsetAnimation"
     )
 
     Card(
         modifier = modifier
-            .width(300.dp)
-            .height(440.dp)
+            .fillMaxWidth()
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 8 * density
                 scaleX = jumpScale
                 scaleY = jumpScale
                 translationY = jumpOffset
+                translationX = swipeOffset
             },
-        shape = RoundedCornerShape(size = 32.dp),
+        shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -139,10 +152,10 @@ fun PleasureCard(
         onClick = onClick
     ) {
         if (rotation < 90f) {
-            PleasureBackCard()
+            BackCard()
         } else {
             pleasure?.let {
-                PleasureCardContent(
+                CardContent(
                     modifier = Modifier.graphicsLayer { rotationY = 180f },
                     pleasure = it
                 )
@@ -151,24 +164,60 @@ fun PleasureCard(
     }
 }
 
-private fun overshootEasing(t: Float, tension: Float = 3f) =
+private fun playFlipSoundAndVibration(context: Context) {
+    try {
+        // 📳 VIBRATION
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+            vibratorManager?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        }
+
+        vibrator?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                it.vibrate(
+                    VibrationEffect.createOneShot(
+                        150,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                it.vibrate(150)
+            }
+        }
+
+
+        val mediaPlayer = MediaPlayer.create(context, R.raw.done)
+        mediaPlayer?.apply {
+            setOnCompletionListener { release() }
+            start()
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+private fun overshootEasing(t: Float, tension: Float = 2.5f) =
     (t - 1).let { it * it * ((tension + 1) * it + tension) + 1 }
 
 @Composable
-private fun PleasureBackCard() {
+private fun BackCard() {
     val gradients = flipGradients()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradients.primary)
+            .background(gradients.card)
     ) {
-        // Decorative pattern - Plus subtil
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            repeat(4) {
+            repeat(5) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -176,9 +225,9 @@ private fun PleasureBackCard() {
                     repeat(4) {
                         Box(
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(28.dp)
                                 .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.08f))
+                                .background(Color.White.copy(alpha = 0.06f))
                         )
                     }
                 }
@@ -188,11 +237,10 @@ private fun PleasureBackCard() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .padding(horizontal = 32.dp, vertical = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Icon avec effet lumineux amélioré
             Box(
                 modifier = Modifier
                     .size(140.dp)
@@ -200,8 +248,8 @@ private fun PleasureBackCard() {
                     .background(
                         Brush.radialGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.25f),
-                                Color.White.copy(alpha = 0.12f),
+                                Color.White.copy(alpha = 0.3f),
+                                Color.White.copy(alpha = 0.15f),
                                 Color.Transparent
                             )
                         )
@@ -212,198 +260,101 @@ private fun PleasureBackCard() {
                     modifier = Modifier
                         .size(90.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.15f)),
+                        .background(Color.White.copy(alpha = 0.18f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.TouchApp,
                         contentDescription = null,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(44.dp),
                         tint = Color.White
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
             Text(
                 text = stringResource(R.string.pleasure_card_back_title),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center,
-                lineHeight = 32.sp
+                lineHeight = 34.sp
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(R.string.pleasure_card_back_subtitle),
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.92f),
+                color = Color.White.copy(alpha = 0.95f),
                 textAlign = TextAlign.Center,
                 lineHeight = 24.sp
             )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Animation dots - Plus élégants
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                repeat(3) { index ->
-                    Box(
-                        modifier = Modifier
-                            .size(if (index == 1) 10.dp else 8.dp)
-                            .clip(CircleShape)
-                            .background(
-                                Color.White.copy(
-                                    alpha = if (index == 1) 0.8f else 0.5f
-                                )
-                            )
-                    )
-                }
-            }
         }
     }
 }
 
 @Composable
-private fun PleasureCardContent(modifier: Modifier = Modifier, pleasure: Pleasure) {
+private fun CardContent(
+    modifier: Modifier = Modifier,
+    pleasure: Pleasure
+) {
     val gradients = flipGradients()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(gradients.card)
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                .background(gradients.card)
+        )
+
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Category chip
-            CategoryChip(category = pleasure.category)
-
-            Spacer(Modifier.height(20.dp))
-
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
-                                Color.Transparent
-                            )
-                        )
-                    ),
-                contentAlignment = Alignment.Center
+            Surface(
+                shape = RoundedCornerShape(50.dp),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.60f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "🎉",
-                        fontSize = 36.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Title
-            Text(
-                text = pleasure.title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                lineHeight = 30.sp,
-                maxLines = 3
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Description
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                text = pleasure.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                lineHeight = 22.sp,
-                maxLines = 4
-            )
-
-            Spacer(Modifier.weight(1f))
-
-            // Footer section
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.padding(bottom = 4.dp)
-            ) {
-                // Progress dots
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    repeat(5) { index ->
-                        Box(
-                            modifier = Modifier
-                                .size(if (index == 2) 10.dp else 7.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (index == 2) {
-                                        Brush.radialGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.primary,
-                                                MaterialTheme.colorScheme.secondary
-                                            )
-                                        )
-                                    } else {
-                                        Brush.radialGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                                            )
-                                        )
-                                    }
-                                )
-                        )
-                    }
-                }
-
                 Text(
-                    text = stringResource(R.string.pleasure_card_id, pleasure.id),
+                    text = stringResource(pleasure.category.label),
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    letterSpacing = 1.5.sp
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                 )
             }
+
+            Text(
+                text = pleasure.title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                lineHeight = 32.sp
+            )
+
+            Text(
+                text = pleasure.description,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 24.sp
+            )
         }
     }
 }
 
 @LightDarkPreview
 @Composable
-private fun NotFlippedPleasureCardPreview() {
+private fun NotFlippedCardPreview() {
     FlipTheme {
         Box(
             modifier = Modifier
@@ -425,7 +376,7 @@ private fun NotFlippedPleasureCardPreview() {
 
 @LightDarkPreview
 @Composable
-private fun FlippedPleasureCardPreview() {
+private fun FlippedCardPreview() {
     FlipTheme {
         Box(
             modifier = Modifier

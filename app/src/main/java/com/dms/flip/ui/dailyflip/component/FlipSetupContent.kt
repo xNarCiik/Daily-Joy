@@ -1,4 +1,4 @@
-package com.dms.flip.ui.dailypleasure.component
+package com.dms.flip.ui.dailyflip.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +41,11 @@ import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.theme.flipGradients
 import com.dms.flip.ui.util.LightDarkPreview
 
+/**
+ * Écran de configuration initial avec NOUVEAU GRADIENT
+ */
 @Composable
-fun DailyPleasureSetupContent(
+fun FlipSetupContent(
     modifier: Modifier = Modifier,
     currentPleasureCount: Int,
     requiredCount: Int = 7,
@@ -61,7 +64,7 @@ fun DailyPleasureSetupContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(32.dp))
-                .background(gradients.card)
+                .background(gradients.setupBackground)
                 .padding(vertical = 32.dp, horizontal = 24.dp)
         ) {
             Column(
@@ -193,7 +196,7 @@ private fun ProgressIndicator(
 private fun SetupContentPreview() {
     FlipTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            DailyPleasureSetupContent(
+            FlipSetupContent(
                 currentPleasureCount = 4,
                 requiredCount = 7,
                 onConfigureClick = {}

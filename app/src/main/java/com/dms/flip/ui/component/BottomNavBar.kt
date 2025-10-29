@@ -61,14 +61,14 @@ fun BottomNavBar(
 
     val tabBarItems = listOf(
         TabBarItem(
-            title = stringResource(R.string.my_flip_title),
-            icon = Icons.Outlined.Home,
-            route = DailyPleasureRoute
-        ),
-        TabBarItem(
             title = stringResource(R.string.history_title),
             icon = Icons.Outlined.CalendarMonth,
             route = WeeklyRoute
+        ),
+        TabBarItem(
+            title = stringResource(R.string.my_flip_title),
+            icon = Icons.Outlined.Home,
+            route = DailyPleasureRoute
         ),
         TabBarItem(
             title = stringResource(R.string.social_title),

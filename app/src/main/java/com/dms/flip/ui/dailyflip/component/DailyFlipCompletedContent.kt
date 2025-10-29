@@ -1,4 +1,4 @@
-package com.dms.flip.ui.dailypleasure.component
+package com.dms.flip.ui.dailyflip.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,7 @@ import com.dms.flip.ui.util.LightDarkPreview
 import kotlinx.coroutines.delay
 
 @Composable
-fun DailyPleasureCompletedContent(
+fun DailyFlipCompletedContent(
     modifier: Modifier = Modifier
 ) {
     val gradients = flipGradients()
@@ -133,7 +133,7 @@ fun DailyPleasureCompletedContent(
 private fun DailyPleasureCompletedContentPreview() {
     FlipTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            DailyPleasureCompletedContent()
+            DailyFlipCompletedContent()
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.dms.flip.ui.dailypleasure
+package com.dms.flip.ui.dailyflip
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +20,7 @@ import javax.inject.Inject
 const val MinimumPleasuresCount = 7
 
 @HiltViewModel
-class DailyPleasureViewModel @Inject constructor(
+class DailyFlipViewModel @Inject constructor(
     private val getRandomDailyMessageUseCase: GetRandomDailyMessageUseCase,
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val getRandomPleasureUseCase: GetRandomPleasureUseCase,
@@ -30,8 +30,8 @@ class DailyPleasureViewModel @Inject constructor(
 
     private val randomDailyMessage = MutableStateFlow("")
 
-    private val _uiState = MutableStateFlow(DailyPleasureUiState())
-    val uiState: StateFlow<DailyPleasureUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(DailyFlipUiState())
+    val uiState: StateFlow<DailyFlipUiState> = _uiState.asStateFlow()
 
     init {
         checkInitialState()
@@ -50,8 +50,8 @@ class DailyPleasureViewModel @Inject constructor(
 
             if (isSetupRequired) {
                 _uiState.value =
-                    DailyPleasureUiState(
-                        screenState = DailyPleasureScreenState.SetupRequired(
+                    DailyFlipUiState(
+                        screenState = DailyFlipScreenState.SetupRequired(
                             pleasureCount = enabledPleasures
                         ),
                         headerMessage = "À deux pas de l'aventure..."
@@ -62,36 +62,35 @@ class DailyPleasureViewModel @Inject constructor(
             val todayHistoryPleasure = getTodayHistoryEntryUseCase().first()
             if (todayHistoryPleasure?.isCompleted == true) {
                 _uiState.value = _uiState.value.copy(
-                    screenState = DailyPleasureScreenState.Completed,
-                    headerMessage = "Félicitations pour cette belle journée ! 🎉"
-
+                    screenState = DailyFlipScreenState.Completed,
+                    headerMessage = ""
                 )
             } else {
-                _uiState.value = DailyPleasureUiState(
-                    screenState = DailyPleasureScreenState.Ready(
+                _uiState.value = DailyFlipUiState(
+                    screenState = DailyFlipScreenState.Ready(
                         availableCategories = PleasureCategory.entries,
                         dailyPleasure = todayHistoryPleasure?.toPleasure(),
                         isCardFlipped = todayHistoryPleasure != null
                     ),
-                    headerMessage = randomDailyMessage.value
+                    headerMessage = if (todayHistoryPleasure == null) randomDailyMessage.value else "Votre plaisir du jour"
                 )
             }
         }
     }
 
-    fun onEvent(event: DailyPleasureEvent) {
+    fun onEvent(event: DailyFlipEvent) {
         when (event) {
-            is DailyPleasureEvent.Reload -> checkInitialState()
-            is DailyPleasureEvent.OnCategorySelected -> handleCategorySelection(event.category)
-            is DailyPleasureEvent.OnCardClicked -> handleDrawCard()
-            is DailyPleasureEvent.OnCardFlipped -> handleCardFlipped()
-            is DailyPleasureEvent.OnCardMarkedAsDone -> handleCardMarkedAsDone()
+            is DailyFlipEvent.Reload -> checkInitialState()
+            is DailyFlipEvent.OnCategorySelected -> handleCategorySelection(event.category)
+            is DailyFlipEvent.OnCardClicked -> handleDrawCard()
+            is DailyFlipEvent.OnCardFlipped -> handleCardFlipped()
+            is DailyFlipEvent.OnCardMarkedAsDone -> handleCardMarkedAsDone()
         }
     }
 
     private fun handleCategorySelection(category: PleasureCategory) = viewModelScope.launch {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready) {
+        if (currentState is DailyFlipScreenState.Ready) {
             _uiState.value = _uiState.value.copy(
                 screenState = currentState.copy(selectedCategory = category)
             )
@@ -100,7 +99,7 @@ class DailyPleasureViewModel @Inject constructor(
 
     private fun handleDrawCard() = viewModelScope.launch {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready && currentState.dailyPleasure == null) {
+        if (currentState is DailyFlipScreenState.Ready && currentState.dailyPleasure == null) {
             val randomPleasure = getRandomPleasureUseCase(currentState.selectedCategory).first()
             saveHistoryEntryUseCase(randomPleasure)
             _uiState.value = _uiState.value.copy(
@@ -111,24 +110,25 @@ class DailyPleasureViewModel @Inject constructor(
 
     private fun handleCardFlipped() = viewModelScope.launch {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready) {
+        if (currentState is DailyFlipScreenState.Ready) {
             _uiState.value = _uiState.value.copy(
-                screenState = currentState.copy(isCardFlipped = true)
+                screenState = currentState.copy(isCardFlipped = true),
+                headerMessage = "Votre plaisir du jour"
             )
         }
     }
 
     private fun handleCardMarkedAsDone() = viewModelScope.launch {
         val currentState = _uiState.value.screenState
-        if (currentState is DailyPleasureScreenState.Ready) {
+        if (currentState is DailyFlipScreenState.Ready) {
             currentState.dailyPleasure?.let {
                 saveHistoryEntryUseCase(
                     pleasure = currentState.dailyPleasure,
                     markAsCompleted = true
                 )
                 _uiState.value = _uiState.value.copy(
-                    screenState = DailyPleasureScreenState.Completed,
-                    "Félicitations pour cette belle journée ! 🎉"
+                    screenState = DailyFlipScreenState.Completed,
+                    ""
                 )
             }
         }

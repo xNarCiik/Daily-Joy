@@ -185,23 +185,38 @@ fun SettingsScreen(
 
             // Appearance Section
             item {
-                SettingsSection(title = stringResource(R.string.settings_appearance_title)) {
-                    Box(
+                SettingsSection(title = "Configuration") {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(MaterialTheme.shapes.medium)
                             .background(MaterialTheme.colorScheme.surface)
                     ) {
-                        val themeLabel = when (uiState.theme) {
-                            Theme.LIGHT -> stringResource(R.string.settings_theme_light)
-                            Theme.DARK -> stringResource(R.string.settings_theme_dark)
-                            Theme.SYSTEM -> stringResource(R.string.settings_theme_system)
-                        }
-                        SettingsThemeItem(
-                            title = stringResource(R.string.settings_theme_title),
-                            subtitle = themeLabel,
-                            onClick = { showThemeDialog = true }
+                        SettingsClickableItem(
+                            icon = Icons.Outlined.Edit,
+                            title = stringResource(R.string.manage_pleasures_title),
+                            onClick = onNavigateToManagePleasures
                         )
+
+                        SettingsDivider()
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.surface)
+                        ) {
+                            val themeLabel = when (uiState.theme) {
+                                Theme.LIGHT -> stringResource(R.string.settings_theme_light)
+                                Theme.DARK -> stringResource(R.string.settings_theme_dark)
+                                Theme.SYSTEM -> stringResource(R.string.settings_theme_system)
+                            }
+                            SettingsThemeItem(
+                                title = stringResource(R.string.settings_theme_title),
+                                subtitle = themeLabel,
+                                onClick = { showThemeDialog = true }
+                            )
+                        }
                     }
                 }
             }

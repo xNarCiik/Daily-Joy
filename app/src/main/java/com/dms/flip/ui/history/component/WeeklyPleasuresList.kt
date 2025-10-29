@@ -230,7 +230,7 @@ private fun TodayCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp) // Height réduit pour être moins imposant
+                    .height(80.dp)
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .background(
                         Brush.linearGradient(
