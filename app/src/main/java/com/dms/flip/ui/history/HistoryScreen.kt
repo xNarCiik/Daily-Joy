@@ -8,14 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,23 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
 import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.component.LoadingState
-import com.dms.flip.ui.theme.FlipTheme
-import com.dms.flip.ui.util.LightDarkPreview
 import com.dms.flip.ui.history.component.WeeklyPleasuresList
 import com.dms.flip.ui.history.component.WeeklyStatsCard
+import com.dms.flip.ui.theme.FlipTheme
+import com.dms.flip.ui.util.LightDarkPreview
 
 @Composable
-fun WeeklyScreen(
+fun HistoryScreen(
     modifier: Modifier = Modifier,
-    uiState: WeeklyUiState,
-    onEvent: (WeeklyEvent) -> Unit
+    uiState: HistoryUiState,
+    onEvent: (HistoryEvent) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
@@ -56,12 +49,8 @@ fun WeeklyScreen(
                 )
             }
 
-            uiState.isEmpty -> {
-                EmptyWeeklyState(modifier = Modifier.align(Alignment.Center))
-            }
-
             else -> {
-                WeeklyContent(
+                HistoryContent(
                     weeklyDays = uiState.weeklyDays,
                     onEvent = onEvent
                 )
@@ -71,68 +60,10 @@ fun WeeklyScreen(
 }
 
 @Composable
-private fun EmptyWeeklyState(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            MaterialTheme.colorScheme.background
-                        )
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(44.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text(
-            text = stringResource(R.string.weekly_empty_pleasures),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = stringResource(R.string.weekly_start_today),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun WeeklyContent(
+private fun HistoryContent(
     modifier: Modifier = Modifier,
     weeklyDays: List<WeeklyDay>,
-    onEvent: (WeeklyEvent) -> Unit
+    onEvent: (HistoryEvent) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -170,7 +101,7 @@ private fun WeeklyContent(
 
         WeeklyPleasuresList(
             items = weeklyDays,
-            onCardClicked = { item -> onEvent(WeeklyEvent.OnCardClicked(item)) }
+            onCardClicked = { item -> onEvent(HistoryEvent.OnCardClicked(item)) }
         )
     }
 }
@@ -183,8 +114,8 @@ private fun WeeklyEmptyPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            WeeklyScreen(
-                uiState = WeeklyUiState(),
+            HistoryScreen(
+                uiState = HistoryUiState(),
                 onEvent = {}
             )
         }
@@ -193,14 +124,14 @@ private fun WeeklyEmptyPreview() {
 
 @LightDarkPreview
 @Composable
-private fun WeeklyPreview() {
+private fun HistoryPreview() {
     FlipTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            WeeklyScreen(
-                uiState = WeeklyUiState(
+            HistoryScreen(
+                uiState = HistoryUiState(
                     weeklyDays = listOf(
                         WeeklyDay(
                             dayName = "Lundi",

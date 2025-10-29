@@ -15,11 +15,11 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class WeeklyViewModel @Inject constructor(
+class HistoryViewModel @Inject constructor(
     private val getWeeklyHistoryUseCase: GetWeeklyHistoryUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WeeklyUiState())
+    private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -68,15 +68,15 @@ class WeeklyViewModel @Inject constructor(
     }
 
 
-    fun onEvent(event: WeeklyEvent) {
+    fun onEvent(event: HistoryEvent) {
         when (event) {
-            is WeeklyEvent.OnRetryClicked -> {
+            is HistoryEvent.OnRetryClicked -> {
                 loadWeeklyHistory()
             }
-            is WeeklyEvent.OnCardClicked -> {
+            is HistoryEvent.OnCardClicked -> {
                 _uiState.update { it.copy(selectedHistoryEntry = event.item) }
             }
-            is WeeklyEvent.OnBottomSheetDismissed -> {
+            is HistoryEvent.OnBottomSheetDismissed -> {
                 _uiState.update { it.copy(selectedHistoryEntry = null) }
             }
         }

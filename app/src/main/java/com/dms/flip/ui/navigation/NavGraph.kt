@@ -18,8 +18,8 @@ import androidx.navigation.compose.composable
 import com.dms.flip.domain.model.RootNavigationState
 import com.dms.flip.ui.dailypleasure.DailyPleasureScreen
 import com.dms.flip.ui.dailypleasure.DailyPleasureViewModel
-import com.dms.flip.ui.history.WeeklyScreen
-import com.dms.flip.ui.history.WeeklyViewModel
+import com.dms.flip.ui.history.HistoryScreen
+import com.dms.flip.ui.history.HistoryViewModel
 import com.dms.flip.ui.login.LoginScreen
 import com.dms.flip.ui.onboarding.OnboardingScreen
 import com.dms.flip.ui.settings.SettingsScreen
@@ -107,10 +107,10 @@ fun NavGraph(
         }
 
         composable<WeeklyRoute> {
-            val viewModel: WeeklyViewModel = hiltViewModel()
+            val viewModel: HistoryViewModel = hiltViewModel()
             val historyState by viewModel.uiState.collectAsState()
 
-            WeeklyScreen(
+            HistoryScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = historyState,
                 onEvent = viewModel::onEvent

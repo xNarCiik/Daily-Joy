@@ -3,24 +3,22 @@ package com.dms.flip.ui.history
 import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import java.util.Locale
 
-data class WeeklyUiState(
+data class HistoryUiState(
     val isLoading: Boolean = false,
     val weeklyDays: List<WeeklyDay> = emptyList(),
     val error: String? = null,
     val selectedHistoryEntry: PleasureHistoryEntry? = null
-) {
-    val isEmpty: Boolean get() = weeklyDays.all { it.historyEntry == null } && !isLoading && error == null
-}
+)
 
 data class WeeklyDay(
     val dayName: String,
     val historyEntry: PleasureHistoryEntry?
 )
 
-sealed interface WeeklyEvent {
-    data object OnRetryClicked : WeeklyEvent
-    data class OnCardClicked(val item: PleasureHistoryEntry) : WeeklyEvent
-    data object OnBottomSheetDismissed : WeeklyEvent
+sealed interface HistoryEvent {
+    data object OnRetryClicked : HistoryEvent
+    data class OnCardClicked(val item: PleasureHistoryEntry) : HistoryEvent
+    data object OnBottomSheetDismissed : HistoryEvent
 }
 
 fun getDayName(dayOfWeek: Int): String {
