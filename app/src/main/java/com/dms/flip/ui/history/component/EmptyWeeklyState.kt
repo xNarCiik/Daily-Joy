@@ -1,4 +1,4 @@
-package com.dms.flip.ui.weekly.component
+package com.dms.flip.ui.history.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,11 +1,14 @@
 package com.dms.flip.ui.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -13,12 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,13 +27,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -46,8 +47,7 @@ import com.dms.flip.ui.util.LightDarkPreview
 
 data class TabBarItem(
     val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
+    val icon: ImageVector,
     val route: Any
 )
 
@@ -61,21 +61,18 @@ fun BottomNavBar(
 
     val tabBarItems = listOf(
         TabBarItem(
-            title = stringResource(R.string.history_title),
-            selectedIcon = Icons.Filled.DateRange,
-            unselectedIcon = Icons.Outlined.DateRange,
-            route = WeeklyRoute
-        ),
-        TabBarItem(
             title = stringResource(R.string.my_flip_title),
-            selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Outlined.Favorite,
+            icon = Icons.Outlined.Home,
             route = DailyPleasureRoute
         ),
         TabBarItem(
+            title = stringResource(R.string.history_title),
+            icon = Icons.Outlined.CalendarMonth,
+            route = WeeklyRoute
+        ),
+        TabBarItem(
             title = stringResource(R.string.social_title),
-            selectedIcon = Icons.Filled.AccountCircle,
-            unselectedIcon = Icons.Outlined.AccountCircle,
+            icon = Icons.Outlined.Group,
             route = SocialRoute
         )
     )
@@ -83,36 +80,29 @@ fun BottomNavBar(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
-            .shadow(
-                elevation = 12.dp,
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
-                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-            ),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
+            .navigationBarsPadding(),
+        color = Color.Transparent,
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.surface,
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
-                        )
-                    )
-                )
+                .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.95f))
         ) {
+            // Top divider (visible)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
+                    .align(Alignment.TopCenter)
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        horizontal = 8.dp,
-                        vertical = 10.dp
-                    ),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -121,7 +111,7 @@ fun BottomNavBar(
                         currentDestination?.route == tabBarItem.route::class.qualifiedName
                     NavBarItem(
                         isSelected = isSelected,
-                        icon = if (isSelected) tabBarItem.selectedIcon else tabBarItem.unselectedIcon,
+                        icon = tabBarItem.icon,
                         label = tabBarItem.title,
                         onClick = {
                             if (!isSelected) {
@@ -148,46 +138,68 @@ private fun NavBarItem(
     label: String,
     onClick: () -> Unit
 ) {
-    val backgroundColor by animateColorAsState(
+    val iconColor by animateColorAsState(
         targetValue = if (isSelected)
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.95f)
+            Color.White
         else
-            Color.Transparent,
-        label = "backgroundColor"
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+        animationSpec = tween(250),
+        label = "iconColor"
+    )
+
+    val labelColor by animateColorAsState(
+        targetValue = if (isSelected)
+            Color.White
+        else
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+        animationSpec = tween(250),
+        label = "labelColor"
+    )
+
+    val containerAlpha by animateFloatAsState(
+        targetValue = if (isSelected) 1f else 0f,
+        animationSpec = tween(250),
+        label = "containerAlpha"
     )
 
     Surface(
         onClick = onClick,
-        modifier = Modifier
-            .padding(horizontal = 6.dp, vertical = 4.dp)
-            .height(44.dp),
-        shape = RoundedCornerShape(18.dp),
-        color = backgroundColor
+        color = Color.Transparent,
+        shape = RoundedCornerShape(14.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .padding(horizontal = if (isSelected) 14.dp else 0.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+                .clip(RoundedCornerShape(14.dp))
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant
+                        .copy(alpha = 0.25f * containerAlpha)
+                )
+                .padding(horizontal = 18.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                modifier = Modifier.size(if (isSelected) 24.dp else 22.dp),
-                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            AnimatedVisibility(
-                visible = isSelected,
-                label = "labelVisibility"
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    modifier = Modifier.size(22.dp),
+                    tint = iconColor
+                )
+
+                Spacer(modifier = Modifier.height(3.dp))
+
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.SemiBold
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 10.sp,
+                        letterSpacing = 0.sp
                     ),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(start = 6.dp)
+                    fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                    color = labelColor,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
                 )
             }
         }

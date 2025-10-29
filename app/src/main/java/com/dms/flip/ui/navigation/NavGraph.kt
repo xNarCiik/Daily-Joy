@@ -18,6 +18,8 @@ import androidx.navigation.compose.composable
 import com.dms.flip.domain.model.RootNavigationState
 import com.dms.flip.ui.dailypleasure.DailyPleasureScreen
 import com.dms.flip.ui.dailypleasure.DailyPleasureViewModel
+import com.dms.flip.ui.history.WeeklyScreen
+import com.dms.flip.ui.history.WeeklyViewModel
 import com.dms.flip.ui.login.LoginScreen
 import com.dms.flip.ui.onboarding.OnboardingScreen
 import com.dms.flip.ui.settings.SettingsScreen
@@ -28,8 +30,6 @@ import com.dms.flip.ui.settings.statistics.StatisticsScreen
 import com.dms.flip.ui.settings.statistics.StatisticsViewModel
 import com.dms.flip.ui.social.SocialScreen
 import com.dms.flip.ui.social.SocialViewModel
-import com.dms.flip.ui.weekly.WeeklyScreen
-import com.dms.flip.ui.weekly.WeeklyViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -136,6 +136,7 @@ fun NavGraph(
                 modifier = modifierWithPaddingValues,
                 uiState = settingsState,
                 onEvent = viewModel::onEvent,
+                onNavigateBack = { navController.popBackStack() },
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
                 onNavigateToStatistics = { navController.navigate(StatisticsRoute) },
                 onSignOut = { navigateSingleTop(RootRoute) }

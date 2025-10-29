@@ -1,4 +1,4 @@
-package com.dms.flip.ui.weekly
+package com.dms.flip.ui.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,8 +34,8 @@ import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
-import com.dms.flip.ui.weekly.component.WeeklyPleasuresList
-import com.dms.flip.ui.weekly.component.WeeklyStatsCard
+import com.dms.flip.ui.history.component.WeeklyPleasuresList
+import com.dms.flip.ui.history.component.WeeklyStatsCard
 
 @Composable
 fun WeeklyScreen(

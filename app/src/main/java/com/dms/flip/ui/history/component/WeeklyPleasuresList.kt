@@ -1,4 +1,4 @@
-package com.dms.flip.ui.weekly.component
+package com.dms.flip.ui.history.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -46,7 +46,7 @@ import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
-import com.dms.flip.ui.weekly.WeeklyDay
+import com.dms.flip.ui.history.WeeklyDay
 import kotlinx.coroutines.delay
 import java.util.Calendar
 

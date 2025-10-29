@@ -1,4 +1,4 @@
-package com.dms.flip.ui.weekly
+package com.dms.flip.ui.history
 
 import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import java.util.Locale

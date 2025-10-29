@@ -30,7 +30,7 @@ val DarkSurface = Color(0xFF2A292D) // #2a292d - CORRIGÉ depuis #2A292E - Fond 
 val DarkOnSurface = Color(0xFFE6E1E5) // #e6e1e5 - Texte sur les cartes
 val DarkSurfaceVariant = Color(0xFF3B3A40) // #3B3A40 - Fond plus clair
 val DarkOnSurfaceVariant = Color(0xFFCAC4D0) // #cac4d0 - Texte secondaire
-val DarkSurfaceContainer = Color(0xFF3B3A3F) // #3B3A3F - Container cards (entre background et surface)
+val DarkSurfaceContainer = Color(0xFF211F26) // #211F26 - Container navbar (plus foncé, proche du background)
 val DarkOutline = Color(0xFF938F99) // #938f99 - Bordures subtiles
 
 val DarkColorScheme = darkColorScheme(

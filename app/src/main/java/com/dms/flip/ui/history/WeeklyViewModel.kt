@@ -1,4 +1,4 @@
-package com.dms.flip.ui.weekly
+package com.dms.flip.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

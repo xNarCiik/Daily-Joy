@@ -429,7 +429,7 @@ private fun SettingsSection(
             text = title,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(start = 4.dp, top = 4.dp, bottom = 4.dp)
         )
         content()
