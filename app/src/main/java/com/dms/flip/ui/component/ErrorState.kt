@@ -34,6 +34,7 @@ import com.dms.flip.R
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 
+// TODO ?
 @Composable
 fun ErrorState(
     modifier: Modifier = Modifier,

@@ -1,13 +1,9 @@
 package com.dms.flip.ui.login
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -37,22 +32,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.dms.flip.R
-import com.dms.flip.ui.component.AppIcon
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.theme.FlipTheme
+import com.dms.flip.ui.theme.flipGradients
 import com.dms.flip.ui.util.LightDarkPreview
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -69,7 +65,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 
     val credentialManager = remember { CredentialManager.create(context) }
 
-    val googleIdOption = GetGoogleIdOption.Builder() // TODO STRING
+    val googleIdOption = GetGoogleIdOption.Builder()
         .setServerClientId("251003841383-uiaqo6aq7himht7bt3d78aeaqga456h3.apps.googleusercontent.com")
         .setFilterByAuthorizedAccounts(false)
         .build()
@@ -87,27 +83,13 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
         }
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = if (isSystemInDarkTheme()) {
-                            listOf(
-                                Color(0xFF1A1A2E),
-                                Color(0xFF16213E),
-                                Color(0xFF0F3460)
-                            )
-                        } else {
-                            listOf(
-                                Color(0xFFFFF9E6),
-                                Color(0xFFFFF0F5),
-                                Color(0xFFE8F4F8)
-                            )
-                        }
-                    )
-                )
+                .background(brush = flipGradients().setupBackground)
                 .padding(padding)
         ) {
             val isLoading = uiState is LoginUiState.Loading
@@ -156,107 +138,97 @@ private fun LoginContent(
     isLoading: Boolean,
     onGoogleSignInClick: () -> Unit
 ) {
-    val isDarkTheme = isSystemInDarkTheme() // TODO EXPORT THEME
-
-    val scale by animateFloatAsState(
-        targetValue = 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "iconScale"
-    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(80.dp))
 
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = if (isDarkTheme) {
-                            listOf(
-                                Color(0xFFFF6B9D).copy(alpha = 0.3f),
-                                Color(0xFFFF6B9D).copy(alpha = 0.1f)
-                            )
-                        } else {
-                            listOf(
-                                Color(0xFFFFD700).copy(alpha = 0.3f),
-                                Color(0xFFFFB6C1).copy(alpha = 0.2f)
-                            )
-                        }
-                    ),
-                    shape = RoundedCornerShape(30.dp)
-                ),
-            contentAlignment = Alignment.Center
+        // Section centrale : Logo + Textes
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center
         ) {
-            AppIcon(modifier = Modifier.size(64.dp))
+            // Logo unique de l'app
+            FlipLogo()
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Titre principal
+            Text(
+                text = stringResource(R.string.login_start_day_with_joy),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontSize = 32.sp,
+                    lineHeight = 40.sp
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Sous-titre
+            Text(
+                text = stringResource(id = R.string.login_daily_happiness),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp
+                ),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        // Section bottom : Bouton + Terms
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(bottom = 32.dp)
+        ) {
+            GoogleSignInButton(
+                onClick = onGoogleSignInClick,
+                enabled = !isLoading
+            )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            TermsAndConditionsText()
+        }
+    }
+}
+
+@Composable
+private fun FlipLogo(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(140.dp)
+            .background(
+                brush = flipGradients().logo,
+                shape = MaterialTheme.shapes.large
+            ),
+        contentAlignment = Alignment.Center
+    ) {
         Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold,
-            color = if (isDarkTheme) Color(0xFFECF0F1) else Color(0xFF2C3E50)
+            text = "F",
+            style = MaterialTheme.typography.displayLarge.copy(
+                fontSize = 72.sp,
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = (-2).sp
+            ),
+            color = MaterialTheme.colorScheme.surface
         )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = stringResource(id = R.string.login_start_day_with_joy),
-            style = MaterialTheme.typography.titleMedium,
-            color = if (isDarkTheme) Color(0xFFBDC3C7) else Color(0xFF7F8C8D),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = stringResource(id = R.string.login_daily_happiness),
-            style = MaterialTheme.typography.bodyLarge,
-            color = if (isDarkTheme) Color(0xFF95A5A6) else Color(0xFFBDC3C7),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.weight(1.5f))
-
-        GoogleSignInButton(
-            onClick = onGoogleSignInClick,
-            enabled = !isLoading
-        )
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        Text(
-            text = stringResource(id = R.string.login_terms_and_conditions),
-            style = MaterialTheme.typography.bodySmall,
-            color = if (isDarkTheme) Color(0xFF7F8C8D) else Color(0xFFBDC3C7),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
 @Composable
 private fun GoogleSignInButton(
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
@@ -264,17 +236,16 @@ private fun GoogleSignInButton(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color(0xFF2C3E50),
-            disabledContainerColor = Color.White.copy(alpha = 0.6f),
-            disabledContentColor = Color(0xFF2C3E50).copy(alpha = 0.6f)
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            disabledContentColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f)
         ),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 4.dp,
-            pressedElevation = 8.dp,
-            disabledElevation = 2.dp
+            defaultElevation = 0.dp,
+            pressedElevation = 2.dp
         )
     ) {
         Row(
@@ -285,18 +256,63 @@ private fun GoogleSignInButton(
                 painter = painterResource(id = R.drawable.google_logo),
                 contentDescription = stringResource(id = R.string.login_google_logo),
                 modifier = Modifier.size(24.dp),
-                tint = Color.Unspecified
+                tint = androidx.compose.ui.graphics.Color.Unspecified
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
                 text = stringResource(id = R.string.login_continue_with_google),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }
+}
+
+@Composable
+private fun TermsAndConditionsText(modifier: Modifier = Modifier) {
+    val baseColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val linkColor = MaterialTheme.colorScheme.primary
+
+    val annotatedString = buildAnnotatedString {
+        withStyle(style = SpanStyle(color = baseColor)) {
+            append("En continuant, vous acceptez nos ")
+        }
+        withStyle(
+            style = SpanStyle(
+                color = linkColor,
+                fontWeight = FontWeight.Medium
+            )
+        ) {
+            append("conditions d'utilisation")
+        }
+        withStyle(style = SpanStyle(color = baseColor)) {
+            append(" et notre ")
+        }
+        withStyle(
+            style = SpanStyle(
+                color = linkColor,
+                fontWeight = FontWeight.Medium
+            )
+        ) {
+            append("politique de confidentialité")
+        }
+        withStyle(style = SpanStyle(color = baseColor)) {
+            append(".")
+        }
+    }
+
+    Text(
+        text = annotatedString,
+        style = MaterialTheme.typography.bodySmall.copy(
+            fontSize = 12.sp,
+            lineHeight = 18.sp
+        ),
+        textAlign = TextAlign.Center,
+        modifier = modifier.padding(horizontal = 16.dp)
+    )
 }
 
 @LightDarkPreview

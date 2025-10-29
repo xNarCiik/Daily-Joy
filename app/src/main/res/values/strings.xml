@@ -18,7 +18,7 @@
     <!-- Onboarding -->
     <!-- Welcome Step -->
     <string name="onboarding_welcome_emoji" translatable="false">🎉</string>
-    <string name="onboarding_welcome_title">Bienvenue dans Daily Joy !</string>
+    <string name="onboarding_welcome_title">Bienvenue dans Flip</string>
     <string name="onboarding_welcome_subtitle">Configurons ensemble votre expérience pour profiter pleinement de vos plaisirs quotidiens.</string>
     <string name="onboarding_welcome_feature1_emoji" translatable="false">📝</string>
     <string name="onboarding_welcome_feature1_text">Personnalisez votre nom</string>
@@ -51,6 +51,7 @@
     <string name="your_flip_daily">Votre plaisir du jour</string>
     <string name="category_selector_title">Catégorie : %s</string>
     <string name="choose_category">Choisir une catégorie</string>
+    <string name="daily_flip_share_button">Partager</string>
     <string name="pleasure_card_back_title">Prêt pour votre moment de joie ?</string>
     <string name="pleasure_card_back_subtitle">Touchez pour découvrir votre plaisir du jour</string>
     <!-- Completed State -->

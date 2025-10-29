@@ -101,7 +101,7 @@ fun CategorySelectionDialog(
                         )
                     ) {
                         Text(
-                            text = "Annuler",
+                            text = stringResource(R.string.cancel),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Medium
                         )

@@ -23,6 +23,7 @@ fun FlipTheme(
         content = content
     )
 }
+
 object FlipGradient {
 
     /**
@@ -69,23 +70,37 @@ object FlipGradient {
     }
 
     /**
-     * Gradient pour le fond de setup (conservé de l'ancien système si nécessaire)
+     * Gradient unique pour le logo Flip
+     * Indépendant du thème - gradient moderne bleu → violet → rose
+     * Cohérent avec l'identité visuelle de l'app
+     */
+    fun logoGradient(): Brush {
+        return Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF6366F1), // Indigo moderne (Tailwind indigo-500)
+                Color(0xFF8B5CF6), // Violet (Tailwind violet-500)
+                Color(0xFFA855F7)  // Purple/Fuchsia (Tailwind purple-500)
+            )
+        )
+    }
+
+    /**
+     * Gradient pour le fond de l'écran de login/setup
+     * Mis à jour pour être plus subtil et moderne
      */
     fun setupBackground(isDark: Boolean): Brush {
         return if (isDark) {
             Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFF1A1A2E),
-                    Color(0xFF16213E),
-                    Color(0xFF0F3460)
+                    Color(0xFF1C1B1F), // DarkBackground du thème
+                    Color(0xFF2A292D)  // DarkSurface pour une transition douce
                 )
             )
         } else {
             Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFFFFF9E6),
-                    Color(0xFFFFF0F5),
-                    Color(0xFFE8F4F8)
+                    Color(0xFFF6F7F8), // LightBackground du thème
+                    Color(0xFFFFFFFF)  // Blanc pur
                 )
             )
         }
@@ -98,7 +113,8 @@ object FlipGradient {
 data class FlipGradients(
     val card: Brush,
     val actionButton: Brush,
-    val setupBackground: Brush
+    val setupBackground: Brush,
+    val logo: Brush
 )
 
 @Composable
@@ -106,6 +122,7 @@ fun flipGradients(useDarkTheme: Boolean = isSystemInDarkTheme()): FlipGradients 
     return FlipGradients(
         card = FlipGradient.cardGradient(useDarkTheme),
         actionButton = FlipGradient.actionButtonGradient(useDarkTheme),
-        setupBackground = FlipGradient.setupBackground(useDarkTheme)
+        setupBackground = FlipGradient.setupBackground(useDarkTheme),
+        logo = FlipGradient.logoGradient()
     )
 }

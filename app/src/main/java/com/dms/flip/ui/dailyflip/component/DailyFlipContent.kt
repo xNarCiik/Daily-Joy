@@ -392,8 +392,8 @@ private fun CategorySelector(
         modifier = modifier,
         shape = RoundedCornerShape(50.dp),
         colors = ButtonDefaults.textButtonColors(
-            containerColor = Color.White.copy(alpha = 0.1f),
-            contentColor = MaterialTheme.colorScheme.onBackground
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+            contentColor = MaterialTheme.colorScheme.onSurface
         )
     ) {
         Row(
@@ -456,7 +456,7 @@ private fun ShareButton(
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "Partager",
+                    text = stringResource(R.string.daily_flip_share_button),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )
