@@ -82,12 +82,8 @@ private fun HistoryContent(
         WeekNavigationHeader(
             weekTitle = weekTitle,
             weekDates = weekDates,
-            onPreviousWeekClick = {
-                // TODO: Lier au ViewModel (ex: viewModel.onPreviousWeekClicked())
-            },
-            onNextWeekClick = {
-                // TODO: Lier au ViewModel (ex: viewModel.onNextWeekClicked())
-            }
+            onPreviousWeekClick = { onEvent(HistoryEvent.OnPreviousWeekClicked) },
+            onNextWeekClick = { onEvent(HistoryEvent.OnNextWeekClicked) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -108,27 +104,9 @@ private fun HistoryContent(
             items = weeklyDays,
             onCardClicked = { item -> onEvent(HistoryEvent.OnCardClicked(item)) },
             onDiscoverTodayClicked = {
-                // TODO: Lier au ViewModel pour naviguer vers l'écran du plaisir du jour
-                // (ex: viewModel.onDiscoverTodayClicked())
+                onEvent(HistoryEvent.OnDiscoverTodayClicked)
             }
         )
-    }
-}
-
-// ========== PREVIEWS ==========
-@LightDarkPreview
-@Composable
-private fun HistoryEmptyPreview() {
-    FlipTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            HistoryScreen(
-                uiState = HistoryUiState(),
-                onEvent = {}
-            )
-        }
     }
 }
 

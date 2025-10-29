@@ -227,26 +227,6 @@ private fun TodayCard(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // ========== OPTION A : Grande Image Gradient (Fidèle à la maquette) ==========
-            // Décommente cette section si tu veux la version full-height avec image
-            /*
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2f) // Aspect ratio 2:1 comme la maquette
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFFB39DDB), // Lavender
-                                Color(0xFF90CAF9)  // Light blue
-                            )
-                        )
-                    )
-            )
-            */
-
-            // ========== OPTION B : Petit Gradient (Compromis Compact) ✅ ACTIF ==========
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
