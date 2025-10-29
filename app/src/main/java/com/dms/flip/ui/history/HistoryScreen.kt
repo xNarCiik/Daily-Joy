@@ -78,7 +78,7 @@ private fun HistoryContent(
             .padding(top = 16.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Header avec navigation hebdomadaire
+        // Header
         WeekNavigationHeader(
             weekTitle = weekTitle,
             weekDates = weekDates,
@@ -88,7 +88,7 @@ private fun HistoryContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Cartes de statistiques (2 colonnes)
+        // Cartes de statistiques
         val history = weeklyDays.mapNotNull { it.historyEntry }
         val completedCount = history.count { it.isCompleted }
 
