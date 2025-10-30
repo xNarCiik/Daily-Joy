@@ -48,10 +48,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -80,29 +76,25 @@ fun ManagePleasuresScreen(
     onEvent: (ManagePleasuresEvent) -> Unit,
     navigateBack: () -> Unit
 ) {
-    val selectedPleasures = remember { mutableStateListOf<String>() }
-    var isSelectionMode by remember { mutableStateOf(false) }
-
     Column(modifier = modifier.fillMaxSize()) {
         FlipTopBar(
             title = stringResource(R.string.manage_pleasures_title),
             startTopBarIcon = TopBarIcon(
-                icon = if (isSelectionMode) Icons.Default.Cancel else Icons.AutoMirrored.Filled.ArrowBack,
+                icon = if (uiState.isSelectionMode) Icons.Default.Cancel else Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(R.string.back),
                 onClick = {
-                    if (isSelectionMode) {
-                        isSelectionMode = false
-                        selectedPleasures.clear()
+                    if (uiState.isSelectionMode) {
+                        onEvent(ManagePleasuresEvent.OnLeaveSelectionMode)
                     } else {
                         navigateBack()
                     }
                 }
             ),
-            endTopBarIcon = if (!isSelectionMode) {
+            endTopBarIcon = if (!uiState.isSelectionMode) {
                 TopBarIcon(
                     icon = Icons.Outlined.Edit,
                     contentDescription = stringResource(R.string.edit_mode),
-                    onClick = { isSelectionMode = true }
+                    onClick = { onEvent(ManagePleasuresEvent.OnEnterSelectionMode) }
                 )
             } else null
         )
@@ -126,7 +118,7 @@ fun ManagePleasuresScreen(
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = if (selectedPleasures.isNotEmpty()) 80.dp else 0.dp),
+                        contentPadding = PaddingValues(bottom = if (uiState.selectedPleasures.isNotEmpty()) 80.dp else 0.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(
@@ -135,16 +127,10 @@ fun ManagePleasuresScreen(
                         ) { pleasure ->
                             PleasureItem(
                                 pleasure = pleasure,
-                                isSelectionMode = isSelectionMode,
-                                isSelected = selectedPleasures.contains(pleasure.id),
+                                isSelectionMode = uiState.isSelectionMode,
+                                isSelected = uiState.selectedPleasures.contains(pleasure.id),
                                 onToggle = { onEvent(ManagePleasuresEvent.OnPleasureToggled(pleasure)) },
-                                onSelect = {
-                                    if (selectedPleasures.contains(pleasure.id)) {
-                                        selectedPleasures.remove(pleasure.id)
-                                    } else {
-                                        selectedPleasures.add(pleasure.id)
-                                    }
-                                },
+                                onSelect = { onEvent(ManagePleasuresEvent.OnPleasureSelected(pleasure.id)) },
                                 modifier = Modifier.animateItem()
                             )
                         }
@@ -153,20 +139,14 @@ fun ManagePleasuresScreen(
             }
 
             this@Column.AnimatedVisibility(
-                visible = isSelectionMode && selectedPleasures.isNotEmpty(),
+                visible = uiState.isSelectionMode && uiState.selectedPleasures.isNotEmpty(),
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
                 modifier = Modifier.align(Alignment.BottomCenter)
             ) {
                 DeleteButton(
-                    count = selectedPleasures.size,
-                    onClick = {
-                        onEvent(
-                            ManagePleasuresEvent.OnDeleteMultiplePleasuresClicked(
-                                selectedPleasures.toList()
-                            )
-                        )
-                    }
+                    count = uiState.selectedPleasures.size,
+                    onClick = { onEvent(ManagePleasuresEvent.OnDeleteMultiplePleasuresClicked) }
                 )
             }
         }

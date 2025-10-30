@@ -14,13 +14,10 @@ class OnboardingRepositoryImpl(
     private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth
 ) : OnboardingRepository {
-
     override fun getOnboardingStatus(userId: String): Flow<Boolean> = callbackFlow {
         val docRef = firestore.collection("users").document(userId)
         val listener = docRef.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                // Envoyer false en cas d'erreur ou si le doc n'existe pas
-                trySend(false).isSuccess
                 close(error)
                 return@addSnapshotListener
             }

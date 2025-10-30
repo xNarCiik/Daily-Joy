@@ -73,6 +73,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.OnDailyReminderEnabledChanged -> onDailyReminderEnabledChange(event.enabled)
             is SettingsEvent.OnReminderTimeChanged -> onReminderTimeChange(event.time)
             is SettingsEvent.OnSignOut -> signOut()
+            is SettingsEvent.DeleteAccount -> deleteAccount()
         }
     }
 
@@ -96,5 +97,11 @@ class SettingsViewModel @Inject constructor(
 
     private fun signOut() {
         authRepository.signOut()
+    }
+
+    private fun deleteAccount() {
+        viewModelScope.launch {
+            authRepository.deleteAccount()
+        }
     }
 }

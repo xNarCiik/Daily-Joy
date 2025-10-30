@@ -79,8 +79,7 @@ fun SettingsScreen(
     onEvent: (SettingsEvent) -> Unit,
     onNavigateBack: () -> Unit = {},
     onNavigateToManagePleasures: () -> Unit = {},
-    onNavigateToStatistics: () -> Unit = {},
-    onSignOut: () -> Unit
+    onNavigateToStatistics: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -287,10 +286,7 @@ fun SettingsScreen(
                 ) {
                     // Sign Out Button
                     Button(
-                        onClick = {
-                            onEvent(SettingsEvent.OnSignOut)
-                            onSignOut()
-                        },
+                        onClick = { onEvent(SettingsEvent.OnSignOut) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
@@ -317,7 +313,7 @@ fun SettingsScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { /* TODO: Delete account flow */ }
+                            .clickable { onEvent(SettingsEvent.DeleteAccount) }
                             .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -626,8 +622,7 @@ private fun SettingsScreenPreview() {
                 onEvent = {},
                 onNavigateBack = {},
                 onNavigateToManagePleasures = {},
-                onNavigateToStatistics = {},
-                onSignOut = {}
+                onNavigateToStatistics = {}
             )
         }
     }

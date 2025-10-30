@@ -15,4 +15,5 @@ sealed interface SettingsEvent {
     data class OnDailyReminderEnabledChanged(val enabled: Boolean) : SettingsEvent
     data class OnReminderTimeChanged(val time: String) : SettingsEvent
     data object OnSignOut : SettingsEvent
+    data object DeleteAccount : SettingsEvent
 }

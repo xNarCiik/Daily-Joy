@@ -34,6 +34,7 @@ import com.dms.flip.ui.component.BottomNavBar
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.navigation.DailyPleasureRoute
 import com.dms.flip.ui.navigation.NavGraph
+import com.dms.flip.ui.navigation.RootRoute
 import com.dms.flip.ui.navigation.SocialRoute
 import com.dms.flip.ui.navigation.WeeklyRoute
 import com.dms.flip.ui.settings.SettingsViewModel
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         setContent {
             val rootNavigationState by mainViewModel.rootNavigationState.collectAsState()
 
@@ -97,6 +99,13 @@ class MainActivity : ComponentActivity() {
                     enter = fadeIn(animationSpec = tween(durationMillis = 1000))
                 ) {
                     val navController = rememberNavController()
+
+                    LaunchedEffect(rootNavigationState) {
+                        navController.navigate(RootRoute) {
+                            popUpTo(navController.graph.id)
+                            launchSingleTop = true
+                        }
+                    }
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route
 

@@ -5,6 +5,7 @@ import com.dms.flip.domain.model.RootNavigationState
 import com.dms.flip.domain.repository.onboarding.OnboardingRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -20,13 +21,17 @@ class GetRootNavigationStateUseCase @Inject constructor(
             if (user == null) {
                 flowOf(RootNavigationState.NotAuthenticated)
             } else {
-                onboardingRepository.getOnboardingStatus(user.uid).map { isCompleted ->
-                    if (isCompleted) {
-                        RootNavigationState.AuthenticatedAndOnboarded
-                    } else {
-                        RootNavigationState.AuthenticatedButNotOnboarded
+                onboardingRepository.getOnboardingStatus(user.uid)
+                    .map { isCompleted ->
+                        if (isCompleted) {
+                            RootNavigationState.AuthenticatedAndOnboarded
+                        } else {
+                            RootNavigationState.AuthenticatedButNotOnboarded
+                        }
                     }
-                }
+                    .catch {
+                        emit(RootNavigationState.NotAuthenticated)
+                    }
             }
         }
 }

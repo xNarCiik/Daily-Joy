@@ -93,7 +93,7 @@ fun NavGraph(
                     }
                 }
 
-                else -> {}
+                else -> Unit
             }
         }
 
@@ -142,8 +142,7 @@ fun NavGraph(
                 onEvent = viewModel::onEvent,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToManagePleasures = { navController.navigate(ManagePleasuresRoute) },
-                onNavigateToStatistics = { navController.navigate(StatisticsRoute) },
-                onSignOut = { navigateSingleTop(RootRoute) }
+                onNavigateToStatistics = { navController.navigate(StatisticsRoute) }
             )
         }
 

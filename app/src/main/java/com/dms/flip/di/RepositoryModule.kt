@@ -33,8 +33,11 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun provideAuthRepository(firebaseAuth: FirebaseAuth): AuthRepository =
-        AuthRepository(auth = firebaseAuth)
+    fun provideAuthRepository(
+        firebaseAuth: FirebaseAuth,
+        firestore: FirebaseFirestore
+    ): AuthRepository =
+        AuthRepository(auth = firebaseAuth, firestore = firestore)
 
     @Provides
     @Singleton
@@ -53,7 +56,10 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun bindPleasureRepository(firestore: FirebaseFirestore, firebaseAuth: FirebaseAuth): PleasureRepository =
+    fun bindPleasureRepository(
+        firestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth
+    ): PleasureRepository =
         PleasureRepositoryImpl(firestore, firebaseAuth)
 
     @Provides

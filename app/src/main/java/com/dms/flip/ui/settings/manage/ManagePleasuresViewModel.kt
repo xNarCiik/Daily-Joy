@@ -87,17 +87,25 @@ class ManagePleasuresViewModel @Inject constructor(
             is ManagePleasuresEvent.OnDeleteMultiplePleasuresClicked -> {
                 _uiState.update {
                     it.copy(
-                        showDeleteConfirmation = true,
-                        pleasuresToDelete = event.pleasuresId
+                        showDeleteConfirmation = true
                     )
                 }
             }
 
             is ManagePleasuresEvent.OnDeleteConfirmed -> confirmDelete()
             is ManagePleasuresEvent.OnDeleteCancelled -> cancelDelete()
-
-
             is ManagePleasuresEvent.OnRetryClicked -> loadPleasures()
+            is ManagePleasuresEvent.OnEnterSelectionMode -> _uiState.update { it.copy(isSelectionMode = true) }
+            is ManagePleasuresEvent.OnLeaveSelectionMode -> _uiState.update { it.copy(isSelectionMode = false, selectedPleasures = emptyList()) }
+            is ManagePleasuresEvent.OnPleasureSelected -> {
+                val selectedPleasures = _uiState.value.selectedPleasures.toMutableList()
+                if (selectedPleasures.contains(event.pleasureId)) {
+                    selectedPleasures.remove(event.pleasureId)
+                } else {
+                    selectedPleasures.add(event.pleasureId)
+                }
+                _uiState.update { it.copy(selectedPleasures = selectedPleasures) }
+            }
         }
     }
 
@@ -167,12 +175,13 @@ class ManagePleasuresViewModel @Inject constructor(
     private fun confirmDelete() {
         viewModelScope.launch {
             try {
-                val pleasuresToDelete = _uiState.value.pleasuresToDelete
+                val pleasuresToDelete = _uiState.value.selectedPleasures
                 deletePleasuresUseCase(pleasuresToDelete)
                 _uiState.update {
                     it.copy(
                         showDeleteConfirmation = false,
-                        pleasuresToDelete = emptyList()
+                        selectedPleasures = emptyList(),
+                        isSelectionMode = false
                     )
                 }
             } catch (e: Exception) {
@@ -180,7 +189,6 @@ class ManagePleasuresViewModel @Inject constructor(
                     it.copy(
                         error = e.message ?: resources.getString(R.string.generic_error_message),
                         showDeleteConfirmation = false,
-                        pleasuresToDelete = emptyList()
                     )
                 }
             }
@@ -191,7 +199,6 @@ class ManagePleasuresViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 showDeleteConfirmation = false,
-                pleasuresToDelete = emptyList()
             )
         }
     }
