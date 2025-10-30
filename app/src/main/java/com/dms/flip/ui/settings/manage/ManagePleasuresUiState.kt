@@ -1,7 +1,7 @@
 package com.dms.flip.ui.settings.manage
 
-import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.domain.model.Pleasure
 
 data class ManagePleasuresUiState(
     val isLoading: Boolean = false,
@@ -24,7 +24,7 @@ sealed interface ManagePleasuresEvent {
     data class OnDescriptionChanged(val description: String) : ManagePleasuresEvent
     data class OnCategoryChanged(val category: PleasureCategory) : ManagePleasuresEvent
     data object OnSavePleasureClicked : ManagePleasuresEvent
-    data class OnDeleteMultiplePleasuresClicked(val pleasuresId: List<Int>) : ManagePleasuresEvent
+    data class OnDeleteMultiplePleasuresClicked(val pleasuresId: List<String>) : ManagePleasuresEvent
     data object OnDeleteConfirmed : ManagePleasuresEvent
     data object OnDeleteCancelled : ManagePleasuresEvent
     data object OnRetryClicked : ManagePleasuresEvent

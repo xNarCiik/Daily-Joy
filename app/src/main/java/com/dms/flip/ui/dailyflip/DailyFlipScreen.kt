@@ -1,5 +1,7 @@
 package com.dms.flip.ui.dailyflip
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,16 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.component.ErrorState
@@ -45,20 +43,6 @@ fun DailyFlipScreen(
     navigateToSettings: () -> Unit = {}
 ) {
     val screenState = uiState.screenState
-
-    // Observe lifecycle events to refresh the state when the screen is resumed
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                onEvent(DailyFlipEvent.Reload)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
 
     Column(modifier = modifier.fillMaxSize()) {
         FlipTopBar(
@@ -87,40 +71,41 @@ fun DailyFlipScreen(
 
             if (screenState is DailyFlipScreenState.Loading) {
                 LoadingState(modifier = contentModifier)
-                return@Column
-            }
+            } else {
+                Box(
+                    modifier = contentModifier.animateContentSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Crossfade(targetState = screenState, label = "DailyFlipTransition") { state ->
+                        when (state) {
+                            is DailyFlipScreenState.Error -> {
+                                ErrorState(message = state.message) {
+                                    onEvent(DailyFlipEvent.Reload)
+                                }
+                            }
 
-            Box(
-                modifier = contentModifier,
-                contentAlignment = Alignment.Center
-            ) {
-                when (screenState) {
-                    is DailyFlipScreenState.Error -> {
-                        ErrorState(message = screenState.message) {
-                            onEvent(DailyFlipEvent.Reload)
+                            is DailyFlipScreenState.SetupRequired -> {
+                                DailyFlipSetupContent(
+                                    currentPleasureCount = state.pleasureCount,
+                                    requiredCount = MinimumPleasuresCount,
+                                    onConfigureClick = navigateToManagePleasures
+                                )
+                            }
+
+                            is DailyFlipScreenState.Ready -> {
+                                DailyFlipContent(
+                                    uiState = state,
+                                    onEvent = onEvent
+                                )
+                            }
+
+                            is DailyFlipScreenState.Completed -> {
+                                DailyFlipCompletedContent()
+                            }
+
+                            else -> {}
                         }
                     }
-
-                    is DailyFlipScreenState.SetupRequired -> {
-                        DailyFlipSetupContent(
-                            currentPleasureCount = screenState.pleasureCount,
-                            requiredCount = MinimumPleasuresCount,
-                            onConfigureClick = navigateToManagePleasures
-                        )
-                    }
-
-                    is DailyFlipScreenState.Ready -> {
-                        DailyFlipContent(
-                            uiState = screenState,
-                            onEvent = onEvent
-                        )
-                    }
-
-                    is DailyFlipScreenState.Completed -> {
-                        DailyFlipCompletedContent()
-                    }
-
-                    else -> {}
                 }
             }
         }
@@ -135,7 +120,8 @@ private fun HeaderMessage(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(vertical = 16.dp)
+            .animateContentSize(),
         contentAlignment = Alignment.Center
     ) {
         Text(

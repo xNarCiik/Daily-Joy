@@ -25,7 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,7 +41,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -75,44 +74,42 @@ import com.dms.flip.ui.util.previewDailyPleasure
 
 @Composable
 fun ManagePleasuresScreen(
+    modifier: Modifier = Modifier,
     uiState: ManagePleasuresUiState,
     onEvent: (ManagePleasuresEvent) -> Unit,
     navigateBack: () -> Unit
 ) {
-    val selectedPleasures = remember { mutableStateListOf<Int>() }
+    val selectedPleasures = remember { mutableStateListOf<String>() }
     var isSelectionMode by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            FlipTopBar(
-                title = stringResource(R.string.manage_pleasures_title),
-                startTopBarIcon = TopBarIcon(
-                    icon = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back),
-                    onClick = {
-                        if (isSelectionMode) {
-                            isSelectionMode = false
-                            selectedPleasures.clear()
-                        } else {
-                            navigateBack()
-                        }
+    Column(modifier = modifier.fillMaxSize()) {
+        FlipTopBar(
+            title = stringResource(R.string.manage_pleasures_title),
+            startTopBarIcon = TopBarIcon(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.back),
+                onClick = {
+                    if (isSelectionMode) {
+                        isSelectionMode = false
+                        selectedPleasures.clear()
+                    } else {
+                        navigateBack()
                     }
-                ),
-                endTopBarIcon = if (!isSelectionMode) {
-                    TopBarIcon(
-                        icon = Icons.Default.Edit,
-                        contentDescription = stringResource(R.string.edit_mode),
-                        onClick = { isSelectionMode = true }
-                    )
-                } else null
-            )
-        }
-    ) { paddingValues ->
+                }
+            ),
+            endTopBarIcon = if (!isSelectionMode) {
+                TopBarIcon(
+                    icon = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit_mode),
+                    onClick = { isSelectionMode = true }
+                )
+            } else null
+        )
+
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
                     .padding(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 InfoCard(
@@ -131,17 +128,20 @@ fun ManagePleasuresScreen(
                         contentPadding = PaddingValues(bottom = if (selectedPleasures.isNotEmpty()) 80.dp else 0.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        itemsIndexed(items = uiState.pleasures) { index, pleasure ->
+                        items(
+                            items = uiState.pleasures,
+                            key = { it.id }
+                        ) { pleasure ->
                             PleasureItem(
                                 pleasure = pleasure,
                                 isSelectionMode = isSelectionMode,
-                                isSelected = selectedPleasures.contains(index),
+                                isSelected = selectedPleasures.contains(pleasure.id),
                                 onToggle = { onEvent(ManagePleasuresEvent.OnPleasureToggled(pleasure)) },
                                 onSelect = {
-                                    if (selectedPleasures.contains(index)) {
-                                        selectedPleasures.remove(index)
+                                    if (selectedPleasures.contains(pleasure.id)) {
+                                        selectedPleasures.remove(pleasure.id)
                                     } else {
-                                        selectedPleasures.add(index)
+                                        selectedPleasures.add(pleasure.id)
                                     }
                                 },
                                 modifier = Modifier.animateItem()
@@ -151,7 +151,7 @@ fun ManagePleasuresScreen(
                 }
             }
 
-            AnimatedVisibility(
+            this@Column.AnimatedVisibility(
                 visible = isSelectionMode && selectedPleasures.isNotEmpty(),
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
@@ -171,28 +171,28 @@ fun ManagePleasuresScreen(
                 )
             }
         }
+    }
 
-        if (uiState.showAddDialog) {
-            AddPleasureBottomSheet(
-                title = uiState.newPleasureTitle,
-                description = uiState.newPleasureDescription,
-                category = uiState.newPleasureCategory,
-                titleError = uiState.titleError,
-                descriptionError = uiState.descriptionError,
-                onDismiss = { onEvent(ManagePleasuresEvent.OnBottomSheetDismissed) },
-                onTitleChange = { onEvent(ManagePleasuresEvent.OnTitleChanged(it)) },
-                onDescriptionChange = { onEvent(ManagePleasuresEvent.OnDescriptionChanged(it)) },
-                onCategoryChange = { onEvent(ManagePleasuresEvent.OnCategoryChanged(it)) },
-                onSave = { onEvent(ManagePleasuresEvent.OnSavePleasureClicked) }
-            )
-        }
+    if (uiState.showAddDialog) {
+        AddPleasureBottomSheet(
+            title = uiState.newPleasureTitle,
+            description = uiState.newPleasureDescription,
+            category = uiState.newPleasureCategory,
+            titleError = uiState.titleError,
+            descriptionError = uiState.descriptionError,
+            onDismiss = { onEvent(ManagePleasuresEvent.OnBottomSheetDismissed) },
+            onTitleChange = { onEvent(ManagePleasuresEvent.OnTitleChanged(it)) },
+            onDescriptionChange = { onEvent(ManagePleasuresEvent.OnDescriptionChanged(it)) },
+            onCategoryChange = { onEvent(ManagePleasuresEvent.OnCategoryChanged(it)) },
+            onSave = { onEvent(ManagePleasuresEvent.OnSavePleasureClicked) }
+        )
+    }
 
-        if (uiState.showDeleteConfirmation) {
-            DeleteConfirmationDialog(
-                onConfirm = { onEvent(ManagePleasuresEvent.OnDeleteConfirmed) },
-                onDismiss = { onEvent(ManagePleasuresEvent.OnDeleteCancelled) }
-            )
-        }
+    if (uiState.showDeleteConfirmation) {
+        DeleteConfirmationDialog(
+            onConfirm = { onEvent(ManagePleasuresEvent.OnDeleteConfirmed) },
+            onDismiss = { onEvent(ManagePleasuresEvent.OnDeleteCancelled) }
+        )
     }
 }
 

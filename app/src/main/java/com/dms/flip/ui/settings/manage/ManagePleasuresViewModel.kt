@@ -1,16 +1,19 @@
 package com.dms.flip.ui.settings.manage
 
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.domain.model.Pleasure
-import com.dms.flip.domain.usecase.pleasures.AddCustomPleasureUseCase
+import com.dms.flip.domain.usecase.pleasures.AddPleasureUseCase
 import com.dms.flip.domain.usecase.pleasures.DeletePleasureUseCase
 import com.dms.flip.domain.usecase.pleasures.GetPleasuresUseCase
 import com.dms.flip.domain.usecase.pleasures.UpdatePleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,9 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManagePleasuresViewModel @Inject constructor(
+    private val resources: Resources,
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val updatePleasureUseCase: UpdatePleasureUseCase,
-    private val addCustomPleasureUseCase: AddCustomPleasureUseCase,
+    private val addPleasureUseCase: AddPleasureUseCase,
     private val deletePleasureUseCase: DeletePleasureUseCase
 ) : ViewModel() {
 
@@ -33,8 +37,17 @@ class ManagePleasuresViewModel @Inject constructor(
 
     private fun loadPleasures() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-        try {
-            getPleasuresUseCase().collectLatest { pleasures ->
+
+        getPleasuresUseCase()
+            .catch { e ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: resources.getString(R.string.generic_error_message)
+                    )
+                }
+            }
+            .collectLatest { pleasures ->
                 _uiState.update {
                     it.copy(
                         pleasures = pleasures,
@@ -43,15 +56,6 @@ class ManagePleasuresViewModel @Inject constructor(
                     )
                 }
             }
-        } catch (e: Exception) {
-            _uiState.update {
-                // TODO STRING HERE
-                it.copy(
-                    isLoading = false,
-                    error = e.message ?: "Une erreur est survenue"
-                )
-            }
-        }
     }
 
     fun onEvent(event: ManagePleasuresEvent) {
@@ -96,8 +100,15 @@ class ManagePleasuresViewModel @Inject constructor(
         try {
             val updatedPleasure = pleasure.copy(isEnabled = !pleasure.isEnabled)
             updatePleasureUseCase(updatedPleasure)
+            _uiState.update {
+                it.copy(pleasures = it.pleasures.map { p -> if (p.id == updatedPleasure.id) updatedPleasure else p })
+            }
         } catch (e: Exception) {
-            _uiState.update { it.copy(error = e.message ?: "Erreur lors de la mise à jour") }
+            _uiState.update {
+                it.copy(
+                    error = e.message ?: resources.getString(R.string.generic_error_message)
+                )
+            }
         }
     }
 
@@ -132,33 +143,24 @@ class ManagePleasuresViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                addCustomPleasureUseCase(
+                addPleasureUseCase(
                     title = state.newPleasureTitle.trim(),
                     description = state.newPleasureDescription.trim(),
                     category = state.newPleasureCategory
                 )
                 dismissBottomSheet()
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message ?: "Erreur lors de l'ajout") }
+                _uiState.update {
+                    it.copy(
+                        error = e.message ?: resources.getString(R.string.generic_error_message)
+                    )
+                }
             }
         }
     }
 
     private fun confirmDelete() {
-       /* _uiState.value.pleasureToDelete?.let { pleasure ->
-            viewModelScope.launch {
-                try {
-                    deleteCustomPleasureUseCase(pleasure)
-                } catch (e: Exception) {
-                    _uiState.update {
-                        it.copy(
-                            error = e.message ?: "Erreur lors de la suppression"
-                        )
-                    }
-                }
-            }
-        }
-        cancelDelete() */
+        // TODO
     }
 
     private fun cancelDelete() {

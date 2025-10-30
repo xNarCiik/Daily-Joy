@@ -189,6 +189,7 @@ fun NavGraph(
             val managePleasuresUiState by viewModel.uiState.collectAsState()
 
             ManagePleasuresScreen(
+                modifier = modifierWithPaddingValues,
                 uiState = managePleasuresUiState,
                 onEvent = viewModel::onEvent,
                 navigateBack = navController::popBackStack
