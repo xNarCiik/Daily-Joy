@@ -33,7 +33,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -99,11 +100,15 @@ fun ManagePleasuresScreen(
             ),
             endTopBarIcon = if (!isSelectionMode) {
                 TopBarIcon(
-                    icon = Icons.Default.Edit,
+                    icon = Icons.Outlined.Edit,
                     contentDescription = stringResource(R.string.edit_mode),
                     onClick = { isSelectionMode = true }
                 )
-            } else null
+            } else TopBarIcon(
+                icon = Icons.Outlined.Cancel,
+                contentDescription = stringResource(R.string.cancel),
+                onClick = { isSelectionMode = false }
+            )
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
