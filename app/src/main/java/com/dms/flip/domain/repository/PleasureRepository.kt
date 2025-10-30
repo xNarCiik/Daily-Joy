@@ -11,7 +11,7 @@ interface PleasureRepository {
     fun getRandomPleasure(category: PleasureCategory?): Flow<Pleasure>
     suspend fun insert(pleasure: Pleasure)
     suspend fun update(pleasure: Pleasure)
-    suspend fun delete(pleasure: Pleasure)
+    suspend fun delete(pleasuresId: List<String>)
     suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry)
     suspend fun getHistoryEntryForDay(dayIdentifier: String): PleasureHistoryEntry?
 }

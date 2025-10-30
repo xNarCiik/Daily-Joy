@@ -31,9 +31,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material3.Button
@@ -87,7 +87,7 @@ fun ManagePleasuresScreen(
         FlipTopBar(
             title = stringResource(R.string.manage_pleasures_title),
             startTopBarIcon = TopBarIcon(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                icon = if (isSelectionMode) Icons.Default.Cancel else Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = stringResource(R.string.back),
                 onClick = {
                     if (isSelectionMode) {
@@ -104,11 +104,7 @@ fun ManagePleasuresScreen(
                     contentDescription = stringResource(R.string.edit_mode),
                     onClick = { isSelectionMode = true }
                 )
-            } else TopBarIcon(
-                icon = Icons.Outlined.Cancel,
-                contentDescription = stringResource(R.string.cancel),
-                onClick = { isSelectionMode = false }
-            )
+            } else null
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -170,8 +166,6 @@ fun ManagePleasuresScreen(
                                 selectedPleasures.toList()
                             )
                         )
-                        selectedPleasures.clear()
-                        isSelectionMode = false
                     }
                 )
             }

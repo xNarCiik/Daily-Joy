@@ -9,10 +9,11 @@ data class ManagePleasuresUiState(
     val showAddDialog: Boolean = false,
     val newPleasureTitle: String = "",
     val newPleasureDescription: String = "",
-    val newPleasureCategory: PleasureCategory = PleasureCategory.FOOD,
+    val newPleasureCategory: PleasureCategory = PleasureCategory.ALL,
     val titleError: String? = null,
     val descriptionError: String? = null,
     val showDeleteConfirmation: Boolean = false,
+    val pleasuresToDelete: List<String> = emptyList(),
     val error: String? = null
 )
 

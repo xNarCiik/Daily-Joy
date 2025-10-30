@@ -7,7 +7,7 @@ import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.usecase.pleasures.AddPleasureUseCase
-import com.dms.flip.domain.usecase.pleasures.DeletePleasureUseCase
+import com.dms.flip.domain.usecase.pleasures.DeletePleasuresUseCase
 import com.dms.flip.domain.usecase.pleasures.GetPleasuresUseCase
 import com.dms.flip.domain.usecase.pleasures.UpdatePleasureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ class ManagePleasuresViewModel @Inject constructor(
     private val getPleasuresUseCase: GetPleasuresUseCase,
     private val updatePleasureUseCase: UpdatePleasureUseCase,
     private val addPleasureUseCase: AddPleasureUseCase,
-    private val deletePleasureUseCase: DeletePleasureUseCase
+    private val deletePleasuresUseCase: DeletePleasuresUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ManagePleasuresUiState())
@@ -85,7 +85,12 @@ class ManagePleasuresViewModel @Inject constructor(
 
             is ManagePleasuresEvent.OnSavePleasureClicked -> savePleasure()
             is ManagePleasuresEvent.OnDeleteMultiplePleasuresClicked -> {
-                // TODO
+                _uiState.update {
+                    it.copy(
+                        showDeleteConfirmation = true,
+                        pleasuresToDelete = event.pleasuresId
+                    )
+                }
             }
 
             is ManagePleasuresEvent.OnDeleteConfirmed -> confirmDelete()
@@ -160,10 +165,34 @@ class ManagePleasuresViewModel @Inject constructor(
     }
 
     private fun confirmDelete() {
-        // TODO
+        viewModelScope.launch {
+            try {
+                val pleasuresToDelete = _uiState.value.pleasuresToDelete
+                deletePleasuresUseCase(pleasuresToDelete)
+                _uiState.update {
+                    it.copy(
+                        showDeleteConfirmation = false,
+                        pleasuresToDelete = emptyList()
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        error = e.message ?: resources.getString(R.string.generic_error_message),
+                        showDeleteConfirmation = false,
+                        pleasuresToDelete = emptyList()
+                    )
+                }
+            }
+        }
     }
 
     private fun cancelDelete() {
-        _uiState.update { it.copy(showDeleteConfirmation = false) } // TODO
+        _uiState.update {
+            it.copy(
+                showDeleteConfirmation = false,
+                pleasuresToDelete = emptyList()
+            )
+        }
     }
 }

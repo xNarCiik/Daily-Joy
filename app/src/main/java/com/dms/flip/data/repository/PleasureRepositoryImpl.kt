@@ -79,9 +79,13 @@ class PleasureRepositoryImpl @Inject constructor(
             .document(pleasure.id).set(pleasure.toDto()).await()
     }
 
-    override suspend fun delete(pleasure: Pleasure) {
-        firestore.collection("users").document(userId).collection("pleasures")
-            .document(pleasure.id).delete().await()
+    override suspend fun delete(pleasuresId: List<String>) {
+        val batch = firestore.batch()
+        pleasuresId.forEach { pleasureId ->
+            val docRef = firestore.collection("users").document(userId).collection("pleasures").document(pleasureId)
+            batch.delete(docRef)
+        }
+        batch.commit().await()
     }
 
     override suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry) {

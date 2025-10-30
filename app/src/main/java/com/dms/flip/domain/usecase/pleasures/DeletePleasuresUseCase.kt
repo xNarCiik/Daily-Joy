@@ -1,13 +1,12 @@
 package com.dms.flip.domain.usecase.pleasures
 
-import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.repository.PleasureRepository
 import javax.inject.Inject
 
-class DeletePleasureUseCase @Inject constructor(
+class DeletePleasuresUseCase @Inject constructor(
     private val pleasureRepository: PleasureRepository
 ) {
-    suspend operator fun invoke(pleasure: Pleasure) {
-        pleasureRepository.delete(pleasure)
+    suspend operator fun invoke(pleasuresId: List<String>) {
+        pleasureRepository.delete(pleasuresId)
     }
 }
