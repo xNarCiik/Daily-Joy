@@ -20,7 +20,7 @@ fun TimePicker(
         { _, newHour, newMinute ->
             val newTime = String.format("%02d:%02d", newHour, newMinute)
             onTimeSelected(newTime)
-            onDismiss
+            onDismiss()
         },
         hour,
         minute,
