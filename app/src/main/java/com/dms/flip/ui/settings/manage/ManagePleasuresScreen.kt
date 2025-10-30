@@ -25,7 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -63,7 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
-import com.dms.flip.data.model.Pleasure
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.ui.component.FlipTopBar
 import com.dms.flip.ui.component.TopBarIcon
 import com.dms.flip.ui.settings.manage.component.AddPleasureBottomSheet
@@ -131,20 +131,17 @@ fun ManagePleasuresScreen(
                         contentPadding = PaddingValues(bottom = if (selectedPleasures.isNotEmpty()) 80.dp else 0.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(
-                            items = uiState.pleasures,
-                            key = { it.id }
-                        ) { pleasure ->
+                        itemsIndexed(items = uiState.pleasures) { index, pleasure ->
                             PleasureItem(
                                 pleasure = pleasure,
                                 isSelectionMode = isSelectionMode,
-                                isSelected = selectedPleasures.contains(pleasure.id),
+                                isSelected = selectedPleasures.contains(index),
                                 onToggle = { onEvent(ManagePleasuresEvent.OnPleasureToggled(pleasure)) },
                                 onSelect = {
-                                    if (selectedPleasures.contains(pleasure.id)) {
-                                        selectedPleasures.remove(pleasure.id)
+                                    if (selectedPleasures.contains(index)) {
+                                        selectedPleasures.remove(index)
                                     } else {
-                                        selectedPleasures.add(pleasure.id)
+                                        selectedPleasures.add(index)
                                     }
                                 },
                                 modifier = Modifier.animateItem()

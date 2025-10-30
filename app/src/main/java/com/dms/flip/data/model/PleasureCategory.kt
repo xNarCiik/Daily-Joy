@@ -17,7 +17,7 @@ import androidx.compose.material.icons.filled.Theaters
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.dms.flip.R
-
+// TODO MOVE TO UI
 enum class PleasureCategory(
     @StringRes val label: Int,
     val icon: ImageVector,

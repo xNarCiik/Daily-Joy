@@ -2,7 +2,7 @@ package com.dms.flip.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
+import com.dms.flip.data.model.PleasureHistoryEntry
 import com.dms.flip.domain.usecase.weekly.GetWeeklyHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.collections.find
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(

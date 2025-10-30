@@ -1,7 +1,9 @@
-package com.dms.flip.data.model
+package com.dms.flip.domain.model
+
+import com.dms.flip.data.model.PleasureCategory
 
 data class Pleasure(
-    val id: Int = 0,
+    val id: String,
     val title: String = "",
     val description: String = "",
     val category: PleasureCategory = PleasureCategory.OTHER,

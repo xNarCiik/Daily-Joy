@@ -2,7 +2,6 @@ package com.dms.flip.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.dms.flip.data.database.dao.PleasureDao
 import com.dms.flip.data.local.LocalDailyMessagesDataSource
 import com.dms.flip.data.repository.AuthRepository
 import com.dms.flip.data.repository.DailyMessageRepositoryImpl
@@ -54,13 +53,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun bindPleasureRepository(pleasureDao: PleasureDao): PleasureRepository =
-        PleasureRepositoryImpl(pleasureDao = pleasureDao)
+    fun bindPleasureRepository(firestore: FirebaseFirestore, firebaseAuth: FirebaseAuth): PleasureRepository =
+        PleasureRepositoryImpl(firestore, firebaseAuth)
 
     @Provides
     @Singleton
-    fun provideHistoryRepository(pleasureDao: PleasureDao): HistoryRepository =
-        HistoryRepositoryImpl(pleasureDao)
+    fun provideHistoryRepository(): HistoryRepository =
+        HistoryRepositoryImpl()
 
     @Provides
     @Singleton

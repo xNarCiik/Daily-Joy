@@ -1,6 +1,6 @@
 package com.dms.flip.domain.model
 
-import com.dms.flip.data.model.Pleasure
+import com.dms.flip.domain.model.Pleasure
 
 data class WeeklyPleasureDetails(
     val pleasure: Pleasure,

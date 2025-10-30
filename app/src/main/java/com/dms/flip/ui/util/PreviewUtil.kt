@@ -2,8 +2,8 @@ package com.dms.flip.ui.util
 
 import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview
-import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.ui.social.Friend
 import com.dms.flip.ui.social.FriendPleasure
 import com.dms.flip.ui.social.PleasureStatus
@@ -13,7 +13,7 @@ import com.dms.flip.ui.social.PleasureStatus
 annotation class LightDarkPreview
 
 val previewDailyPleasure = Pleasure(
-    id = 0,
+    id = "0",
     title = "Pleasure Title",
     description = "Pleasure Description",
     category = PleasureCategory.CREATIVE

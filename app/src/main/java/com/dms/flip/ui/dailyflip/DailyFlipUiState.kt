@@ -1,7 +1,7 @@
 package com.dms.flip.ui.dailyflip
 
-import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.domain.model.Pleasure
 
 data class DailyFlipUiState(
     val screenState: DailyFlipScreenState = DailyFlipScreenState.Loading,
@@ -10,6 +10,7 @@ data class DailyFlipUiState(
 
 sealed interface DailyFlipScreenState {
     data object Loading : DailyFlipScreenState
+    data class Error(val message: String) : DailyFlipScreenState
 
     data class SetupRequired(val pleasureCount: Int) : DailyFlipScreenState
 

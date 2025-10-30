@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.ui.component.ErrorState
 import com.dms.flip.ui.component.FlipTopBar
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.component.TopBarIcon
@@ -94,6 +95,12 @@ fun DailyFlipScreen(
                 contentAlignment = Alignment.Center
             ) {
                 when (screenState) {
+                    is DailyFlipScreenState.Error -> {
+                        ErrorState(message = screenState.message) {
+                            onEvent(DailyFlipEvent.Reload)
+                        }
+                    }
+
                     is DailyFlipScreenState.SetupRequired -> {
                         DailyFlipSetupContent(
                             currentPleasureCount = screenState.pleasureCount,

@@ -1,34 +1,65 @@
 package com.dms.flip.data.repository
 
-import com.dms.flip.data.database.dao.PleasureDao
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
-import com.dms.flip.data.database.mapper.toDomain
-import com.dms.flip.data.database.mapper.toEntity
-import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.data.model.PleasureDto
+import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.data.model.toDto
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.repository.PleasureRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class PleasureRepositoryImpl @Inject constructor(
-    private val pleasureDao: PleasureDao
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : PleasureRepository {
 
-    override fun getAllPleasures(): Flow<List<Pleasure>> {
-        return pleasureDao.getAllPleasures().map { entities ->
-            entities.map { it.toDomain() }
+    private val userId: String
+        get() = auth.currentUser?.uid ?: throw IllegalStateException("User not logged in")
+
+    override fun getPleasures(): Flow<List<Pleasure>> = callbackFlow {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            trySend(emptyList())
+            close()
+            return@callbackFlow
         }
+
+        val collectionRef = firestore
+            .collection("users")
+            .document(userId)
+            .collection("pleasures")
+
+        val listener = collectionRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                close(e)
+                return@addSnapshotListener
+            }
+
+            val pleasures = snapshot?.documents?.mapNotNull { doc ->
+                doc.toObject(PleasureDto::class.java)?.toDomain(doc.id)
+            }.orEmpty()
+
+            trySend(pleasures)
+        }
+
+        awaitClose { listener.remove() }
     }
 
     override fun getPleasuresCount(): Flow<Int> {
-        return getAllPleasures().map { pleasures ->
+        return getPleasures().map { pleasures ->
             pleasures.count { it.isEnabled }
         }
     }
 
     override fun getRandomPleasure(category: PleasureCategory?): Flow<Pleasure> {
-        return getAllPleasures().map { pleasures ->
+        return getPleasures().map { pleasures ->
             val filteredList =
                 pleasures.filter { it.isEnabled && (category == PleasureCategory.ALL || category == null || it.category == category) }
             if (filteredList.isEmpty()) {
@@ -38,17 +69,29 @@ class PleasureRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insert(pleasure: Pleasure) = pleasureDao.insert(pleasure.toEntity())
+    override suspend fun insert(pleasure: Pleasure) {
+        firestore.collection("users").document(userId).collection("pleasures")
+            .add(pleasure.toDto()).await()
+    }
 
-    override suspend fun update(pleasure: Pleasure) = pleasureDao.update(pleasure.toEntity())
+    override suspend fun update(pleasure: Pleasure) {
+        firestore.collection("users").document(userId).collection("pleasures")
+            .document(pleasure.id).set(pleasure.toDto()).await()
+    }
 
-    override suspend fun delete(pleasure: Pleasure) = pleasureDao.delete(pleasure.toEntity())
+    override suspend fun delete(pleasure: Pleasure) {
+        firestore.collection("users").document(userId).collection("pleasures")
+            .document(pleasure.id).delete().await()
+    }
 
     override suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry) {
-        pleasureDao.upsertHistoryEntry(entry)
+        firestore.collection("users").document(userId).collection("history")
+            .document(entry.dayIdentifier).set(entry).await()
     }
 
     override suspend fun getHistoryEntryForDay(dayIdentifier: String): PleasureHistoryEntry? {
-        return pleasureDao.getHistoryEntryForDay(dayIdentifier)
+        return firestore.collection("users").document(userId).collection("history")
+            .document(dayIdentifier).get().await()
+            .toObject(PleasureHistoryEntry::class.java)
     }
 }

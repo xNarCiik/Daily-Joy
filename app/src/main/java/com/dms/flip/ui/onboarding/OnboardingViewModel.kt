@@ -3,15 +3,13 @@ package com.dms.flip.ui.onboarding
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dms.flip.data.model.Pleasure
 import com.dms.flip.domain.usecase.onboarding.SaveOnboardingStatusUseCase
-import com.dms.flip.domain.usecase.pleasures.GetPleasuresUseCase
+import com.dms.flip.domain.usecase.pleasures.GetLocalPleasuresUseCase
 import com.dms.flip.notification.DailyReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +17,7 @@ import javax.inject.Inject
 class OnboardingViewModel @Inject constructor(
     application: Application,
     private val saveOnboardingStatusUseCase: SaveOnboardingStatusUseCase,
-    private val getPleasuresUseCase: GetPleasuresUseCase
+    private val getLocalPleasuresUseCase: GetLocalPleasuresUseCase
 ) : ViewModel() {
     private val dailyReminderManager = DailyReminderManager(application)
 
@@ -89,11 +87,12 @@ class OnboardingViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(username = username)
     }
 
-    fun togglePleasure(pleasure: Pleasure) {
-        val updatedPleasures = _uiState.value.availablePleasures.map {
-            if (it.id == pleasure.id) it.copy(isEnabled = !it.isEnabled)
-            else it
-        }
+    fun togglePleasure(index: Int) {
+        val updatedPleasures =
+            _uiState.value.availablePleasures.mapIndexed { indexPleasure, pleasure ->
+                if (index == indexPleasure) pleasure.copy(isEnabled = !pleasure.isEnabled)
+                else pleasure
+            }
         _uiState.value = _uiState.value.copy(availablePleasures = updatedPleasures)
     }
 
@@ -128,6 +127,6 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private fun loadPleasures() = viewModelScope.launch {
-        _uiState.value = _uiState.value.copy(availablePleasures = getPleasuresUseCase().first())
+        _uiState.value = _uiState.value.copy(availablePleasures = getLocalPleasuresUseCase())
     }
 }

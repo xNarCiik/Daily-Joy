@@ -1,6 +1,6 @@
 package com.dms.flip.domain.usecase.weekly
 
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
+import com.dms.flip.data.model.PleasureHistoryEntry
 import com.dms.flip.domain.repository.HistoryRepository
 import kotlinx.coroutines.flow.Flow
 import java.util.Calendar

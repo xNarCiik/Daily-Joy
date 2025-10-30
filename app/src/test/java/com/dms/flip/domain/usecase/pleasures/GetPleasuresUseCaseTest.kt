@@ -1,7 +1,7 @@
 
 package com.dms.flip.domain.usecase.pleasures
 
-import com.dms.flip.data.model.Pleasure
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.repository.PleasureRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
@@ -31,7 +31,7 @@ class GetPleasuresUseCaseTest {
             Pleasure(id = 1, title = "Lire un livre"),
             Pleasure(id = 2, title = "Écouter de la musique")
         )
-        whenever(repository.getAllPleasures()).thenReturn(flowOf(pleasures))
+        whenever(repository.getPleasures()).thenReturn(flowOf(pleasures))
 
         // When
         val result = getPleasuresUseCase().first()
@@ -43,7 +43,7 @@ class GetPleasuresUseCaseTest {
     @Test
     fun `invoke should return empty list when repository is empty`() = runTest {
         // Given
-        whenever(repository.getAllPleasures()).thenReturn(flowOf(emptyList()))
+        whenever(repository.getPleasures()).thenReturn(flowOf(emptyList()))
 
         // When
         val result = getPleasuresUseCase().first()
@@ -56,7 +56,7 @@ class GetPleasuresUseCaseTest {
     fun `invoke should propagate exception from repository`() = runTest {
         // Given
         val exception = RuntimeException("DB Error")
-        whenever(repository.getAllPleasures()).thenReturn(flow { throw exception })
+        whenever(repository.getPleasures()).thenReturn(flow { throw exception })
 
         // When & Then
         try {

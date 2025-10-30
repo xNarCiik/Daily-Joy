@@ -1,6 +1,6 @@
 package com.dms.flip.domain.usecase.onboarding
 
-import com.dms.flip.data.model.Pleasure
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.repository.onboarding.OnboardingRepository
 import com.dms.flip.domain.usecase.settings.SetDailyReminderStateUseCase
 import com.dms.flip.domain.usecase.settings.SetReminderTimeUseCase

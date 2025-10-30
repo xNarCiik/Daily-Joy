@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,14 +36,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
-import com.dms.flip.data.model.Pleasure
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 
 @Composable
 fun PleasuresStep(
     pleasures: List<Pleasure>,
-    onTogglePleasure: (Pleasure) -> Unit
+    onTogglePleasure: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -78,13 +78,10 @@ fun PleasuresStep(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(
-                items = pleasures,
-                key = { it.id }
-            ) { pleasure ->
+            itemsIndexed(items = pleasures) { index, pleasure ->
                 PleasureOnboardingItem(
                     pleasure = pleasure,
-                    onToggle = { onTogglePleasure(pleasure) }
+                    onToggle = { onTogglePleasure(index) }
                 )
             }
         }

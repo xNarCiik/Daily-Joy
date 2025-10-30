@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.data.model.PleasureHistoryEntry
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.history.component.WeekNavigationHeader
 import com.dms.flip.ui.history.component.WeeklyPleasuresList
@@ -124,7 +124,7 @@ private fun HistoryPreview() {
                         WeeklyDay(
                             dayName = "Lundi",
                             historyEntry = PleasureHistoryEntry(
-                                id = 1,
+                                id = "1",
                                 dayIdentifier = "",
                                 dateDrawn = System.currentTimeMillis() - 86400000 * 2,
                                 isCompleted = true,
@@ -136,7 +136,7 @@ private fun HistoryPreview() {
                         WeeklyDay(
                             dayName = "Mardi",
                             historyEntry = PleasureHistoryEntry(
-                                id = 2,
+                                id = "2",
                                 dayIdentifier = "",
                                 dateDrawn = System.currentTimeMillis() - 86400000,
                                 isCompleted = true,
@@ -148,7 +148,7 @@ private fun HistoryPreview() {
                         WeeklyDay(
                             dayName = "Mercredi",
                             historyEntry = PleasureHistoryEntry(
-                                id = 3,
+                                id = "3",
                                 dayIdentifier = "",
                                 dateDrawn = System.currentTimeMillis(),
                                 isCompleted = false,

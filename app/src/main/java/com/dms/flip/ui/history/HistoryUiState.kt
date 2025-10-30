@@ -1,6 +1,6 @@
 package com.dms.flip.ui.history
 
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
+import com.dms.flip.data.model.PleasureHistoryEntry
 import java.util.Locale
 
 data class HistoryUiState(

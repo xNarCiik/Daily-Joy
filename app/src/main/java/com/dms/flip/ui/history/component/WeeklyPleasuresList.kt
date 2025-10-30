@@ -40,8 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.data.model.PleasureHistoryEntry
 import com.dms.flip.ui.history.WeeklyDay
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
@@ -359,7 +359,7 @@ private fun WeeklyPleasuresListPreview() {
                     WeeklyDay(
                         dayName = "Lundi",
                         historyEntry = PleasureHistoryEntry(
-                            id = 1,
+                            id = "1",
                             dayIdentifier = "",
                             dateDrawn = System.currentTimeMillis() - 86400000 * 2,
                             isCompleted = true,
@@ -371,7 +371,7 @@ private fun WeeklyPleasuresListPreview() {
                     WeeklyDay(
                         dayName = "Mardi",
                         historyEntry = PleasureHistoryEntry(
-                            id = 2,
+                            id = "2",
                             dayIdentifier = "",
                             dateDrawn = System.currentTimeMillis() - 86400000,
                             isCompleted = true,
@@ -383,7 +383,7 @@ private fun WeeklyPleasuresListPreview() {
                     WeeklyDay(
                         dayName = "Mercredi",
                         historyEntry = PleasureHistoryEntry(
-                            id = 3,
+                            id = "3",
                             dayIdentifier = "",
                             dateDrawn = System.currentTimeMillis(),
                             isCompleted = false,

@@ -4,8 +4,8 @@ import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.flip.R
-import com.dms.flip.data.database.mapper.toPleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.data.model.toPleasure
 import com.dms.flip.domain.usecase.GetRandomDailyMessageUseCase
 import com.dms.flip.domain.usecase.dailypleasure.GetRandomPleasureUseCase
 import com.dms.flip.domain.usecase.history.GetTodayHistoryEntryUseCase
@@ -15,7 +15,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,58 +36,65 @@ class DailyFlipViewModel @Inject constructor(
     private val getTodayHistoryEntryUseCase: GetTodayHistoryEntryUseCase
 ) : ViewModel() {
 
-    private val randomDailyMessage = MutableStateFlow("")
-
     private val _uiState = MutableStateFlow(DailyFlipUiState())
     val uiState: StateFlow<DailyFlipUiState> = _uiState.asStateFlow()
 
     init {
-        checkInitialState()
+        observeData()
     }
 
-    fun checkInitialState() {
+    private fun observeData() {
         viewModelScope.launch {
-            val pleasures = getPleasuresUseCase().first()
+            _uiState.value = _uiState.value.copy(screenState = DailyFlipScreenState.Loading)
 
-            if (randomDailyMessage.value.isBlank()) {
-                randomDailyMessage.value = getRandomDailyMessageUseCase()
+            combine(
+                getPleasuresUseCase(),
+                getTodayHistoryEntryUseCase(),
+                flow { emit(getRandomDailyMessageUseCase()) }
+            ) { pleasures, todayHistory, randomMessage ->
+
+                val enabledCount = pleasures.count { it.isEnabled }
+                val isSetupRequired = enabledCount < MinimumPleasuresCount
+
+                when {
+                    isSetupRequired -> DailyFlipUiState(
+                        screenState = DailyFlipScreenState.SetupRequired(enabledCount)
+                    )
+
+                    todayHistory?.isCompleted == true -> DailyFlipUiState(
+                        screenState = DailyFlipScreenState.Completed,
+                        headerMessage = ""
+                    )
+
+                    else -> DailyFlipUiState(
+                        screenState = DailyFlipScreenState.Ready(
+                            availableCategories = PleasureCategory.entries,
+                            dailyPleasure = todayHistory?.toPleasure(),
+                            isCardFlipped = todayHistory != null
+                        ),
+                        headerMessage = if (todayHistory == null)
+                            randomMessage
+                        else
+                            resources.getString(R.string.your_flip_daily)
+                    )
+                }
             }
-
-            val enabledPleasures = pleasures.count { it.isEnabled }
-            val isSetupRequired = enabledPleasures < MinimumPleasuresCount
-
-            if (isSetupRequired) {
-                _uiState.value =
-                    DailyFlipUiState(
-                        screenState = DailyFlipScreenState.SetupRequired(
-                            pleasureCount = enabledPleasures
+                .catch { e ->
+                    _uiState.value = DailyFlipUiState(
+                        screenState = DailyFlipScreenState.Error(
+                            e.message ?: resources.getString(R.string.generic_error_message)
                         )
                     )
-                return@launch
-            }
-
-            val todayHistoryPleasure = getTodayHistoryEntryUseCase().first()
-            if (todayHistoryPleasure?.isCompleted == true) {
-                _uiState.value = _uiState.value.copy(
-                    screenState = DailyFlipScreenState.Completed,
-                    headerMessage = ""
-                )
-            } else {
-                _uiState.value = DailyFlipUiState(
-                    screenState = DailyFlipScreenState.Ready(
-                        availableCategories = PleasureCategory.entries,
-                        dailyPleasure = todayHistoryPleasure?.toPleasure(),
-                        isCardFlipped = todayHistoryPleasure != null
-                    ),
-                    headerMessage = if (todayHistoryPleasure == null) randomDailyMessage.value else "Votre plaisir du jour"
-                )
-            }
+                }
+                .collectLatest { newState ->
+                    _uiState.value = newState
+                }
         }
     }
 
     fun onEvent(event: DailyFlipEvent) {
         when (event) {
-            is DailyFlipEvent.Reload -> checkInitialState()
+            is DailyFlipEvent.Reload -> observeData()
             is DailyFlipEvent.OnCategorySelected -> handleCategorySelection(event.category)
             is DailyFlipEvent.OnCardClicked -> handleDrawCard()
             is DailyFlipEvent.OnCardFlipped -> handleCardFlipped()
@@ -90,47 +102,62 @@ class DailyFlipViewModel @Inject constructor(
         }
     }
 
-    private fun handleCategorySelection(category: PleasureCategory) = viewModelScope.launch {
-        val currentState = _uiState.value.screenState
-        if (currentState is DailyFlipScreenState.Ready) {
-            _uiState.value = _uiState.value.copy(
-                screenState = currentState.copy(selectedCategory = category)
-            )
+    private fun handleCategorySelection(category: PleasureCategory) {
+        val current = _uiState.value.screenState
+        if (current is DailyFlipScreenState.Ready) {
+            _uiState.update {
+                it.copy(screenState = current.copy(selectedCategory = category))
+            }
         }
     }
 
     private fun handleDrawCard() = viewModelScope.launch {
-        val currentState = _uiState.value.screenState
-        if (currentState is DailyFlipScreenState.Ready && currentState.dailyPleasure == null) {
-            val randomPleasure = getRandomPleasureUseCase(currentState.selectedCategory).first()
-            saveHistoryEntryUseCase(randomPleasure)
-            _uiState.value = _uiState.value.copy(
-                screenState = currentState.copy(dailyPleasure = randomPleasure)
-            )
+        val current = _uiState.value.screenState
+        if (current is DailyFlipScreenState.Ready && current.dailyPleasure == null) {
+            try {
+                val randomPleasure = getRandomPleasureUseCase(current.selectedCategory).first()
+                saveHistoryEntryUseCase(randomPleasure)
+                _uiState.update {
+                    it.copy(screenState = current.copy(dailyPleasure = randomPleasure))
+                }
+            } catch (e: Exception) {
+                _uiState.value = DailyFlipUiState(
+                    screenState = DailyFlipScreenState.Error(
+                        "Impossible de tirer une carte : ${e.message}"
+                    )
+                )
+            }
         }
     }
 
-    private fun handleCardFlipped() = viewModelScope.launch {
-        val currentState = _uiState.value.screenState
-        if (currentState is DailyFlipScreenState.Ready) {
-            _uiState.value = _uiState.value.copy(
-                screenState = currentState.copy(isCardFlipped = true),
-                headerMessage = resources.getString(R.string.your_flip_daily)
-            )
+    private fun handleCardFlipped() {
+        val current = _uiState.value.screenState
+        if (current is DailyFlipScreenState.Ready) {
+            _uiState.update {
+                it.copy(
+                    screenState = current.copy(isCardFlipped = true),
+                    headerMessage = resources.getString(R.string.your_flip_daily)
+                )
+            }
         }
     }
 
     private fun handleCardMarkedAsDone() = viewModelScope.launch {
-        val currentState = _uiState.value.screenState
-        if (currentState is DailyFlipScreenState.Ready) {
-            currentState.dailyPleasure?.let {
-                saveHistoryEntryUseCase(
-                    pleasure = currentState.dailyPleasure,
-                    markAsCompleted = true
-                )
-                _uiState.value = _uiState.value.copy(
-                    screenState = DailyFlipScreenState.Completed,
-                    ""
+        val current = _uiState.value.screenState
+        if (current is DailyFlipScreenState.Ready) {
+            try {
+                current.dailyPleasure?.let { pleasure ->
+                    saveHistoryEntryUseCase(pleasure, markAsCompleted = true)
+                    _uiState.value = DailyFlipUiState(
+                        screenState = DailyFlipScreenState.Completed,
+                        headerMessage = ""
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.value = DailyFlipUiState(
+                    screenState = DailyFlipScreenState.Error(
+                        "Erreur lors de la validation du plaisir : ${e.message}"
+                    )
                 )
             }
         }

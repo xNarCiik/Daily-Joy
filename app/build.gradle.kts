@@ -64,11 +64,6 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.androidx.core.splashscreen)
 
-    // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    kapt(libs.androidx.room.compiler)
-
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 

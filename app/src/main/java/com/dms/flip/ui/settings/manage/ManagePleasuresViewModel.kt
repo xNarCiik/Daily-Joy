@@ -2,8 +2,8 @@ package com.dms.flip.ui.settings.manage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.usecase.pleasures.AddCustomPleasureUseCase
 import com.dms.flip.domain.usecase.pleasures.DeletePleasureUseCase
 import com.dms.flip.domain.usecase.pleasures.GetPleasuresUseCase
@@ -81,15 +81,6 @@ class ManagePleasuresViewModel @Inject constructor(
 
             is ManagePleasuresEvent.OnSavePleasureClicked -> savePleasure()
             is ManagePleasuresEvent.OnDeleteMultiplePleasuresClicked -> {
-                _uiState.update {
-                    it.copy(
-                        pleasures = _uiState.value.pleasures.filter { pleasure ->
-                            event.pleasuresId.contains(
-                                pleasure.id
-                            )
-                        }
-                    )
-                }
                 // TODO
             }
 

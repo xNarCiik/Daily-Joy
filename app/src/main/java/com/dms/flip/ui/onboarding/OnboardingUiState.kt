@@ -1,6 +1,6 @@
 package com.dms.flip.ui.onboarding
 
-import com.dms.flip.data.model.Pleasure
+import com.dms.flip.domain.model.Pleasure
 
 data class OnboardingUiState(
     val isLoading: Boolean = true,

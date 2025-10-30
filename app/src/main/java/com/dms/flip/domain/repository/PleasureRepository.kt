@@ -1,12 +1,12 @@
 package com.dms.flip.domain.repository
 
-import com.dms.flip.data.database.entity.PleasureHistoryEntry
-import com.dms.flip.data.model.Pleasure
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.domain.model.Pleasure
 import kotlinx.coroutines.flow.Flow
 
 interface PleasureRepository {
-    fun getAllPleasures(): Flow<List<Pleasure>>
+    fun getPleasures(): Flow<List<Pleasure>>
     fun getPleasuresCount(): Flow<Int>
     fun getRandomPleasure(category: PleasureCategory?): Flow<Pleasure>
     suspend fun insert(pleasure: Pleasure)
