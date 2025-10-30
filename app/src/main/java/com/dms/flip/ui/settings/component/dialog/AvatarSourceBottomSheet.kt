@@ -25,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.dms.flip.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +51,7 @@ fun AvatarSourceBottomSheet(
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Text(
-                text = "Photo de profil",
+                text = stringResource(R.string.profile_photo),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -58,8 +60,8 @@ fun AvatarSourceBottomSheet(
 
             AvatarSourceOption(
                 icon = Icons.Default.CameraAlt,
-                title = "Prendre une photo",
-                subtitle = "Utiliser l'appareil photo",
+                title = stringResource(R.string.take_a_photo),
+                subtitle = stringResource(R.string.use_camera),
                 onClick = {
                     onDismiss()
                     onCameraClick()
@@ -70,8 +72,8 @@ fun AvatarSourceBottomSheet(
 
             AvatarSourceOption(
                 icon = Icons.Default.PhotoLibrary,
-                title = "Choisir une photo",
-                subtitle = "Depuis la galerie",
+                title = stringResource(R.string.choose_a_photo),
+                subtitle = stringResource(R.string.from_gallery),
                 onClick = {
                     onDismiss()
                     onGalleryClick()

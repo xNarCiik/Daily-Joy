@@ -180,6 +180,20 @@
     <string name="notification_permission_dialog_text">Pour recevoir des rappels quotidiens, vous devez autoriser les notifications dans les paramètres de l\'application.</string>
     <string name="notification_permission_dialog_settings_button">Ouvrir les paramètres</string>
 
+    <!-- Camera & Avatar -->
+    <string name="camera_permission_denied_title">Permission refusée</string>
+    <string name="camera_permission_title">Autoriser l\'accès à la caméra</string>
+    <string name="camera_permission_permanently_denied_message">"Vous avez refusé l'accès à la caméra de manière permanente. Pour utiliser cette fonctionnalité, veuillez autoriser l'accès dans les paramètres de l'application."</string>
+    <string name="camera_permission_message">"Flip a besoin d'accéder à votre caméra pour prendre une photo de profil."</string>
+    <string name="open_settings">Ouvrir les paramètres</string>
+    <string name="understood">Compris</string>
+    <string name="later">Plus tard</string>
+    <string name="profile_photo">Photo de profil</string>
+    <string name="take_a_photo">Prendre une photo</string>
+    <string name="use_camera">Utiliser l\'appareil photo</string>
+    <string name="choose_a_photo">Choisir une photo</string>
+    <string name="from_gallery">Depuis la galerie</string>
+
     <!-- Categories -->
     <string name="category_all">Toutes</string>
     <string name="category_food">Nourriture</string>
