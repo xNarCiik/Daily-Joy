@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
-import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.ui.component.LoadingState
 import com.dms.flip.ui.history.component.WeekNavigationHeader
 import com.dms.flip.ui.history.component.WeeklyPleasuresList
@@ -90,7 +90,7 @@ private fun HistoryContent(
 
         // Cartes de statistiques
         val history = weeklyDays.mapNotNull { it.historyEntry }
-        val completedCount = history.count { it.isCompleted }
+        val completedCount = history.count { it.completed }
 
         WeeklyStatsGrid(
             pleasuresCount = completedCount,
@@ -123,11 +123,11 @@ private fun HistoryPreview() {
                     weeklyDays = listOf(
                         WeeklyDay(
                             dayName = "Lundi",
-                            historyEntry = PleasureHistoryEntry(
+                            historyEntry = PleasureHistory(
                                 id = "1",
                                 dayIdentifier = "",
                                 dateDrawn = System.currentTimeMillis() - 86400000 * 2,
-                                isCompleted = true,
+                                completed = true,
                                 pleasureTitle = "Savourer un café chaud",
                                 pleasureDescription = "Prendre le temps de déguster",
                                 category = PleasureCategory.FOOD
@@ -135,11 +135,11 @@ private fun HistoryPreview() {
                         ),
                         WeeklyDay(
                             dayName = "Mardi",
-                            historyEntry = PleasureHistoryEntry(
+                            historyEntry = PleasureHistory(
                                 id = "2",
                                 dayIdentifier = "",
                                 dateDrawn = System.currentTimeMillis() - 86400000,
-                                isCompleted = true,
+                                completed = true,
                                 pleasureTitle = "Lire quelques pages d'un livre",
                                 pleasureDescription = "Se plonger dans une histoire",
                                 category = PleasureCategory.LEARNING
@@ -147,11 +147,11 @@ private fun HistoryPreview() {
                         ),
                         WeeklyDay(
                             dayName = "Mercredi",
-                            historyEntry = PleasureHistoryEntry(
+                            historyEntry = PleasureHistory(
                                 id = "3",
                                 dayIdentifier = "",
                                 dateDrawn = System.currentTimeMillis(),
-                                isCompleted = false,
+                                completed = false,
                                 pleasureTitle = "Plaisir du jour",
                                 pleasureDescription = "",
                                 category = PleasureCategory.ALL

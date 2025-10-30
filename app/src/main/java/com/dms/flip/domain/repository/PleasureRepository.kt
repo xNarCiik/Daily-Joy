@@ -1,8 +1,8 @@
 package com.dms.flip.domain.repository
 
 import com.dms.flip.data.model.PleasureCategory
-import com.dms.flip.data.model.PleasureHistoryEntry
 import com.dms.flip.domain.model.Pleasure
+import com.dms.flip.domain.model.PleasureHistory
 import kotlinx.coroutines.flow.Flow
 
 interface PleasureRepository {
@@ -12,6 +12,6 @@ interface PleasureRepository {
     suspend fun insert(pleasure: Pleasure)
     suspend fun update(pleasure: Pleasure)
     suspend fun delete(pleasuresId: List<String>)
-    suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry)
-    suspend fun getHistoryEntryForDay(dayIdentifier: String): PleasureHistoryEntry?
+    suspend fun upsertPleasureHistory(pleasureHistory: PleasureHistory)
+    suspend fun getPleasureHistory(dayIdentifier: String): PleasureHistory?
 }

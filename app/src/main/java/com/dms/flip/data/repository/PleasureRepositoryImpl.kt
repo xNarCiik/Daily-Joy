@@ -2,9 +2,10 @@ package com.dms.flip.data.repository
 
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.data.model.PleasureDto
-import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.data.model.PleasureHistoryDto
 import com.dms.flip.data.model.toDto
 import com.dms.flip.domain.model.Pleasure
+import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.domain.repository.PleasureRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -88,14 +89,15 @@ class PleasureRepositoryImpl @Inject constructor(
         batch.commit().await()
     }
 
-    override suspend fun upsertHistoryEntry(entry: PleasureHistoryEntry) {
+    override suspend fun upsertPleasureHistory(pleasureHistory: PleasureHistory) {
         firestore.collection("users").document(userId).collection("history")
-            .document(entry.dayIdentifier).set(entry).await()
+            .document(pleasureHistory.dayIdentifier).set(pleasureHistory.toDto()).await()
     }
 
-    override suspend fun getHistoryEntryForDay(dayIdentifier: String): PleasureHistoryEntry? {
-        return firestore.collection("users").document(userId).collection("history")
+    override suspend fun getPleasureHistory(dayIdentifier: String): PleasureHistory? {
+        val document = firestore.collection("users").document(userId).collection("history")
             .document(dayIdentifier).get().await()
-            .toObject(PleasureHistoryEntry::class.java)
+
+        return document.toObject(PleasureHistoryDto::class.java)?.toDomain(document.id)
     }
 }

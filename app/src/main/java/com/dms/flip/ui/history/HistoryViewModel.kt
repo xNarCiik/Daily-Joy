@@ -2,7 +2,7 @@ package com.dms.flip.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.domain.usecase.weekly.GetWeeklyHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
-import kotlin.collections.find
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
@@ -49,7 +48,7 @@ class HistoryViewModel @Inject constructor(
             }
     }
 
-    private fun generateFullWeek(historyEntries: List<PleasureHistoryEntry>): List<WeeklyDay> {
+    private fun generateFullWeek(historyEntries: List<PleasureHistory>): List<WeeklyDay> {
         val days = (1..7).map { dayOfWeek ->
             val dayName = getDayName(dayOfWeek)
             val historyEntry = historyEntries.find {
@@ -75,10 +74,10 @@ class HistoryViewModel @Inject constructor(
                 loadWeeklyHistory()
             }
             is HistoryEvent.OnCardClicked -> {
-                _uiState.update { it.copy(selectedHistoryEntry = event.item) }
+                _uiState.update { it.copy(selectedPleasureHistory = event.item) }
             }
             is HistoryEvent.OnBottomSheetDismissed -> {
-                _uiState.update { it.copy(selectedHistoryEntry = null) }
+                _uiState.update { it.copy(selectedPleasureHistory = null) }
             }
 
             else -> {

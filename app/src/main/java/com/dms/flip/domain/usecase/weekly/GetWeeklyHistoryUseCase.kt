@@ -1,6 +1,6 @@
 package com.dms.flip.domain.usecase.weekly
 
-import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.domain.repository.HistoryRepository
 import kotlinx.coroutines.flow.Flow
 import java.util.Calendar
@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetWeeklyHistoryUseCase @Inject constructor(
     private val historyRepository: HistoryRepository
 ) {
-    operator fun invoke(): Flow<List<PleasureHistoryEntry>> {
+    operator fun invoke(): Flow<List<PleasureHistory>> {
         val calendar = Calendar.getInstance()
 
         // End date

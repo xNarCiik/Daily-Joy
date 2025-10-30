@@ -1,13 +1,13 @@
 package com.dms.flip.ui.history
 
-import com.dms.flip.data.model.PleasureHistoryEntry
+import com.dms.flip.domain.model.PleasureHistory
 import java.util.Locale
 
 data class HistoryUiState(
     val isLoading: Boolean = false,
     val weeklyDays: List<WeeklyDay> = emptyList(),
     val error: String? = null,
-    val selectedHistoryEntry: PleasureHistoryEntry? = null,
+    val selectedPleasureHistory: PleasureHistory? = null,
 
     // ========== NOUVELLES PROPRIÉTÉS (TODO: À implémenter dans le ViewModel) ==========
     // TODO: Calculer dans le ViewModel en fonction de la semaine sélectionnée
@@ -25,12 +25,12 @@ data class HistoryUiState(
 
 data class WeeklyDay(
     val dayName: String,
-    val historyEntry: PleasureHistoryEntry?
+    val historyEntry: PleasureHistory?
 )
 
 sealed interface HistoryEvent {
     data object OnRetryClicked : HistoryEvent
-    data class OnCardClicked(val item: PleasureHistoryEntry) : HistoryEvent
+    data class OnCardClicked(val item: PleasureHistory) : HistoryEvent
     data object OnBottomSheetDismissed : HistoryEvent
     data object OnPreviousWeekClicked : HistoryEvent
     data object OnNextWeekClicked : HistoryEvent

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
-import com.dms.flip.data.model.toPleasure
 import com.dms.flip.domain.usecase.GetRandomDailyMessageUseCase
 import com.dms.flip.domain.usecase.dailypleasure.GetRandomPleasureUseCase
 import com.dms.flip.domain.usecase.history.GetTodayHistoryEntryUseCase
@@ -61,7 +60,7 @@ class DailyFlipViewModel @Inject constructor(
                         screenState = DailyFlipScreenState.SetupRequired(enabledCount)
                     )
 
-                    todayHistory?.isCompleted == true -> DailyFlipUiState(
+                    todayHistory?.completed == true -> DailyFlipUiState(
                         screenState = DailyFlipScreenState.Completed,
                         headerMessage = ""
                     )
@@ -69,7 +68,7 @@ class DailyFlipViewModel @Inject constructor(
                     else -> DailyFlipUiState(
                         screenState = DailyFlipScreenState.Ready(
                             availableCategories = PleasureCategory.entries,
-                            dailyPleasure = todayHistory?.toPleasure(),
+                            dailyPleasure = todayHistory?.toPleasure(), // TODO LET HISTORY
                             isCardFlipped = todayHistory != null
                         ),
                         headerMessage = if (todayHistory == null)
