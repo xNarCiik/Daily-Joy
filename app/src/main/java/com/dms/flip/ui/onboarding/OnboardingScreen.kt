@@ -63,11 +63,13 @@ fun OnboardingScreen(
 @Composable
 private fun OnboardingContent(modifier: Modifier, viewModel: OnboardingViewModel) {
     val uiState by viewModel.uiState.collectAsState()
+    val totalSteps = if (uiState.notificationInitiallyEnabled) 3 else 4
 
     Column(modifier = modifier.fillMaxSize()) {
         OnboardingProgressBar(
             currentStep = uiState.currentStep,
-            totalSteps = 4
+            totalSteps = totalSteps,
+            notificationStepSkipped = uiState.notificationInitiallyEnabled
         )
         var isForward by remember { mutableStateOf(true) }
 
@@ -134,8 +136,6 @@ private fun OnboardingContent(modifier: Modifier, viewModel: OnboardingViewModel
                         reminderTime = uiState.reminderTime,
                         onTimeChange = viewModel::updateReminderTime
                     )
-
-                    else -> {}
                 }
             }
         }

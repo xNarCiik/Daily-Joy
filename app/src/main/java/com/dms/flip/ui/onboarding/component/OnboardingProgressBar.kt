@@ -26,19 +26,20 @@ import com.dms.flip.ui.theme.flipGradients
 @Composable
 fun OnboardingProgressBar(
     currentStep: OnboardingStep,
-    totalSteps: Int
+    totalSteps: Int,
+    notificationStepSkipped: Boolean
 ) {
     val stepNumber = when (currentStep) {
         OnboardingStep.USERNAME -> 1
         OnboardingStep.PLEASURES -> 2
         OnboardingStep.NOTIFICATIONS -> 3
-        OnboardingStep.REMINDER_TIME -> 4
+        OnboardingStep.REMINDER_TIME -> if (notificationStepSkipped) 3 else 4
     }
 
     val progress = when (currentStep) {
-        OnboardingStep.USERNAME -> 0.25f
-        OnboardingStep.PLEASURES -> 0.50f
-        OnboardingStep.NOTIFICATIONS -> 0.75f
+        OnboardingStep.USERNAME -> 1f / totalSteps
+        OnboardingStep.PLEASURES -> 2f / totalSteps
+        OnboardingStep.NOTIFICATIONS -> 3f / totalSteps
         OnboardingStep.REMINDER_TIME -> 1f
     }
 

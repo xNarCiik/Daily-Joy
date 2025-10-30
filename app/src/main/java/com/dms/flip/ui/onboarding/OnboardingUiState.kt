@@ -9,6 +9,7 @@ data class OnboardingUiState(
     val currentStep: OnboardingStep = OnboardingStep.USERNAME,
     val username: String = "",
     val availablePleasures: List<Pleasure> = emptyList(),
+    val notificationInitiallyEnabled: Boolean = false,
     val notificationEnabled: Boolean = false,
     val reminderTime: String = "09:00",
     val showNotificationSkipWarning: Boolean = false,

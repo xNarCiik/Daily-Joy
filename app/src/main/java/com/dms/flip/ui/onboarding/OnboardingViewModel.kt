@@ -1,6 +1,7 @@
 package com.dms.flip.ui.onboarding
 
 import android.app.Application
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.flip.domain.usecase.onboarding.SaveOnboardingStatusUseCase
@@ -20,12 +21,19 @@ class OnboardingViewModel @Inject constructor(
     private val getLocalPleasuresUseCase: GetLocalPleasuresUseCase
 ) : ViewModel() {
     private val dailyReminderManager = DailyReminderManager(application)
+    private var areNotificationsInitiallyEnabled: Boolean = false
 
     private val _uiState = MutableStateFlow(OnboardingUiState())
     val uiState: StateFlow<OnboardingUiState> = _uiState.asStateFlow()
 
     init {
-        loadPleasures()
+        areNotificationsInitiallyEnabled =
+            NotificationManagerCompat.from(application).areNotificationsEnabled()
+        _uiState.value = _uiState.value.copy(
+            notificationInitiallyEnabled = areNotificationsInitiallyEnabled,
+            notificationEnabled = areNotificationsInitiallyEnabled,
+            availablePleasures = getLocalPleasuresUseCase()
+        )
     }
 
     fun onStartClick() = viewModelScope.launch {
@@ -39,7 +47,14 @@ class OnboardingViewModel @Inject constructor(
             // Navigation normale pour les autres steps
             val nextStep = when (currentStep) {
                 OnboardingStep.USERNAME -> OnboardingStep.PLEASURES
-                OnboardingStep.PLEASURES -> OnboardingStep.NOTIFICATIONS
+                OnboardingStep.PLEASURES -> {
+                    if (areNotificationsInitiallyEnabled) {
+                        OnboardingStep.REMINDER_TIME
+                    } else {
+                        OnboardingStep.NOTIFICATIONS
+                    }
+                }
+
                 OnboardingStep.NOTIFICATIONS -> {
                     if (!_uiState.value.notificationEnabled && !_uiState.value.hasShownNotificationWarning) {
                         // Afficher l'alerte une seule fois
@@ -77,7 +92,13 @@ class OnboardingViewModel @Inject constructor(
                 OnboardingStep.USERNAME -> OnboardingStep.USERNAME
                 OnboardingStep.PLEASURES -> OnboardingStep.USERNAME
                 OnboardingStep.NOTIFICATIONS -> OnboardingStep.PLEASURES
-                OnboardingStep.REMINDER_TIME -> OnboardingStep.NOTIFICATIONS
+                OnboardingStep.REMINDER_TIME -> {
+                    if (areNotificationsInitiallyEnabled) {
+                        OnboardingStep.PLEASURES
+                    } else {
+                        OnboardingStep.NOTIFICATIONS
+                    }
+                }
             }
             _uiState.value = _uiState.value.copy(currentStep = previousStep)
         }
@@ -124,9 +145,5 @@ class OnboardingViewModel @Inject constructor(
             reminderTime = reminderTime
         )
         _uiState.value = _uiState.value.copy(completed = true)
-    }
-
-    private fun loadPleasures() = viewModelScope.launch {
-        _uiState.value = _uiState.value.copy(availablePleasures = getLocalPleasuresUseCase())
     }
 }
