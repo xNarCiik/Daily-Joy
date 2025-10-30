@@ -16,7 +16,8 @@ class StorageRepository @Inject constructor(
         val userId = firebaseAuth.currentUser?.uid
             ?: throw IllegalStateException("Utilisateur non connecté")
 
-        val storageRef = storage.reference.child("avatars/$userId/avatar.jpg")
+        val timestamp = System.currentTimeMillis()
+        val storageRef = storage.reference.child("avatars/$userId/$timestamp.jpg")
 
         // Upload du fichier
         storageRef.putFile(imageUri).await()

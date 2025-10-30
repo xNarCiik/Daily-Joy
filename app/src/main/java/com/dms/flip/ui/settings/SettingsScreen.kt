@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Edit
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.outlined.Policy
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -136,7 +138,7 @@ fun SettingsScreen(
             )
         )
 
-        val launcher = rememberLauncherForActivityResult(
+        val avatarLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
             onResult = { uri ->
                 uri?.let { onEvent(SettingsEvent.OnAvatarSelected(it)) }
@@ -154,8 +156,9 @@ fun SettingsScreen(
                 uiState.userInfo?.let {
                     UserProfileCard(
                         userInfo = it,
+                        isUploading = uiState.isUploading,
                         onEditProfile = { /* TODO: Navigate to profile edit */ },
-                        onAvatarClicked = { launcher.launch("image/*") }
+                        onAvatarClicked = { avatarLauncher.launch("image/*") }
                     )
                 }
             }
@@ -344,40 +347,78 @@ fun SettingsScreen(
 @Composable
 private fun UserProfileCard(
     userInfo: UserInfo,
+    isUploading: Boolean,
     onEditProfile: () -> Unit,
     onAvatarClicked: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Avatar
         Box(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .clickable { onAvatarClicked() }
-                .background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.size(100.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (userInfo.avatarUrl != null) {
-                GlideImage(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                    model = userInfo.avatarUrl,
-                    contentDescription = null
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .clickable(enabled = !isUploading) { onAvatarClicked() }
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                if (userInfo.avatarUrl != null) {
+                    GlideImage(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                        model = userInfo.avatarUrl,
+                        contentDescription = null
+                    )
+                } else {
+                    Text(
+                        text = userInfo.username?.firstOrNull()?.uppercase() ?: "?",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                if (isUploading) {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.5f))
+                    )
+                }
+            }
+
+            if (isUploading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp),
+                    color = Color.White,
+                    strokeWidth = 3.dp
                 )
             } else {
-                Text(
-                    text = userInfo.username?.firstOrNull()?.uppercase() ?: "?",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .clickable { onAvatarClicked() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = "Changer la photo",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
 
@@ -627,7 +668,8 @@ private fun SettingsScreenPreview() {
                     ),
                     dailyReminderEnabled = true,
                     reminderTime = "09:00",
-                    theme = Theme.DARK
+                    theme = Theme.DARK,
+                    isUploading = false
                 ),
                 onEvent = {},
                 onNavigateBack = {},
