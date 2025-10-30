@@ -2,7 +2,6 @@ package com.dms.flip.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -12,8 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val auth: FirebaseAuth
 ) {
 
     fun getAuthState(): Flow<FirebaseUser?> = callbackFlow {
