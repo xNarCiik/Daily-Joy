@@ -1,9 +1,11 @@
 package com.dms.flip.ui.settings
 
 import android.Manifest
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -69,10 +71,20 @@ import com.dms.flip.domain.model.UserInfo
 import com.dms.flip.ui.component.FlipTopBar
 import com.dms.flip.ui.component.TimePicker
 import com.dms.flip.ui.component.TopBarIcon
+import com.dms.flip.ui.settings.component.dialog.AvatarSourceBottomSheet
+import com.dms.flip.ui.settings.component.dialog.CameraPermissionDialog
 import com.dms.flip.ui.settings.component.dialog.NotificationPermissionDialog
 import com.dms.flip.ui.settings.component.dialog.ThemeDialog
 import com.dms.flip.ui.theme.FlipTheme
+import com.dms.flip.ui.util.CameraPermissionHandler
+import com.dms.flip.ui.util.FileProviderHelper
 import com.dms.flip.ui.util.LightDarkPreview
+
+enum class PermissionDialogType {
+    NONE,
+    RATIONALE,
+    PERMANENTLY_DENIED
+}
 
 @Composable
 fun SettingsScreen(
@@ -84,9 +96,14 @@ fun SettingsScreen(
     onNavigateToStatistics: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val activity = context as? Activity
+
     var showThemeDialog by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     var showNotificationPermissionDialog by remember { mutableStateOf(false) }
+    var showAvatarSourceBottomSheet by remember { mutableStateOf(false) }
+    var cameraImageUri by remember { mutableStateOf<Uri?>(null) }
+    var cameraPermissionDialogType by remember { mutableStateOf(PermissionDialogType.NONE) }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -97,6 +114,68 @@ fun SettingsScreen(
             onEvent(SettingsEvent.OnDailyReminderEnabledChanged(isGranted))
         }
     )
+
+    // Launcher pour la galerie
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            uri?.let { onEvent(SettingsEvent.OnAvatarSelected(it)) }
+        }
+    )
+
+    // Launcher pour la caméra
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) {
+                cameraImageUri?.let { onEvent(SettingsEvent.OnAvatarSelected(it)) }
+            }
+        }
+    )
+
+    // Launcher pour la permission caméra
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                val uri = FileProviderHelper.createImageUri(context)
+                cameraImageUri = uri
+                cameraLauncher.launch(uri)
+            } else {
+                activity?.let {
+                    if (CameraPermissionHandler.isPermanentlyDenied(it)) {
+                        cameraPermissionDialogType = PermissionDialogType.PERMANENTLY_DENIED
+                    } else {
+                        cameraPermissionDialogType = PermissionDialogType.RATIONALE
+                    }
+                }
+            }
+        }
+    )
+
+    // Fonction pour demander la permission caméra
+    fun requestCameraPermission() {
+        activity?.let {
+            when {
+                CameraPermissionHandler.isPermissionGranted(context) -> {
+                    val uri = FileProviderHelper.createImageUri(context)
+                    cameraImageUri = uri
+                    cameraLauncher.launch(uri)
+                }
+                CameraPermissionHandler.shouldShowRationale(it) -> {
+                    cameraPermissionDialogType = PermissionDialogType.RATIONALE
+                }
+                else -> {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            }
+        } ?: run {
+            // Fallback si activity est null
+            val uri = FileProviderHelper.createImageUri(context)
+            cameraImageUri = uri
+            cameraLauncher.launch(uri)
+        }
+    }
 
     if (showThemeDialog) {
         ThemeDialog(
@@ -123,6 +202,39 @@ fun SettingsScreen(
         )
     }
 
+    if (showAvatarSourceBottomSheet) {
+        AvatarSourceBottomSheet(
+            onDismiss = { showAvatarSourceBottomSheet = false },
+            onCameraClick = {
+                requestCameraPermission()
+            },
+            onGalleryClick = {
+                galleryLauncher.launch("image/*")
+            }
+        )
+    }
+
+    // Dialog pour la permission caméra
+    when (cameraPermissionDialogType) {
+        PermissionDialogType.RATIONALE -> {
+            CameraPermissionDialog(
+                onDismiss = {
+                    cameraPermissionDialogType = PermissionDialogType.NONE
+                },
+                isPermanentlyDenied = false
+            )
+        }
+        PermissionDialogType.PERMANENTLY_DENIED -> {
+            CameraPermissionDialog(
+                onDismiss = {
+                    cameraPermissionDialogType = PermissionDialogType.NONE
+                },
+                isPermanentlyDenied = true
+            )
+        }
+        PermissionDialogType.NONE -> { /* Pas de dialog */ }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -138,13 +250,6 @@ fun SettingsScreen(
             )
         )
 
-        val avatarLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetContent(),
-            onResult = { uri ->
-                uri?.let { onEvent(SettingsEvent.OnAvatarSelected(it)) }
-            }
-        )
-
         // Content
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -158,7 +263,7 @@ fun SettingsScreen(
                         userInfo = it,
                         isUploading = uiState.isUploading,
                         onEditProfile = { /* TODO: Navigate to profile edit */ },
-                        onAvatarClicked = { avatarLauncher.launch("image/*") }
+                        onAvatarClicked = { showAvatarSourceBottomSheet = true }
                     )
                 }
             }
@@ -386,6 +491,8 @@ private fun UserProfileCard(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
+
+                // Overlay sombre pendant le chargement
                 if (isUploading) {
                     Box(
                         modifier = Modifier
@@ -396,6 +503,7 @@ private fun UserProfileCard(
                 }
             }
 
+            // Loader circulaire pendant l'upload
             if (isUploading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(40.dp),
@@ -403,6 +511,7 @@ private fun UserProfileCard(
                     strokeWidth = 3.dp
                 )
             } else {
+                // Icône caméra en bas à droite
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

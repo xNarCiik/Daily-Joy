@@ -2,6 +2,7 @@ package com.dms.flip.ui.settings
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dms.flip.R
@@ -131,7 +132,12 @@ class SettingsViewModel @Inject constructor(
 
     private fun deleteAccount() {
         viewModelScope.launch {
-            authRepository.deleteAccount()
+            try {
+                authRepository.deleteAccount()
+            } catch (e: Exception) {
+                Log.e("SettingsViewModel", e.message ?: "Unknown error")
+                // TODO Generic error toast ?
+            }
         }
     }
 }
