@@ -11,6 +11,7 @@ import com.dms.flip.data.repository.PleasureRepositoryImpl
 import com.dms.flip.data.repository.SettingsRepositoryImpl
 import com.dms.flip.data.repository.SocialRepositoryImpl
 import com.dms.flip.data.repository.StatisticsRepositoryImpl
+import com.dms.flip.data.repository.StorageRepository
 import com.dms.flip.data.repository.UserRepositoryImpl
 import com.dms.flip.domain.repository.DailyMessageRepository
 import com.dms.flip.domain.repository.HistoryRepository
@@ -22,6 +23,7 @@ import com.dms.flip.domain.repository.UserRepository
 import com.dms.flip.domain.repository.onboarding.OnboardingRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +39,19 @@ object RepositoryModule {
         firebaseAuth: FirebaseAuth
     ): AuthRepository =
         AuthRepository(auth = firebaseAuth)
+
+    @Provides
+    @Singleton
+    fun providerStorageRepository(
+        firebaseAuth: FirebaseAuth,
+        storage: FirebaseStorage,
+        firestore: FirebaseFirestore
+    ): StorageRepository =
+        StorageRepository(
+            firebaseAuth = firebaseAuth,
+            storage = storage,
+            firestore = firestore
+        )
 
     @Provides
     @Singleton

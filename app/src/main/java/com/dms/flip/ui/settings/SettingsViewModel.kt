@@ -1,8 +1,10 @@
 package com.dms.flip.ui.settings
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dms.flip.R
 import com.dms.flip.data.repository.AuthRepository
 import com.dms.flip.domain.model.Theme
 import com.dms.flip.domain.usecase.settings.GetDailyReminderStateUseCase
@@ -11,6 +13,7 @@ import com.dms.flip.domain.usecase.settings.GetThemeUseCase
 import com.dms.flip.domain.usecase.settings.SetDailyReminderStateUseCase
 import com.dms.flip.domain.usecase.settings.SetReminderTimeUseCase
 import com.dms.flip.domain.usecase.settings.SetThemeUseCase
+import com.dms.flip.domain.usecase.storage.UploadAvatarUseCase
 import com.dms.flip.domain.usecase.user.GetUserInfoUseCase
 import com.dms.flip.notification.DailyReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,12 +22,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    application: Application,
+    private val application: Application,
     private val getThemeUseCase: GetThemeUseCase,
     private val setThemeUseCase: SetThemeUseCase,
     private val getDailyReminderStateUseCase: GetDailyReminderStateUseCase,
@@ -32,6 +36,7 @@ class SettingsViewModel @Inject constructor(
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val setReminderTimeUseCase: SetReminderTimeUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val uploadAvatarUseCase: UploadAvatarUseCase,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -69,6 +74,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onEvent(event: SettingsEvent) {
         when (event) {
+            is SettingsEvent.OnAvatarSelected -> onAvatarSelected(event.avatar)
             is SettingsEvent.OnThemeChanged -> onThemeChange(event.theme)
             is SettingsEvent.OnDailyReminderEnabledChanged -> onDailyReminderEnabledChange(event.enabled)
             is SettingsEvent.OnReminderTimeChanged -> onReminderTimeChange(event.time)
@@ -93,6 +99,30 @@ class SettingsViewModel @Inject constructor(
     private fun onReminderTimeChange(time: String) = viewModelScope.launch {
         setReminderTimeUseCase(time)
         dailyReminderManager.schedule(time)
+    }
+
+    fun onAvatarSelected(imageUri: Uri) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isUploading = true) }
+
+                val url = uploadAvatarUseCase(imageUri)
+
+                _uiState.update {
+                    it.copy(
+                        isUploading = false,
+                        userInfo = it.userInfo?.copy(avatarUrl = url)
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isUploading = false,
+                        error = e.message ?: application.getString(R.string.generic_error_message)
+                    )
+                }
+            }
+        }
     }
 
     private fun signOut() {

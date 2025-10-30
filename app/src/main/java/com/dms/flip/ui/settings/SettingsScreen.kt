@@ -136,6 +136,13 @@ fun SettingsScreen(
             )
         )
 
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+                uri?.let { onEvent(SettingsEvent.OnAvatarSelected(it)) }
+            }
+        )
+
         // Content
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -147,7 +154,8 @@ fun SettingsScreen(
                 uiState.userInfo?.let {
                     UserProfileCard(
                         userInfo = it,
-                        onEditProfile = { /* TODO: Navigate to profile edit */ }
+                        onEditProfile = { /* TODO: Navigate to profile edit */ },
+                        onAvatarClicked = { launcher.launch("image/*") }
                     )
                 }
             }
@@ -336,7 +344,8 @@ fun SettingsScreen(
 @Composable
 private fun UserProfileCard(
     userInfo: UserInfo,
-    onEditProfile: () -> Unit
+    onEditProfile: () -> Unit,
+    onAvatarClicked: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -349,6 +358,7 @@ private fun UserProfileCard(
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
+                .clickable { onAvatarClicked() }
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {

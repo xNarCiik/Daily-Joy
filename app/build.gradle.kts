@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.navigation)
     implementation(libs.dagger.hilt)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.firebase.storage)
     kapt(libs.hilt.compiler)
     implementation(libs.lottie.compose)
     implementation(libs.androidx.core.splashscreen)
