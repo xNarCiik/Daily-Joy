@@ -30,6 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val application: Application,
+    private val authRepository: AuthRepository,
     private val getThemeUseCase: GetThemeUseCase,
     private val setThemeUseCase: SetThemeUseCase,
     private val getDailyReminderStateUseCase: GetDailyReminderStateUseCase,
@@ -38,7 +39,6 @@ class SettingsViewModel @Inject constructor(
     private val setReminderTimeUseCase: SetReminderTimeUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val uploadAvatarUseCase: UploadAvatarUseCase,
-    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -133,7 +133,7 @@ class SettingsViewModel @Inject constructor(
     private fun deleteAccount() {
         viewModelScope.launch {
             try {
-                authRepository.deleteAccount()
+                authRepository.deleteAccount(context = application)
             } catch (e: Exception) {
                 Log.e("SettingsViewModel", e.message ?: "Unknown error")
                 // TODO Generic error toast ?
