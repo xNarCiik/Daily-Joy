@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import com.dms.flip.ui.community.CommunityEvent
 import com.dms.flip.ui.community.CommunityUiState
 import com.dms.flip.ui.community.FriendPost
@@ -64,9 +65,11 @@ fun CommunityScreen(
 @Composable
 private fun CommunityScreenPreview() {
     FlipTheme {
-        CommunityScreen(
-            uiState = previewCommunityUiStateFull,
-            onEvent = {}
-        )
+        Surface {
+            CommunityScreen(
+                uiState = previewCommunityUiStateFull,
+                onEvent = {}
+            )
+        }
     }
 }

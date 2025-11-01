@@ -28,6 +28,7 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,8 +53,10 @@ import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.community.CommunityEvent
 import com.dms.flip.ui.community.FriendPost
+import com.dms.flip.ui.community.PostComment
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
+import com.dms.flip.ui.util.formatTimestamp
 import com.dms.flip.ui.util.previewPosts
 
 private val FireStreakColor = Color(0xFFFF6B35)
@@ -99,7 +102,10 @@ fun FriendPostCard(
     modifier: Modifier = Modifier
 ) {
     val haptic = LocalHapticFeedback.current
-    val likeScale by animateFloatAsState(targetValue = if (post.isLiked) 1.1f else 1f, label = "likeScale")
+    val likeScale by animateFloatAsState(
+        targetValue = if (post.isLiked) 1.1f else 1f,
+        label = "likeScale"
+    )
     val likeColor by animateColorAsState(
         targetValue = if (post.isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "likeColor"
@@ -375,7 +381,7 @@ private class FriendsFeedPreviewParameterProvider : PreviewParameterProvider<Lis
             if (index == 0) {
                 post.copy(
                     comments = listOf(
-                        post.comments.firstOrNull() ?: com.dms.flip.ui.community.PostComment(
+                        post.comments.firstOrNull() ?: PostComment(
                             id = "comment1",
                             userId = "user1",
                             username = "Léa Dupont",
@@ -400,11 +406,13 @@ private fun FriendsFeedPreview(
     posts: List<FriendPost>
 ) {
     FlipTheme {
-        FriendsFeedContent(
-            posts = posts,
-            expandedPostId = posts.firstOrNull()?.id,
-            onEvent = {},
-            onPostMenuClick = {}
-        )
+        Surface {
+            FriendsFeedContent(
+                posts = posts,
+                expandedPostId = posts.firstOrNull()?.id,
+                onEvent = {},
+                onPostMenuClick = {}
+            )
+        }
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -93,7 +94,10 @@ fun SearchTopBar(
                         innerTextField()
                     }
                     if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { onQueryChange("") }, modifier = Modifier.size(24.dp)) {
+                        IconButton(
+                            onClick = { onQueryChange("") },
+                            modifier = Modifier.size(24.dp)
+                        ) {
                             Icon(
                                 Icons.Default.Close,
                                 contentDescription = null,
@@ -163,6 +167,7 @@ fun SearchResultItem(
                     Text(stringResource(R.string.button_add))
                 }
             }
+
             RelationshipStatus.PENDING_SENT -> {
                 Text(
                     text = stringResource(R.string.status_pending),
@@ -170,6 +175,7 @@ fun SearchResultItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+
             RelationshipStatus.FRIEND -> {
                 Icon(
                     Icons.Default.CheckCircle,
@@ -177,6 +183,7 @@ fun SearchResultItem(
                     tint = MaterialTheme.colorScheme.tertiary
                 )
             }
+
             else -> Unit
         }
     }
@@ -193,10 +200,12 @@ private fun SearchComponentsPreview(
     results: List<UserSearchResult>
 ) {
     FlipTheme {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            SearchTopBar(searchQuery = "", onQueryChange = {}, onNavigateBack = {})
-            results.take(2).forEach { result ->
-                SearchResultItem(result = result, onAdd = {}, onClick = {})
+        Surface {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                SearchTopBar(searchQuery = "", onQueryChange = {}, onNavigateBack = {})
+                results.take(2).forEach { result ->
+                    SearchResultItem(result = result, onAdd = {}, onClick = {})
+                }
             }
         }
     }

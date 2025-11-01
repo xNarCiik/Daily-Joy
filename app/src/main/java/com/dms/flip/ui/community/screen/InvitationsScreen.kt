@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.unit.dp
 import com.dms.flip.ui.community.CommunityEvent
 import com.dms.flip.ui.community.CommunityUiState
 import com.dms.flip.ui.community.component.InvitationsTopBar
@@ -83,10 +85,12 @@ fun InvitationsScreen(
 @Composable
 private fun InvitationsScreenPreview() {
     FlipTheme {
-        InvitationsScreen(
-            uiState = previewCommunityUiStateFull,
-            onEvent = {},
-            onNavigateBack = {}
-        )
+        Surface{
+            InvitationsScreen(
+                uiState = previewCommunityUiStateFull,
+                onEvent = {},
+                onNavigateBack = {}
+            )
+        }
     }
 }

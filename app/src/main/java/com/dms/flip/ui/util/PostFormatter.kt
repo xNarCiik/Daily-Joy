@@ -1,4 +1,4 @@
-package com.dms.flip.ui.community.component
+package com.dms.flip.ui.util
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -8,6 +8,7 @@ internal fun formatTimestamp(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
 
+    // TODO EXPORT STRING
     return when {
         diff < 60_000 -> "à l'instant"
         diff < 3_600_000 -> "${diff / 60_000}min"

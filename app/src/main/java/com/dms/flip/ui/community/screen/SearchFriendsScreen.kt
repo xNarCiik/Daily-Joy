@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.dms.flip.ui.community.CommunityEvent
 import com.dms.flip.ui.community.CommunityUiState
 import com.dms.flip.ui.community.component.SearchResultItem
@@ -54,10 +56,12 @@ fun SearchFriendsScreen(
 @Composable
 private fun SearchFriendsScreenPreview() {
     FlipTheme {
-        SearchFriendsScreen(
-            uiState = previewCommunityUiStateSearching,
-            onEvent = {},
-            onNavigateBack = {}
-        )
+        Surface {
+            SearchFriendsScreen(
+                uiState = previewCommunityUiStateSearching,
+                onEvent = {},
+                onNavigateBack = {}
+            )
+        }
     }
 }

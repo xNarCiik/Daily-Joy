@@ -35,25 +35,25 @@ val previewDailyPleasure = Pleasure(
 val previewFriends = listOf(
     Friend(
         id = "1",
-        username = "Damien Leroy",
+        username = "Damien",
         currentPleasure = FriendPleasure(
-            title = "Séance de respiration",
+            title = "Fumé un pet.. ou deux",
             status = PleasureStatus.COMPLETED,
             category = PleasureCategory.WELLNESS
         ),
         avatarUrl = null,
-        handle = "@damien.leroy",
+        handle = "@damien.lgx",
         streak = 12,
         isOnline = true,
         favoriteCategory = PleasureCategory.WELLNESS
     ),
     Friend(
         id = "2",
-        username = "Emma Michel",
-        handle = "@emma.michel",
+        username = "La mère michek",
+        handle = "@emmamiaa",
         streak = 24,
         currentPleasure = FriendPleasure(
-            title = "Atelier cuisine",
+            title = "Baiser Ugo",
             status = PleasureStatus.IN_PROGRESS,
             category = PleasureCategory.FOOD
         ),
@@ -348,58 +348,6 @@ val previewCommunityUiStateFull = CommunityUiState(
     searchQuery = "",
     searchResults = emptyList(),
     error = null
-)
-
-/**
- * État de preview avec onglet Amis vide
- */
-val previewCommunityUiStateEmptyFriends = CommunityUiState(
-    isLoading = false,
-    selectedTab = CommunityTab.FRIENDS,
-    friendsPosts = emptyList(),
-    friends = emptyList(),
-    suggestions = previewSuggestions,
-    pendingRequests = previewPendingRequests,
-    sentRequests = emptyList()
-)
-
-/**
- * État de preview avec onglet Suggestions vide
- */
-val previewCommunityUiStateEmptySuggestions = CommunityUiState(
-    isLoading = false,
-    selectedTab = CommunityTab.SUGGESTIONS,
-    friendsPosts = previewPosts,
-    friends = previewFriends,
-    suggestions = emptyList(),
-    pendingRequests = previewPendingRequests,
-    sentRequests = previewSentRequests
-)
-
-/**
- * État de preview avec onglet Invitations vide
- */
-val previewCommunityUiStateEmptyInvitations = CommunityUiState(
-    isLoading = false,
-    selectedTab = CommunityTab.INVITATIONS,
-    friendsPosts = previewPosts,
-    friends = previewFriends,
-    suggestions = previewSuggestions,
-    pendingRequests = emptyList(),
-    sentRequests = emptyList()
-)
-
-/**
- * État de preview en chargement
- */
-val previewCommunityUiStateLoading = CommunityUiState(
-    isLoading = true,
-    selectedTab = CommunityTab.FRIENDS,
-    friendsPosts = emptyList(),
-    friends = emptyList(),
-    suggestions = emptyList(),
-    pendingRequests = emptyList(),
-    sentRequests = emptyList()
 )
 
 /**

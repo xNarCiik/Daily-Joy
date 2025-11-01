@@ -8,7 +8,6 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,58 +34,53 @@ fun CommunityTopBar(
     onFriendsListClick: () -> Unit,
     onInvitationsClick: () -> Unit
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        IconButton(
+            onClick = onFriendsListClick,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.People,
+                contentDescription = stringResource(R.string.friends_list),
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        Text(
+            text = stringResource(R.string.community_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center
+        )
+
+        BadgedBox(
+            badge = {
+                if (pendingRequestsCount > 0) {
+                    Badge(containerColor = MaterialTheme.colorScheme.error) {
+                        Text(pendingRequestsCount.toString())
+                    }
+                }
+            }
         ) {
             IconButton(
-                onClick = onFriendsListClick,
+                onClick = onInvitationsClick,
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.People,
-                    contentDescription = stringResource(R.string.friends_list),
+                    imageVector = Icons.Default.PersonAdd,
+                    contentDescription = stringResource(R.string.community_invitations),
                     tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(24.dp)
                 )
-            }
-
-            Text(
-                text = stringResource(R.string.community_title),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-
-            BadgedBox(
-                badge = {
-                    if (pendingRequestsCount > 0) {
-                        Badge(containerColor = MaterialTheme.colorScheme.error) {
-                            Text(pendingRequestsCount.toString())
-                        }
-                    }
-                }
-            ) {
-                IconButton(
-                    onClick = onInvitationsClick,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PersonAdd,
-                        contentDescription = stringResource(R.string.community_invitations),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
             }
         }
     }

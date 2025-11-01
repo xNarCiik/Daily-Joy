@@ -193,19 +193,8 @@ class CommunityViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Point d'entrée unique pour tous les événements utilisateur
-     */
     fun onEvent(event: CommunityEvent) {
         when (event) {
-            is CommunityEvent.OnTabSelected -> {
-                _uiState.update { it.copy(selectedTab = event.tab) }
-            }
-
-            is CommunityEvent.OnCreatePostClicked -> {
-                // TODO: Navigation vers l'écran de création de post
-            }
-
             // ==================== FRIENDS FEED ====================
             is CommunityEvent.OnPostLiked -> togglePostLike(event.postId)
 
@@ -219,14 +208,6 @@ class CommunityViewModel @Inject constructor(
 
             is CommunityEvent.OnAddComment -> {
                 addComment(event.postId, event.comment)
-            }
-
-            is CommunityEvent.OnPostMenuClicked -> {
-                // Menu géré dans l'UI avec BottomSheet
-            }
-
-            is CommunityEvent.OnFriendMenuClicked -> {
-                // TODO: Show friend action menu
             }
 
             is CommunityEvent.OnInviteFriendToPleasure -> {
@@ -254,10 +235,6 @@ class CommunityViewModel @Inject constructor(
                 } else {
                     _uiState.update { it.copy(searchResults = emptyList()) }
                 }
-            }
-
-            is CommunityEvent.OnSearchResultClicked -> {
-                // Navigation gérée dans le NavHost
             }
 
             is CommunityEvent.OnAddUserFromSearch -> addUserFromSearch(event.userId)

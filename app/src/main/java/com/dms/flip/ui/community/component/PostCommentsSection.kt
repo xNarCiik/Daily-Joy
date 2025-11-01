@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.dms.flip.ui.community.PostComment
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
+import com.dms.flip.ui.util.formatTimestamp
 
 @Composable
 fun CommentsSection(
@@ -53,7 +55,7 @@ fun CommentsSection(
 }
 
 @Composable
-fun CommentInput(
+private fun CommentInput(
     onAddComment: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -113,7 +115,7 @@ fun CommentInput(
 }
 
 @Composable
-fun CommentItem(
+private fun CommentItem(
     comment: PostComment,
     modifier: Modifier = Modifier
 ) {
@@ -175,26 +177,28 @@ fun CommentItem(
 @Composable
 private fun CommentsSectionPreview() {
     FlipTheme {
-        CommentsSection(
-            comments = listOf(
-                PostComment(
-                    id = "1",
-                    userId = "user1",
-                    username = "Sophie Martin",
-                    userHandle = "@sophie.m",
-                    content = "Super ! J'adore cette activité 💚",
-                    timestamp = System.currentTimeMillis()
+        Surface {
+            CommentsSection(
+                comments = listOf(
+                    PostComment(
+                        id = "1",
+                        userId = "user1",
+                        username = "Sophie Martin",
+                        userHandle = "@sophie.m",
+                        content = "Super ! J'adore cette activité 💚",
+                        timestamp = System.currentTimeMillis()
+                    ),
+                    PostComment(
+                        id = "2",
+                        userId = "user2",
+                        username = "Thomas Dubois",
+                        userHandle = "@thomas.d",
+                        content = "Merci pour l'inspiration !",
+                        timestamp = System.currentTimeMillis() - 3_600_000
+                    )
                 ),
-                PostComment(
-                    id = "2",
-                    userId = "user2",
-                    username = "Thomas Dubois",
-                    userHandle = "@thomas.d",
-                    content = "Merci pour l'inspiration !",
-                    timestamp = System.currentTimeMillis() - 3_600_000
-                )
-            ),
-            onAddComment = {}
-        )
+                onAddComment = {}
+            )
+        }
     }
 }

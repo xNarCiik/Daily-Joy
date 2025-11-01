@@ -28,47 +28,42 @@ fun FriendsListTopBar(
     onAddFriendClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Text(
+            text = stringResource(R.string.friends_list_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.weight(1f)
+        )
+
+        IconButton(
+            onClick = onSearchClick,
+            modifier = Modifier.size(48.dp)
         ) {
-            Text(
-                text = stringResource(R.string.friends_list_title),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f)
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = stringResource(R.string.community_search),
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(24.dp)
             )
+        }
 
-            IconButton(
-                onClick = onSearchClick,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.community_search),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            IconButton(
-                onClick = onAddFriendClick,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PersonAdd,
-                    contentDescription = stringResource(R.string.community_add_friend),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+        IconButton(
+            onClick = onAddFriendClick,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.PersonAdd,
+                contentDescription = stringResource(R.string.community_add_friend),
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
@@ -77,6 +72,8 @@ fun FriendsListTopBar(
 @Composable
 private fun FriendsListTopBarPreview() {
     FlipTheme {
-        FriendsListTopBar(onSearchClick = {}, onAddFriendClick = {})
+        Surface {
+            FriendsListTopBar(onSearchClick = {}, onAddFriendClick = {})
+        }
     }
 }
