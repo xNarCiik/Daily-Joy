@@ -3,7 +3,6 @@
     <string name="app_name">Flip</string>
     <string name="my_flip_title">Mon Flip</string>
     <string name="history_title">Historique</string>
-    <string name="social_title">Mes amis</string>
     <string name="settings_title">Paramètres</string>
 
     <!-- Login Screen -->
@@ -217,7 +216,7 @@
     <string name="navigate_back">Retour</string>
 
     <!-- Community Main -->
-    <string name="community_title">Community</string>
+    <string name="community_title">Communauté</string>
     <string name="community_search">Rechercher</string>
     <string name="community_add_friend">Ajouter un ami</string>
     <string name="community_create_post">Créer un post</string>

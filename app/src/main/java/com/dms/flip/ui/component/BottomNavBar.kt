@@ -71,7 +71,7 @@ fun BottomNavBar(
             route = DailyPleasureRoute
         ),
         TabBarItem(
-            title = stringResource(R.string.social_title),
+            title = stringResource(R.string.community_title),
             icon = Icons.Outlined.Group,
             route = CommunityRoute
         )

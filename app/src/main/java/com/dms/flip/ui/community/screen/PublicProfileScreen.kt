@@ -239,9 +239,9 @@ private fun RecentActivityItem(activity: RecentActivity) {
 
 private fun formatActivityTime(timestamp: Long): String {
     val days = (System.currentTimeMillis() - timestamp) / (1000 * 60 * 60 * 24)
-    return when {
-        days == 0L -> "Hier"
-        days == 1L -> "Il y a 1 jour"
+    return when (days) {
+        0L -> "Hier"
+        1L -> "Il y a 1 jour"
         else -> "Il y a ${days} jours"
     }
 }

@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.flip.domain.model.RootNavigationState
+import com.dms.flip.ui.community.CommunityNavHost
 import com.dms.flip.ui.community.CommunityViewModel
 import com.dms.flip.ui.community.screen.CommunityScreen
 import com.dms.flip.ui.dailyflip.DailyFlipScreen
@@ -123,14 +124,7 @@ fun NavGraph(
         }
 
         composable<CommunityRoute> {
-            val viewModel: CommunityViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsState()
-
-            CommunityScreen(
-                modifier = modifierWithPaddingValues,
-                uiState = uiState,
-                onEvent = viewModel::onEvent
-            )
+            CommunityNavHost(modifier = modifierWithPaddingValues)
         }
 
         composable<SettingsRoute> {
