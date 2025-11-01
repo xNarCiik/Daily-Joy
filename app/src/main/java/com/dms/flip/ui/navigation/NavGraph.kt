@@ -118,7 +118,7 @@ fun NavGraph(
                 modifier = modifierWithPaddingValues,
                 uiState = historyState,
                 onEvent = viewModel::onEvent,
-                navigateToDailyFlip = { navController.navigate(DailyPleasureRoute) }
+                navigateToDailyFlip = { navigateSingleTop(DailyPleasureRoute) }
             )
         }
 
