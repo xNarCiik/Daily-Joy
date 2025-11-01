@@ -17,7 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,6 +36,10 @@ import androidx.compose.ui.unit.dp
 import com.dms.flip.R
 import com.dms.flip.ui.community.PublicProfile
 import com.dms.flip.ui.community.RecentActivity
+import com.dms.flip.ui.community.RelationshipStatus
+import com.dms.flip.ui.theme.FlipTheme
+import com.dms.flip.ui.util.LightDarkPreview
+import com.dms.flip.ui.util.previewPublicProfile
 
 @Composable
 fun PublicProfileScreen(
@@ -57,7 +61,7 @@ fun PublicProfileScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.navigate_back))
             }
             IconButton(onClick = {}) {
                 Icon(Icons.Default.MoreVert, contentDescription = "Menu")
@@ -117,17 +121,28 @@ fun PublicProfileScreen(
 
             // Add Friend Button
             item {
+                val (buttonText, enabled) = when (profile.relationshipStatus) {
+                    RelationshipStatus.FRIEND -> stringResource(R.string.community_already_friends) to false
+                    RelationshipStatus.PENDING_SENT -> stringResource(R.string.status_pending) to false
+                    RelationshipStatus.PENDING_RECEIVED -> stringResource(R.string.button_accept) to true
+                    else -> stringResource(R.string.button_add_friend) to true
+                }
+
                 Button(
                     onClick = onAddFriend,
+                    enabled = enabled,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = MaterialTheme.colorScheme.onTertiary,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
                     contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.button_add_friend),
+                        text = buttonText,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -238,10 +253,22 @@ private fun RecentActivityItem(activity: RecentActivity) {
 }
 
 private fun formatActivityTime(timestamp: Long): String {
-    val days = (System.currentTimeMillis() - timestamp) / (1000 * 60 * 60 * 24)
+    val days = ((System.currentTimeMillis() - timestamp) / (1000 * 60 * 60 * 24)).toInt()
     return when (days) {
-        0L -> "Hier"
-        1L -> "Il y a 1 jour"
+        0 -> "Aujourd'hui"
+        1 -> "Il y a 1 jour"
         else -> "Il y a ${days} jours"
+    }
+}
+
+@LightDarkPreview
+@Composable
+private fun PublicProfileScreenPreview() {
+    FlipTheme {
+        PublicProfileScreen(
+            profile = previewPublicProfile,
+            onAddFriend = {},
+            onNavigateBack = {}
+        )
     }
 }

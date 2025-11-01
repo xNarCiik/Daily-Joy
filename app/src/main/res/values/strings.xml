@@ -207,6 +207,7 @@
     <!-- Buttons -->
     <string name="button_add">Ajouter</string>
     <string name="button_add_friend">Ajouter comme ami</string>
+    <string name="community_already_friends">Vous êtes déjà amis</string>
     <string name="button_accept">Accepter</string>
     <string name="button_decline">Refuser</string>
     <string name="button_cancel">Annuler</string>

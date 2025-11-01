@@ -523,26 +523,26 @@ class CommunityViewModel @Inject constructor(
             FriendPost(
                 id = "post_$index",
                 friend = friend,
-                content = when(index) {
-                    0 -> "Quelle belle matinée ! Je viens de terminer ma séance de méditation et je me sens incroyablement zen 🧘‍♀️✨"
-                    1 -> "Aie aie aie j'ai mal aux reins"
-                    2 -> "Je viens de finir ce livre incroyable ! Quelqu'un d'autre l'a lu ? 📚"
-                    3 -> "30 minutes de yoga et me voilà prêt pour la journée ! 💪"
-                    4 -> "Petit café en terrasse avec vue sur la ville ☕️ #SimplePleasures"
-                    else -> "Moment créatif du jour 🎨"
+                content = when (index) {
+                    0 -> "Quelle belle matinée ! Séance de méditation terminée, je me sens incroyablement zen 🧘‍♀️✨"
+                    1 -> "Pause sportive avec un footing léger, idéal pour relâcher la pression"
+                    2 -> "Lecture du moment"
+                    3 -> "Séance de yoga"
+                    4 -> "Pause café"
+                    else -> "Moment créatif du jour"
                 },
                 timestamp = System.currentTimeMillis() - (index * 3600000L),
                 likesCount = (5..50).random(),
                 commentsCount = if (index <= 3) (index + 1) else 0,
                 isLiked = index % 3 == 0,
                 pleasureCategory = category,
-                pleasureTitle = when(index) {
-                    0 -> "Fumer un pet.. ou deux.."
-                    1 -> "Baiser Ugo"
-                    2 -> "Je viens de finir ce livre incroyable ! Quelqu'un d'autre l'a lu ? 📚"
-                    3 -> "30 minutes de yoga et me voilà prêt pour la journée ! 💪"
-                    4 -> "Petit café en terrasse avec vue sur la ville ☕️ #SimplePleasures"
-                    else -> "Moment créatif du jour 🎨"
+                pleasureTitle = when (index) {
+                    0 -> "Méditation guidée"
+                    1 -> "Footing du matin"
+                    2 -> "Lecture du moment"
+                    3 -> "Séance de yoga"
+                    4 -> "Pause café"
+                    else -> "Moment créatif du jour"
                 },
                 comments = generateMockComments(index)
             )
