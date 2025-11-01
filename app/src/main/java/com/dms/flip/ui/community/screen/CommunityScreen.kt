@@ -1,25 +1,62 @@
 package com.dms.flip.ui.community.screen
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.ChatBubbleOutline
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,10 +64,13 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.flip.R
-import com.dms.flip.data.model.PleasureCategory
-import com.dms.flip.ui.community.*
+import com.dms.flip.ui.community.CommunityEvent
+import com.dms.flip.ui.community.CommunityUiState
+import com.dms.flip.ui.community.FriendPost
+import com.dms.flip.ui.community.PostComment
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 private val FireStreakColor = Color(0xFFFF6B35)
 
@@ -61,7 +101,6 @@ fun CommunityScreen(
         )
     }
 
-    // Dialog des options de post
     if (selectedPost != null) {
         PostOptionsDialog(
             post = selectedPost!!,
@@ -183,10 +222,34 @@ private fun PostCard(
     onFriendClick: () -> Unit,
     onAddComment: (String) -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
+    // Animation pour le like
+    val likeScale by animateFloatAsState(
+        targetValue = if (post.isLiked) 1.1f else 1f,
+        label = "likeScale"
+    )
+    val likeColor by animateColorAsState(
+        targetValue = if (post.isLiked)
+            MaterialTheme.colorScheme.primary
+        else
+            MaterialTheme.colorScheme.onSurfaceVariant,
+        label = "likeColor"
+    )
+
+    // Animation pour les commentaires
+    val commentColor by animateColorAsState(
+        targetValue = if (isExpanded)
+            MaterialTheme.colorScheme.primary
+        else
+            MaterialTheme.colorScheme.onSurfaceVariant,
+        label = "commentColor"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         // Header: Avatar + Nom + Menu
         Row(
@@ -296,25 +359,28 @@ private fun PostCard(
 
             IconButton(
                 onClick = onMenu,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(48.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = stringResource(R.string.community_post_menu),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        // ✨ Amélioration: Espacement après header (8dp au lieu de 12dp)
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // ✨ Encart Pleasure (si présent)
+        // ✨ Encart Pleasure (réduit en hauteur)
         if (post.pleasureCategory != null && post.pleasureTitle != null) {
             PleasureCard(
                 category = post.pleasureCategory,
                 title = post.pleasureTitle
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            // ✨ Amélioration: Espacement entre pleasure et contenu (8dp)
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         // Contenu du post
@@ -325,9 +391,10 @@ private fun PostCard(
             modifier = Modifier.padding(start = 60.dp)
         )
 
+        // ✨ Amélioration: Espacement avant actions (12dp)
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Actions: Like + Comment
+        // Actions: Like + Comment (avec animations)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -335,44 +402,61 @@ private fun PostCard(
             horizontalArrangement = Arrangement.spacedBy(24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // ✨ Amélioration: Like avec animation et haptic
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable(onClick = onLike)
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable {
+                        if (!post.isLiked) {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
+                        onLike()
+                    }
+                    .padding(4.dp)
             ) {
                 Icon(
                     imageVector = if (post.isLiked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
                     contentDescription = stringResource(R.string.community_like),
-                    tint = if (post.isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
+                    tint = likeColor,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .scale(likeScale)
                 )
                 Text(
                     text = post.likesCount.toString(),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (post.isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    fontWeight = if (post.isLiked) FontWeight.SemiBold else FontWeight.Normal,
+                    color = likeColor
                 )
             }
 
+            // ✨ Amélioration: Commentaires avec animation
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable(onClick = onComment)
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = onComment)
+                    .padding(4.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.ChatBubbleOutline,
                     contentDescription = stringResource(R.string.community_comment),
-                    tint = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = commentColor,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
                     text = post.commentsCount.toString(),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    fontWeight = if (isExpanded) FontWeight.SemiBold else FontWeight.Normal,
+                    color = commentColor
                 )
             }
         }
 
-        // ✨ Section commentaires (expandable)
+        // Section commentaires
         if (isExpanded) {
             Spacer(modifier = Modifier.height(16.dp))
             CommentsSection(
@@ -380,14 +464,12 @@ private fun PostCard(
                 onAddComment = onAddComment
             )
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
 @Composable
 private fun PleasureCard(
-    category: PleasureCategory,
+    category: com.dms.flip.data.model.PleasureCategory,
     title: String
 ) {
     Row(
@@ -395,24 +477,23 @@ private fun PleasureCard(
             .fillMaxWidth()
             .padding(start = 60.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(category.iconTint.copy(alpha = 0.1f))
-            .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+            .background(category.iconTint.copy(alpha = 0.08f))
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Icône dans un cercle
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(36.dp)
                 .clip(CircleShape)
-                .background(category.iconTint.copy(alpha = 0.2f)),
+                .background(category.iconTint.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = category.icon,
                 contentDescription = null,
-                tint = category.iconTint,
-                modifier = Modifier.size(22.dp)
+                tint = category.iconTint.copy(alpha = 0.8f),
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -420,7 +501,7 @@ private fun PleasureCard(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
@@ -441,18 +522,14 @@ private fun CommentsSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 60.dp)
+            .padding(start = 60.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Input commentaire
         CommentInput(onAddComment = onAddComment)
 
         if (comments.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Liste des commentaires (du plus ancien au plus récent)
             comments.forEach { comment ->
                 CommentItem(comment = comment)
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -467,7 +544,7 @@ private fun CommentInput(onAddComment: (String) -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -499,16 +576,16 @@ private fun CommentInput(onAddComment: (String) -> Unit) {
                 }
             },
             enabled = commentText.isNotBlank(),
-            modifier = Modifier.size(36.dp)
+            modifier = Modifier.size(32.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Send,
+                imageVector = Icons.AutoMirrored.Default.Send,
                 contentDescription = "Envoyer",
                 tint = if (commentText.isNotBlank())
                     MaterialTheme.colorScheme.primary
                 else
                     MaterialTheme.colorScheme.onSurfaceVariant.copy(0.3f),
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
             )
         }
     }
@@ -520,7 +597,6 @@ private fun CommentItem(comment: PostComment) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Avatar mini
         Box(
             modifier = Modifier
                 .size(32.dp)
@@ -541,7 +617,7 @@ private fun CommentItem(comment: PostComment) {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -580,72 +656,58 @@ private fun PostOptionsDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Options du post",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Text(
+                text = "Options du post",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
         },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Row(
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            "Voir le profil de ${post.friend.username}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    leadingContent = {
+                        Icon(Icons.Default.Person, contentDescription = null)
+                    },
                     modifier = Modifier
-                        .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = onViewProfile)
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = "Voir le profil de ${post.friend.username}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                )
 
                 HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
 
-                Row(
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            "Signaler le post",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Flag,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    },
                     modifier = Modifier
-                        .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = onDelete)
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = "Signaler le post",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                )
             }
         },
         confirmButton = {},
@@ -655,7 +717,7 @@ private fun PostOptionsDialog(
             }
         },
         containerColor = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(28.dp)
     )
 }
 
