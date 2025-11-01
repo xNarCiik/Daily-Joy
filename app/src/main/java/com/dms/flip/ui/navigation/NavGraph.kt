@@ -16,6 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.flip.domain.model.RootNavigationState
+import com.dms.flip.ui.community.CommunityViewModel
+import com.dms.flip.ui.community.screen.CommunityScreen
 import com.dms.flip.ui.dailyflip.DailyFlipScreen
 import com.dms.flip.ui.dailyflip.DailyFlipViewModel
 import com.dms.flip.ui.history.HistoryScreen
@@ -28,8 +30,6 @@ import com.dms.flip.ui.settings.manage.ManagePleasuresScreen
 import com.dms.flip.ui.settings.manage.ManagePleasuresViewModel
 import com.dms.flip.ui.settings.statistics.StatisticsScreen
 import com.dms.flip.ui.settings.statistics.StatisticsViewModel
-import com.dms.flip.ui.social.SocialScreen
-import com.dms.flip.ui.social.SocialViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -42,7 +42,7 @@ object DailyPleasureRoute
 object WeeklyRoute
 
 @Serializable
-object SocialRoute
+object CommunityRoute
 
 @Serializable
 object SettingsRoute
@@ -122,11 +122,11 @@ fun NavGraph(
             )
         }
 
-        composable<SocialRoute> {
-            val viewModel: SocialViewModel = hiltViewModel()
+        composable<CommunityRoute> {
+            val viewModel: CommunityViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsState()
 
-            SocialScreen(
+            CommunityScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = uiState,
                 onEvent = viewModel::onEvent

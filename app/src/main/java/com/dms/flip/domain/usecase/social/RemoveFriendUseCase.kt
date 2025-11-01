@@ -2,7 +2,7 @@
 package com.dms.flip.domain.usecase.social
 
 import com.dms.flip.domain.repository.SocialRepository
-import com.dms.flip.ui.social.Friend
+import com.dms.flip.ui.community.Friend
 import javax.inject.Inject
 
 class RemoveFriendUseCase @Inject constructor(

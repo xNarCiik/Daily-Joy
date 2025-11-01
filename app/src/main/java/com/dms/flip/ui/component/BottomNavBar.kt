@@ -40,7 +40,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dms.flip.R
 import com.dms.flip.ui.navigation.DailyPleasureRoute
-import com.dms.flip.ui.navigation.SocialRoute
+import com.dms.flip.ui.navigation.CommunityRoute
 import com.dms.flip.ui.navigation.WeeklyRoute
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
@@ -73,7 +73,7 @@ fun BottomNavBar(
         TabBarItem(
             title = stringResource(R.string.social_title),
             icon = Icons.Outlined.Group,
-            route = SocialRoute
+            route = CommunityRoute
         )
     )
 

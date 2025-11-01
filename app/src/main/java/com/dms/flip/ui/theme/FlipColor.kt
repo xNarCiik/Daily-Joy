@@ -21,12 +21,12 @@ val DarkOnTertiary = Color(0xFF003823)
 val DarkTertiaryContainer = Color(0xFF005235)
 val DarkOnTertiaryContainer = Color(0xFF83FAAE)
 
-val DarkError = Color(0xFFF2B8B5) // #f2b8b5 - CORRIGÉ depuis #FFB4AB
+val DarkError = Color(0xFFF2B8B5) // #f2b8b5 -
 val DarkOnError = Color(0xFF601410) // #601410
 
 val DarkBackground = Color(0xFF1C1B1F) // #1c1b1f - Fond de l'app
 val DarkOnBackground = Color(0xFFE6E1E5) // #e6e1e5 - CORRIGÉ depuis #E5E1E6
-val DarkSurface = Color(0xFF2A292D) // #2a292d - CORRIGÉ depuis #2A292E - Fond des cartes
+val DarkSurface = Color(0xFF2A292D) // #2a292d - Fond des cartes
 val DarkOnSurface = Color(0xFFE6E1E5) // #e6e1e5 - Texte sur les cartes
 val DarkSurfaceVariant = Color(0xFF3B3A40) // #3B3A40 - Fond plus clair
 val DarkOnSurfaceVariant = Color(0xFFCAC4D0) // #cac4d0 - Texte secondaire

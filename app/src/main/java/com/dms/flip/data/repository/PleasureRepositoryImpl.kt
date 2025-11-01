@@ -62,10 +62,10 @@ class PleasureRepositoryImpl @Inject constructor(
 
     override fun getRandomPleasure(category: PleasureCategory?): Flow<Pleasure> {
         return getPleasures().map { pleasures ->
-            val filteredList =
+            var filteredList =
                 pleasures.filter { it.isEnabled && (category == PleasureCategory.ALL || category == null || it.category == category) }
             if (filteredList.isEmpty()) {
-                throw IllegalStateException("No pleasures available for this category.")
+                filteredList = pleasures.filter { it.isEnabled }
             }
             filteredList.random()
         }
