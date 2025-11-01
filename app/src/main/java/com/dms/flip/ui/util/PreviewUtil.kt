@@ -84,7 +84,8 @@ val previewWeeklyDays = listOf(
             pleasureTitle = "Savourer un café chaud",
             pleasureDescription = "Prendre le temps de déguster",
             pleasureCategory = PleasureCategory.FOOD
-        )
+        ),
+        dateMillis = 0
     ),
     WeeklyDay(
         dayName = "Mardi",
@@ -95,7 +96,8 @@ val previewWeeklyDays = listOf(
             pleasureTitle = "Lire quelques pages d'un livre",
             pleasureDescription = "Se plonger dans une histoire",
             pleasureCategory = PleasureCategory.LEARNING
-        )
+        ),
+        dateMillis = 0
     ),
     WeeklyDay(
         dayName = "Mercredi",
@@ -106,10 +108,11 @@ val previewWeeklyDays = listOf(
             pleasureTitle = "Plaisir du jour",
             pleasureDescription = "",
             pleasureCategory = PleasureCategory.ALL
-        )
+        ),
+        dateMillis = 0
     ),
-    WeeklyDay(dayName = "Jeudi", historyEntry = null),
-    WeeklyDay(dayName = "Vendredi", historyEntry = null),
-    WeeklyDay(dayName = "Samedi", historyEntry = null),
-    WeeklyDay(dayName = "Dimanche", historyEntry = null)
+    WeeklyDay(dayName = "Jeudi", historyEntry = null, dateMillis = 0),
+    WeeklyDay(dayName = "Vendredi", historyEntry = null, dateMillis = 0),
+    WeeklyDay(dayName = "Samedi", historyEntry = null, dateMillis = 0),
+    WeeklyDay(dayName = "Dimanche", historyEntry = null, dateMillis = 0)
 )

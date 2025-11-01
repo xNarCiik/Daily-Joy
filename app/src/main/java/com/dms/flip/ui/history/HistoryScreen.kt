@@ -74,7 +74,7 @@ private fun HistoryContent(
             .padding(top = 16.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Header
+        // Header navigation
         WeekNavigationHeader(
             weekTitle = weekTitle,
             weekDates = weekDates,
@@ -84,7 +84,7 @@ private fun HistoryContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Cartes de statistiques
+        // Stats grid
         val history = weeklyDays.mapNotNull { it.historyEntry }
         val completedCount = history.count { it.completed }
 
@@ -95,7 +95,7 @@ private fun HistoryContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Liste des plaisirs hebdomadaires
+        // Weekly pleasures list
         WeeklyPleasuresList(
             items = weeklyDays,
             onCardClicked = { item -> onEvent(HistoryEvent.OnCardClicked(item)) },
@@ -108,7 +108,7 @@ private fun HistoryContent(
 
 @LightDarkPreview
 @Composable
-private fun HistoryPreview() {
+private fun HistoryScreenPreview() {
     FlipTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),

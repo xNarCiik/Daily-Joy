@@ -20,6 +20,7 @@ import javax.inject.Inject
 class HistoryViewModel @Inject constructor(
     private val getWeeklyHistoryUseCase: GetWeeklyHistoryUseCase
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -29,32 +30,44 @@ class HistoryViewModel @Inject constructor(
 
     fun onEvent(event: HistoryEvent) {
         when (event) {
-            is HistoryEvent.OnRetryClicked -> {
-                loadWeeklyHistory(_uiState.value.weekOffset)
-            }
-            is HistoryEvent.OnCardClicked -> {
-                _uiState.update { it.copy(selectedPleasureHistory = event.item) }
-            }
-            is HistoryEvent.OnBottomSheetDismissed -> {
-                _uiState.update { it.copy(selectedPleasureHistory = null) }
-            }
-            is HistoryEvent.OnPreviousWeekClicked -> {
-                val nextOffset = _uiState.value.weekOffset - 1
-                loadWeeklyHistory(nextOffset)
-            }
-            is HistoryEvent.OnNextWeekClicked -> {
-                val nextOffset = _uiState.value.weekOffset + 1
-                loadWeeklyHistory(nextOffset)
-            }
-            is HistoryEvent.OnDiscoverTodayClicked -> {
-                // Tu pourras déclencher ici l’UX “découvrir le flip du jour”
-            }
+            is HistoryEvent.OnRetryClicked -> retry()
+            is HistoryEvent.OnCardClicked -> selectPleasure(event.item)
+            is HistoryEvent.OnBottomSheetDismissed -> dismissBottomSheet()
+            is HistoryEvent.OnPreviousWeekClicked -> navigateToPreviousWeek()
+            is HistoryEvent.OnNextWeekClicked -> navigateToNextWeek()
+            is HistoryEvent.OnDiscoverTodayClicked -> discoverToday()
         }
     }
 
+    private fun retry() {
+        loadWeeklyHistory(_uiState.value.weekOffset)
+    }
+
+    private fun selectPleasure(item: PleasureHistory) {
+        _uiState.update { it.copy(selectedPleasureHistory = item) }
+    }
+
+    private fun dismissBottomSheet() {
+        _uiState.update { it.copy(selectedPleasureHistory = null) }
+    }
+
+    private fun navigateToPreviousWeek() {
+        val nextOffset = _uiState.value.weekOffset - 1
+        loadWeeklyHistory(nextOffset)
+    }
+
+    private fun navigateToNextWeek() {
+        val nextOffset = _uiState.value.weekOffset + 1
+        loadWeeklyHistory(nextOffset)
+    }
+
+    private fun discoverToday() {
+
+    }
+
     private fun loadWeeklyHistory(weekOffset: Int) = viewModelScope.launch {
-        val (startMillis, endMillis) = weekBoundsMillis(weekOffset)
-        val (weekTitle, weekDatesLabel) = weekLabels(weekOffset, startMillis, endMillis)
+        val weekBounds = calculateWeekBounds(weekOffset)
+        val weekLabels = calculateWeekLabels(weekOffset, weekBounds)
 
         getWeeklyHistoryUseCase()
             .onStart {
@@ -63,8 +76,8 @@ class HistoryViewModel @Inject constructor(
                         isLoading = true,
                         error = null,
                         weekOffset = weekOffset,
-                        weekTitle = weekTitle,
-                        weekDates = weekDatesLabel
+                        weekTitle = weekLabels.title,
+                        weekDates = weekLabels.dates
                     )
                 }
             }
@@ -77,13 +90,9 @@ class HistoryViewModel @Inject constructor(
                 }
             }
             .collect { allEntries ->
-                // Filtre local (si ton use case ne prend pas encore de bornes)
-                val entriesOfWeek = allEntries.filter {
-                    it.dateDrawn in startMillis until endMillis
-                }
-
-                val weeklyDays = generateFullWeek(startMillis, entriesOfWeek)
-                val streak = computeStreak(entriesOfWeek, endMillis)
+                val filteredEntries = filterEntriesForWeek(allEntries, weekBounds)
+                val weeklyDays = generateWeeklyDays(weekBounds.start, filteredEntries)
+                val streak = calculateStreak(filteredEntries, weekBounds.end)
 
                 _uiState.update {
                     it.copy(
@@ -96,96 +105,116 @@ class HistoryViewModel @Inject constructor(
             }
     }
 
-    /** Retourne les bornes [lundi 00:00; lundi suivant 00:00) en ms pour weekOffset (0 = semaine courante). */
-    private fun weekBoundsMillis(weekOffset: Int): Pair<Long, Long> {
-        val cal = Calendar.getInstance().apply {
+    // ========== Date Utils ==========
+
+    private data class WeekBounds(val start: Long, val end: Long)
+    private data class WeekLabels(val title: String, val dates: String)
+
+    private fun calculateWeekBounds(weekOffset: Int): WeekBounds {
+        val calendar = Calendar.getInstance().apply {
             firstDayOfWeek = Calendar.MONDAY
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-            // Place le curseur au lundi de la semaine courante
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
             add(Calendar.WEEK_OF_YEAR, weekOffset)
         }
-        val start = cal.timeInMillis
-        cal.add(Calendar.WEEK_OF_YEAR, 1)
-        val end = cal.timeInMillis
-        return start to end
+
+        val start = calendar.timeInMillis
+        calendar.add(Calendar.WEEK_OF_YEAR, 1)
+        val end = calendar.timeInMillis
+
+        return WeekBounds(start, end)
     }
 
-    /** "Cette semaine"/"Semaine dernière"/"Semaine prochaine" + "17 – 23 juin". */
-    private fun weekLabels(weekOffset: Int, start: Long, end: Long): Pair<String, String> {
+    private fun calculateWeekLabels(weekOffset: Int, bounds: WeekBounds): WeekLabels {
         val title = when {
             weekOffset == 0 -> "Cette Semaine"
             weekOffset == -1 -> "Semaine dernière"
             weekOffset == 1 -> "Semaine prochaine"
             weekOffset < 0 -> "Il y a ${-weekOffset} semaines"
-            else -> "Dans ${weekOffset} semaines"
+            else -> "Dans $weekOffset semaines"
         }
-        val dfDay = SimpleDateFormat("d", Locale.getDefault())
-        val dfMonth = SimpleDateFormat("MMM", Locale.getDefault())
 
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = start
-        val startDay = dfDay.format(cal.time)
-        val startMonth = dfMonth.format(cal.time)
+        val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
+        val calendar = Calendar.getInstance()
 
-        cal.timeInMillis = end - 1
-        val endDay = dfDay.format(cal.time)
-        val endMonth = dfMonth.format(cal.time)
+        calendar.timeInMillis = bounds.start
+        val startDate = dateFormat.format(calendar.time)
 
-        val dates = if (startMonth == endMonth) {
-            "$startDay – $endDay ${endMonth.replaceFirstChar { it.titlecase(Locale.getDefault()) }}"
-        } else {
-            "$startDay ${startMonth} – $endDay ${endMonth}"
-        }
-        return title to dates
+        calendar.timeInMillis = bounds.end - 1
+        val endDate = dateFormat.format(calendar.time)
+
+        val dates = "$startDate — $endDate"
+
+        return WeekLabels(title, dates)
     }
 
-    /** Génère 7 jours avec correspondance d’entrée par date. */
-    private fun generateFullWeek(
+    private fun filterEntriesForWeek(
+        allEntries: List<PleasureHistory>,
+        bounds: WeekBounds
+    ): List<PleasureHistory> {
+        return allEntries.filter { entry ->
+            entry.dateDrawn in bounds.start until bounds.end
+        }
+    }
+
+    private fun generateWeeklyDays(
         weekStartMillis: Long,
         historyEntries: List<PleasureHistory>
     ): List<WeeklyDay> {
-        val days = (0 until 7).map { offset ->
-            val dayCal = Calendar.getInstance().apply {
+        return (0 until 7).map { dayOffset ->
+            val dayCalendar = Calendar.getInstance().apply {
                 timeInMillis = weekStartMillis
-                add(Calendar.DAY_OF_YEAR, offset)
+                add(Calendar.DAY_OF_YEAR, dayOffset)
             }
-            val dayName = getDayName(offset + 1) // 1..7
+
+            val dayName = getDayName(dayOffset + 1)
             val entryForDay = historyEntries.find { entry ->
-                sameDay(entry.dateDrawn, dayCal.timeInMillis)
+                isSameDay(entry.dateDrawn, dayCalendar.timeInMillis)
             }
-            WeeklyDay(dayName = dayName, historyEntry = entryForDay)
+
+            WeeklyDay(
+                dayName = dayName,
+                historyEntry = entryForDay,
+                dateMillis = dayCalendar.timeInMillis
+            )
         }
-        return days
     }
 
-    private fun sameDay(a: Long, b: Long): Boolean {
-        val ca = Calendar.getInstance().apply { timeInMillis = a }
-        val cb = Calendar.getInstance().apply { timeInMillis = b }
-        return ca.get(Calendar.YEAR) == cb.get(Calendar.YEAR) &&
-                ca.get(Calendar.DAY_OF_YEAR) == cb.get(Calendar.DAY_OF_YEAR)
-    }
-
-    /** Streak simple sur la semaine affichée (du dernier jour complété consécutif jusqu’à "hier" max). */
-    private fun computeStreak(entriesOfWeek: List<PleasureHistory>, weekEnd: Long): Int {
+    private fun calculateStreak(
+        entriesOfWeek: List<PleasureHistory>,
+        weekEnd: Long
+    ): Int {
         if (entriesOfWeek.isEmpty()) return 0
-        // On calcule depuis le jour affiché le plus récent vers l’arrière
-        val cal = Calendar.getInstance().apply { timeInMillis = weekEnd - 1 }
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = weekEnd - 1
+        }
+
         var streak = 0
         repeat(7) {
-            val hasCompletedThatDay = entriesOfWeek.any { e ->
-                e.completed && sameDay(e.dateDrawn, cal.timeInMillis)
+            val hasCompletedThatDay = entriesOfWeek.any { entry ->
+                entry.completed && isSameDay(entry.dateDrawn, calendar.timeInMillis)
             }
+
             if (hasCompletedThatDay) {
                 streak++
-                cal.add(Calendar.DAY_OF_YEAR, -1)
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
             } else {
                 return streak
             }
         }
+
         return streak
+    }
+
+    private fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
+        val calendarA = Calendar.getInstance().apply { timeInMillis = timestampA }
+        val calendarB = Calendar.getInstance().apply { timeInMillis = timestampB }
+
+        return calendarA.get(Calendar.YEAR) == calendarB.get(Calendar.YEAR) &&
+                calendarA.get(Calendar.DAY_OF_YEAR) == calendarB.get(Calendar.DAY_OF_YEAR)
     }
 }

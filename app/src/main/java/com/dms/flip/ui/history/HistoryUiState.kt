@@ -8,7 +8,7 @@ data class HistoryUiState(
     val weeklyDays: List<WeeklyDay> = emptyList(),
     val error: String? = null,
     val selectedPleasureHistory: PleasureHistory? = null,
-    val weekTitle: String = "Cette Semaine", // Ex: "Cette Semaine", "Semaine dernière", etc.
+    val weekTitle: String = "Cette Semaine",
     val weekDates: String = "",
     val streakDays: Int = 0,
     val weekOffset: Int = 0
@@ -16,7 +16,8 @@ data class HistoryUiState(
 
 data class WeeklyDay(
     val dayName: String,
-    val historyEntry: PleasureHistory?
+    val historyEntry: PleasureHistory?,
+    val dateMillis: Long
 )
 
 sealed interface HistoryEvent {
@@ -38,5 +39,5 @@ fun getDayName(dayOfWeek: Int): String {
         6 -> "Samedi"
         7 -> "Dimanche"
         else -> ""
-    }.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    }
 }
