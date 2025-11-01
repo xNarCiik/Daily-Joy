@@ -7,17 +7,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.flip.R
+import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.community.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,6 +55,7 @@ fun CommunityScreen(
 
         FriendsFeedContent(
             posts = uiState.friendsPosts,
+            expandedPostId = uiState.expandedPostId,
             onEvent = onEvent,
             onPostMenuClick = { selectedPost = it }
         )
@@ -68,7 +71,6 @@ fun CommunityScreen(
                 selectedPost = null
             },
             onDelete = {
-                // TODO: Implémenter la suppression
                 selectedPost = null
             }
         )
@@ -143,6 +145,7 @@ private fun CommunityTopBar(
 @Composable
 private fun FriendsFeedContent(
     posts: List<FriendPost>,
+    expandedPostId: String?,
     onEvent: (CommunityEvent) -> Unit,
     onPostMenuClick: (FriendPost) -> Unit
 ) {
@@ -156,10 +159,14 @@ private fun FriendsFeedContent(
         ) { post ->
             PostCard(
                 post = post,
+                isExpanded = post.id == expandedPostId,
                 onLike = { onEvent(CommunityEvent.OnPostLiked(post.id)) },
-                onComment = { onEvent(CommunityEvent.OnPostCommentClicked(post)) },
+                onComment = { onEvent(CommunityEvent.OnToggleComments(post.id)) },
                 onMenu = { onPostMenuClick(post) },
-                onFriendClick = { onEvent(CommunityEvent.OnFriendClicked(post.friend)) }
+                onFriendClick = { onEvent(CommunityEvent.OnFriendClicked(post.friend)) },
+                onAddComment = { comment ->
+                    onEvent(CommunityEvent.OnAddComment(post.id, comment))
+                }
             )
         }
     }
@@ -169,16 +176,19 @@ private fun FriendsFeedContent(
 @Composable
 private fun PostCard(
     post: FriendPost,
+    isExpanded: Boolean,
     onLike: () -> Unit,
     onComment: () -> Unit,
     onMenu: () -> Unit,
-    onFriendClick: () -> Unit
+    onFriendClick: () -> Unit,
+    onAddComment: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
+        // Header: Avatar + Nom + Menu
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -298,6 +308,16 @@ private fun PostCard(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // ✨ Encart Pleasure (si présent)
+        if (post.pleasureCategory != null && post.pleasureTitle != null) {
+            PleasureCard(
+                category = post.pleasureCategory,
+                title = post.pleasureTitle
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        // Contenu du post
         Text(
             text = post.content,
             style = MaterialTheme.typography.bodyLarge,
@@ -307,6 +327,7 @@ private fun PostCard(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Actions: Like + Comment
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -340,30 +361,212 @@ private fun PostCard(
                 Icon(
                     imageVector = Icons.Default.ChatBubbleOutline,
                     contentDescription = stringResource(R.string.community_comment),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
                     text = post.commentsCount.toString(),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+        }
+
+        // ✨ Section commentaires (expandable)
+        if (isExpanded) {
+            Spacer(modifier = Modifier.height(16.dp))
+            CommentsSection(
+                comments = post.comments,
+                onAddComment = onAddComment
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
-private fun formatTimestamp(timestamp: Long): String {
-    val now = System.currentTimeMillis()
-    val diff = now - timestamp
+@Composable
+private fun PleasureCard(
+    category: PleasureCategory,
+    title: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 60.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(category.iconTint.copy(alpha = 0.1f))
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Icône dans un cercle
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(category.iconTint.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = category.icon,
+                contentDescription = null,
+                tint = category.iconTint,
+                modifier = Modifier.size(22.dp)
+            )
+        }
 
-    return when {
-        diff < 60000 -> "à l'instant"
-        diff < 3600000 -> "${diff / 60000}min ago"
-        diff < 86400000 -> "${diff / 3600000}h ago"
-        else -> SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(timestamp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = category.name,
+                style = MaterialTheme.typography.bodySmall,
+                color = category.iconTint,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
+private fun CommentsSection(
+    comments: List<PostComment>,
+    onAddComment: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 60.dp)
+    ) {
+        // Input commentaire
+        CommentInput(onAddComment = onAddComment)
+
+        if (comments.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Liste des commentaires (du plus ancien au plus récent)
+            comments.forEach { comment ->
+                CommentItem(comment = comment)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun CommentInput(onAddComment: (String) -> Unit) {
+    var commentText by remember { mutableStateOf("") }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        BasicTextField(
+            value = commentText,
+            onValueChange = { commentText = it },
+            modifier = Modifier.weight(1f),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = { innerTextField ->
+                if (commentText.isEmpty()) {
+                    Text(
+                        text = "Ajouter un commentaire...",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.6f)
+                    )
+                }
+                innerTextField()
+            }
+        )
+
+        IconButton(
+            onClick = {
+                if (commentText.isNotBlank()) {
+                    onAddComment(commentText)
+                    commentText = ""
+                }
+            },
+            enabled = commentText.isNotBlank(),
+            modifier = Modifier.size(36.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Send,
+                contentDescription = "Envoyer",
+                tint = if (commentText.isNotBlank())
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(0.3f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CommentItem(comment: PostComment) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Avatar mini
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = comment.username.firstOrNull()?.uppercase() ?: "?",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = comment.username,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "•",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = formatTimestamp(comment.timestamp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Text(
+                text = comment.content,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
@@ -393,7 +596,6 @@ private fun PostOptionsDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Voir le profil
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -422,7 +624,6 @@ private fun PostOptionsDialog(
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
 
-                // TODO Supprimer (si c'est mon post)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -456,4 +657,16 @@ private fun PostOptionsDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(24.dp)
     )
+}
+
+private fun formatTimestamp(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+
+    return when {
+        diff < 60000 -> "à l'instant"
+        diff < 3600000 -> "${diff / 60000}min"
+        diff < 86400000 -> "${diff / 3600000}h"
+        else -> SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(timestamp))
+    }
 }

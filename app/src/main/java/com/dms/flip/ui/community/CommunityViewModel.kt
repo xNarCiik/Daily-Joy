@@ -6,10 +6,10 @@ import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.util.previewFriends
 import com.dms.flip.ui.util.previewPendingRequests
-import com.dms.flip.ui.util.previewPosts
 import com.dms.flip.ui.util.previewSentRequests
 import com.dms.flip.ui.util.previewSuggestions
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -48,7 +48,7 @@ class CommunityViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 friends = previewFriends,
-                friendsPosts = previewPosts,
+                friendsPosts = generateMockPosts(),
                 suggestions = previewSuggestions,
                 pendingRequests = previewPendingRequests,
                 sentRequests = previewSentRequests
@@ -209,8 +209,16 @@ class CommunityViewModel @Inject constructor(
             // ==================== FRIENDS FEED ====================
             is CommunityEvent.OnPostLiked -> togglePostLike(event.postId)
 
-            is CommunityEvent.OnPostCommentClicked -> {
-                // TODO: Navigate to comments screen
+            is CommunityEvent.OnToggleComments -> {
+                _uiState.update {
+                    it.copy(
+                        expandedPostId = if (it.expandedPostId == event.postId) null else event.postId
+                    )
+                }
+            }
+
+            is CommunityEvent.OnAddComment -> {
+                addComment(event.postId, event.comment)
             }
 
             is CommunityEvent.OnPostMenuClicked -> {
@@ -386,7 +394,7 @@ class CommunityViewModel @Inject constructor(
         _uiState.update { it.copy(isSearching = true) }
 
         // Simuler une recherche avec délai
-        kotlinx.coroutines.delay(300) // Debounce
+        delay(300) // Debounce
 
         // Mock search results
         val mockResults = listOf(
@@ -496,13 +504,109 @@ class CommunityViewModel @Inject constructor(
             loadMockData() // Temporaire
 
             _uiState.update { it.copy(isLoading = false) }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     error = R.string.error_load_friends
                 )
             }
+        }
+    }
+
+
+    private fun generateMockPosts(): List<FriendPost> {
+        val categories = PleasureCategory.entries
+
+        return previewFriends.take(5).mapIndexed { index, friend ->
+            val category = categories.random()
+            FriendPost(
+                id = "post_$index",
+                friend = friend,
+                content = when(index) {
+                    0 -> "Quelle belle matinée ! Je viens de terminer ma séance de méditation et je me sens incroyablement zen 🧘‍♀️✨"
+                    1 -> "Aie aie aie j'ai mal aux reins"
+                    2 -> "Je viens de finir ce livre incroyable ! Quelqu'un d'autre l'a lu ? 📚"
+                    3 -> "30 minutes de yoga et me voilà prêt pour la journée ! 💪"
+                    4 -> "Petit café en terrasse avec vue sur la ville ☕️ #SimplePleasures"
+                    else -> "Moment créatif du jour 🎨"
+                },
+                timestamp = System.currentTimeMillis() - (index * 3600000L),
+                likesCount = (5..50).random(),
+                commentsCount = if (index <= 3) (index + 1) else 0,
+                isLiked = index % 3 == 0,
+                pleasureCategory = category,
+                pleasureTitle = when(index) {
+                    0 -> "Fumer un pet.. ou deux.."
+                    1 -> "Baiser Ugo"
+                    2 -> "Je viens de finir ce livre incroyable ! Quelqu'un d'autre l'a lu ? 📚"
+                    3 -> "30 minutes de yoga et me voilà prêt pour la journée ! 💪"
+                    4 -> "Petit café en terrasse avec vue sur la ville ☕️ #SimplePleasures"
+                    else -> "Moment créatif du jour 🎨"
+                },
+                comments = generateMockComments(index)
+            )
+        }
+    }
+
+    private fun generateMockComments(postIndex: Int): List<PostComment> {
+        if (postIndex > 3) return emptyList()
+
+        val commentContents = listOf(
+            "Super ! J'adore cette activité 💚",
+            "Merci pour l'inspiration !",
+            "Ça donne envie d'essayer",
+            "Belle photo !",
+            "Je vais tester ça demain",
+            "Trop bien ! Continue comme ça",
+            "C'est exactement ce dont j'avais besoin aujourd'hui",
+            "Bravo pour ta régularité !"
+        )
+
+        val users = listOf(
+            Triple("user1", "Sophie Martin", "@sophie.m"),
+            Triple("user2", "Thomas Dubois", "@thomas.d"),
+            Triple("user3", "Emma Laurent", "@emma.l"),
+            Triple("user4", "Lucas Bernard", "@lucas.b")
+        )
+
+        return (0 until (postIndex + 1).coerceAtMost(3)).map { index ->
+            val user = users.random()
+            PostComment(
+                id = "comment_${postIndex}_$index",
+                userId = user.first,
+                username = user.second,
+                userHandle = user.third,
+                avatarUrl = null,
+                content = commentContents.random(),
+                timestamp = System.currentTimeMillis() - ((postIndex + index) * 1800000L)
+            )
+        }.sortedBy { it.timestamp }
+    }
+
+
+    private fun addComment(postId: String, content: String) {
+        viewModelScope.launch {
+            val updatedPosts = _uiState.value.friendsPosts.map { post ->
+                if (post.id == postId) {
+                    val newComment = PostComment(
+                        id = "comment_${System.currentTimeMillis()}",
+                        userId = "current_user",
+                        username = "Moi",
+                        userHandle = "@moi",
+                        avatarUrl = null,
+                        content = content,
+                        timestamp = System.currentTimeMillis()
+                    )
+                    post.copy(
+                        comments = post.comments + newComment,
+                        commentsCount = post.commentsCount + 1
+                    )
+                } else {
+                    post
+                }
+            }
+            _uiState.update { it.copy(friendsPosts = updatedPosts) }
         }
     }
 

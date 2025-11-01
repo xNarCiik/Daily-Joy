@@ -8,6 +8,7 @@ data class CommunityUiState(
     val selectedTab: CommunityTab = CommunityTab.FRIENDS,
 
     val friendsPosts: List<FriendPost> = emptyList(),
+    val expandedPostId: String? = null,
     val friends: List<Friend> = emptyList(),
     val suggestions: List<FriendSuggestion> = emptyList(),
     val pendingRequests: List<FriendRequest> = emptyList(),
@@ -33,7 +34,19 @@ data class FriendPost(
     val likesCount: Int,
     val commentsCount: Int,
     val isLiked: Boolean = false,
-    val pleasureCategory: PleasureCategory? = null
+    val pleasureCategory: PleasureCategory? = null,
+    val pleasureTitle: String? = null,
+    val comments: List<PostComment> = emptyList()
+)
+
+data class PostComment(
+    val id: String,
+    val userId: String,
+    val username: String,
+    val userHandle: String,
+    val avatarUrl: String? = null,
+    val content: String,
+    val timestamp: Long
 )
 
 data class Friend(
@@ -133,8 +146,9 @@ sealed interface CommunityEvent {
     data object OnFriendsListClicked : CommunityEvent
 
     data class OnPostLiked(val postId: String) : CommunityEvent
-    data class OnPostCommentClicked(val post: FriendPost) : CommunityEvent
     data class OnPostMenuClicked(val post: FriendPost) : CommunityEvent
+    data class OnAddComment(val postId: String, val comment: String) : CommunityEvent
+    data class OnToggleComments(val postId: String) : CommunityEvent
 
     data class OnFriendClicked(val friend: Friend) : CommunityEvent
     data class OnFriendMenuClicked(val friend: Friend) : CommunityEvent
