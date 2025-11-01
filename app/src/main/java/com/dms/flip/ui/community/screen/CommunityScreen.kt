@@ -11,8 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,44 +38,48 @@ fun CommunityScreen(
     uiState: CommunityUiState,
     onEvent: (CommunityEvent) -> Unit
 ) {
+    var selectedPost by remember { mutableStateOf<FriendPost?>(null) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
         CommunityTopBar(
-            onSearchClick = { onEvent(CommunityEvent.OnSearchClicked) },
-            onAddFriendClick = { onEvent(CommunityEvent.OnAddFriendClicked) }
-        )
-
-        CommunityTabs(
-            selectedTab = uiState.selectedTab,
-            onTabSelected = { onEvent(CommunityEvent.OnTabSelected(it)) },
+            onFriendsListClick = { onEvent(CommunityEvent.OnFriendsListClicked) },
+            onInvitationsClick = { onEvent(CommunityEvent.OnInvitationsClicked) },
             pendingRequestsCount = uiState.pendingRequests.size
         )
 
-        when (uiState.selectedTab) {
-            CommunityTab.FRIENDS -> {
-                FriendsFeedContent(
-                    posts = uiState.friendsPosts,
-                    onEvent = onEvent
-                )
+        FriendsFeedContent(
+            posts = uiState.friendsPosts,
+            onEvent = onEvent,
+            onPostMenuClick = { selectedPost = it }
+        )
+    }
+
+    // Dialog des options de post
+    if (selectedPost != null) {
+        PostOptionsDialog(
+            post = selectedPost!!,
+            onDismiss = { selectedPost = null },
+            onViewProfile = {
+                onEvent(CommunityEvent.OnFriendClicked(selectedPost!!.friend))
+                selectedPost = null
+            },
+            onDelete = {
+                // TODO: Implémenter la suppression
+                selectedPost = null
             }
-            CommunityTab.INVITATIONS -> {
-                InvitationsContent(
-                    uiState = uiState,
-                    onEvent = onEvent
-                )
-            }
-            else -> {}
-        }
+        )
     }
 }
 
 @Composable
 private fun CommunityTopBar(
-    onSearchClick: () -> Unit,
-    onAddFriendClick: () -> Unit
+    onFriendsListClick: () -> Unit,
+    onInvitationsClick: () -> Unit,
+    pendingRequestsCount: Int
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -89,12 +93,12 @@ private fun CommunityTopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = onSearchClick,
+                onClick = onFriendsListClick,
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.community_search),
+                    imageVector = Icons.Default.People,
+                    contentDescription = stringResource(R.string.friends_list),
                     tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(24.dp)
                 )
@@ -109,65 +113,8 @@ private fun CommunityTopBar(
                 textAlign = TextAlign.Center
             )
 
-            IconButton(
-                onClick = onAddFriendClick,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PersonAdd,
-                    contentDescription = stringResource(R.string.community_add_friend),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CommunityTabs(
-    selectedTab: CommunityTab,
-    onTabSelected: (CommunityTab) -> Unit,
-    pendingRequestsCount: Int
-) {
-    TabRow(
-        selectedTabIndex = if (selectedTab == CommunityTab.FRIENDS) 0 else 1,
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.primary,
-        indicator = { tabPositions ->
-            TabRowDefaults.SecondaryIndicator(
-                modifier = Modifier.tabIndicatorOffset(
-                    tabPositions[if (selectedTab == CommunityTab.FRIENDS) 0 else 1]
-                ),
-                color = MaterialTheme.colorScheme.primary,
-                height = 3.dp
-            )
-        }
-    ) {
-        Tab(
-            selected = selectedTab == CommunityTab.FRIENDS,
-            onClick = { onTabSelected(CommunityTab.FRIENDS) },
-            text = {
-                Text(
-                    text = stringResource(R.string.community_tab_friends),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = if (selectedTab == CommunityTab.FRIENDS) FontWeight.Bold else FontWeight.Medium
-                )
-            }
-        )
-        Tab(
-            selected = selectedTab == CommunityTab.INVITATIONS,
-            onClick = { onTabSelected(CommunityTab.INVITATIONS) },
-            text = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.community_tab_invitations),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = if (selectedTab == CommunityTab.INVITATIONS) FontWeight.Bold else FontWeight.Medium
-                    )
+            BadgedBox(
+                badge = {
                     if (pendingRequestsCount > 0) {
                         Badge(
                             containerColor = MaterialTheme.colorScheme.error
@@ -176,15 +123,28 @@ private fun CommunityTabs(
                         }
                     }
                 }
+            ) {
+                IconButton(
+                    onClick = onInvitationsClick,
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PersonAdd,
+                        contentDescription = stringResource(R.string.community_invitations),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-        )
+        }
     }
 }
 
 @Composable
 private fun FriendsFeedContent(
     posts: List<FriendPost>,
-    onEvent: (CommunityEvent) -> Unit
+    onEvent: (CommunityEvent) -> Unit,
+    onPostMenuClick: (FriendPost) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -198,7 +158,7 @@ private fun FriendsFeedContent(
                 post = post,
                 onLike = { onEvent(CommunityEvent.OnPostLiked(post.id)) },
                 onComment = { onEvent(CommunityEvent.OnPostCommentClicked(post)) },
-                onMenu = { onEvent(CommunityEvent.OnPostMenuClicked(post)) },
+                onMenu = { onPostMenuClick(post) },
                 onFriendClick = { onEvent(CommunityEvent.OnFriendClicked(post.friend)) }
             )
         }
@@ -275,7 +235,7 @@ private fun PostCard(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onBackground
                         )
-                        
+
                         if (post.friend.streak > 0) {
                             Row(
                                 modifier = Modifier
@@ -300,7 +260,7 @@ private fun PostCard(
                             }
                         }
                     }
-                    
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -398,11 +358,102 @@ private fun PostCard(
 private fun formatTimestamp(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
-    
+
     return when {
         diff < 60000 -> "à l'instant"
         diff < 3600000 -> "${diff / 60000}min ago"
         diff < 86400000 -> "${diff / 3600000}h ago"
         else -> SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(timestamp))
     }
+}
+
+@Composable
+private fun PostOptionsDialog(
+    post: FriendPost,
+    onDismiss: () -> Unit,
+    onViewProfile: () -> Unit,
+    onDelete: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Options du post",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Voir le profil
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable(onClick = onViewProfile)
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text = "Voir le profil de ${post.friend.username}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+
+                // TODO Supprimer (si c'est mon post)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable(onClick = onDelete)
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text = "Signaler le post",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Annuler")
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(24.dp)
+    )
 }

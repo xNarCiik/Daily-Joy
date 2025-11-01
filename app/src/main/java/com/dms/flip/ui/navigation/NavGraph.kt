@@ -17,8 +17,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dms.flip.domain.model.RootNavigationState
 import com.dms.flip.ui.community.CommunityNavHost
-import com.dms.flip.ui.community.CommunityViewModel
-import com.dms.flip.ui.community.screen.CommunityScreen
 import com.dms.flip.ui.dailyflip.DailyFlipScreen
 import com.dms.flip.ui.dailyflip.DailyFlipViewModel
 import com.dms.flip.ui.history.HistoryScreen
@@ -66,8 +64,13 @@ fun NavGraph(
 
     val navigateSingleTop: (Any) -> Unit = { route ->
         navController.navigate(route) {
-            popUpTo(navController.graph.id) { inclusive = true }
+            popUpTo(navController.graph.id)
+            {
+                saveState = true
+                inclusive = true
+            }
             launchSingleTop = true
+            restoreState = true
         }
     }
 

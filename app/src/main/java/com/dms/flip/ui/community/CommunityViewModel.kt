@@ -123,6 +123,44 @@ class CommunityViewModel @Inject constructor(
             return profile
         }
 
+        // Créer depuis une demande reçue
+        val pendingRequest = _uiState.value.pendingRequests.find { it.userId == userId }
+        if (pendingRequest != null) {
+            val profile = PublicProfile(
+                id = pendingRequest.userId,
+                username = pendingRequest.username,
+                handle = pendingRequest.handle,
+                avatarUrl = pendingRequest.avatarUrl,
+                bio = "Nouveau sur Flip ! En quête de nouvelles connexions 🤝",
+                friendsCount = (5..50).random(),
+                daysCompleted = (10..100).random(),
+                currentStreak = (0..30).random(),
+                recentActivities = generateMockActivities(),
+                relationshipStatus = RelationshipStatus.PENDING_RECEIVED
+            )
+            _publicProfiles[userId] = profile
+            return profile
+        }
+
+        // Créer depuis une demande envoyée
+        val sentRequest = _uiState.value.sentRequests.find { it.userId == userId }
+        if (sentRequest != null) {
+            val profile = PublicProfile(
+                id = sentRequest.userId,
+                username = sentRequest.username,
+                handle = sentRequest.handle,
+                avatarUrl = sentRequest.avatarUrl,
+                bio = "Bienvenue sur Flip ! ✨",
+                friendsCount = (10..60).random(),
+                daysCompleted = (20..150).random(),
+                currentStreak = (0..25).random(),
+                recentActivities = generateMockActivities(),
+                relationshipStatus = RelationshipStatus.PENDING_SENT
+            )
+            _publicProfiles[userId] = profile
+            return profile
+        }
+
         return null
     }
 
@@ -188,11 +226,6 @@ class CommunityViewModel @Inject constructor(
             }
 
             is CommunityEvent.OnRemoveFriend -> removeFriend(event.friend)
-
-            // ==================== SUGGESTIONS ====================
-            is CommunityEvent.OnSuggestionFilterChanged -> {
-                _uiState.update { it.copy(suggestionFilter = event.filter) }
-            }
 
             is CommunityEvent.OnAddSuggestion -> addSuggestion(event.suggestion)
 

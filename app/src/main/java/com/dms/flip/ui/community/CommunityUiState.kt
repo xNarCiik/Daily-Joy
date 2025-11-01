@@ -6,26 +6,16 @@ import com.dms.flip.data.model.PleasureCategory
 data class CommunityUiState(
     val isLoading: Boolean = false,
     val selectedTab: CommunityTab = CommunityTab.FRIENDS,
-    
-    // Friends Feed
+
     val friendsPosts: List<FriendPost> = emptyList(),
-    
-    // Friends List
     val friends: List<Friend> = emptyList(),
-    
-    // Suggestions
     val suggestions: List<FriendSuggestion> = emptyList(),
-    val suggestionFilter: SuggestionFilter = SuggestionFilter.ALL,
-    
-    // Friend Requests
     val pendingRequests: List<FriendRequest> = emptyList(),
     val sentRequests: List<FriendRequest> = emptyList(),
-    
-    // Search
     val searchQuery: String = "",
     val isSearching: Boolean = false,
     val searchResults: List<UserSearchResult> = emptyList(),
-    
+
     @StringRes val error: Int? = null
 )
 
@@ -35,17 +25,6 @@ enum class CommunityTab {
     INVITATIONS
 }
 
-enum class SuggestionFilter {
-    ALL,
-    COMMUNITIES,
-    CONTACTS
-}
-
-// ==================== MODELS ====================
-
-/**
- * Post d'un ami dans le feed
- */
 data class FriendPost(
     val id: String,
     val friend: Friend,
@@ -57,9 +36,6 @@ data class FriendPost(
     val pleasureCategory: PleasureCategory? = null
 )
 
-/**
- * Ami avec streak et plaisir actuel
- */
 data class Friend(
     val id: String,
     val username: String,
@@ -71,9 +47,6 @@ data class Friend(
     val favoriteCategory: PleasureCategory? = null
 )
 
-/**
- * Plaisir actuel d'un ami
- */
 data class FriendPleasure(
     val title: String,
     val category: PleasureCategory,
@@ -85,9 +58,6 @@ enum class PleasureStatus {
     COMPLETED
 }
 
-/**
- * Suggestion d'ami
- */
 data class FriendSuggestion(
     val id: String,
     val username: String,
@@ -103,9 +73,6 @@ enum class SuggestionSource {
     CONTACTS
 }
 
-/**
- * Demande d'ami
- */
 data class FriendRequest(
     val id: String,
     val userId: String,
@@ -121,9 +88,6 @@ enum class FriendRequestSource {
     SUGGESTION
 }
 
-/**
- * Résultat de recherche
- */
 data class UserSearchResult(
     val id: String,
     val username: String,
@@ -139,9 +103,6 @@ enum class RelationshipStatus {
     PENDING_RECEIVED
 }
 
-/**
- * Profil public d'un utilisateur
- */
 data class PublicProfile(
     val id: String,
     val username: String,
@@ -155,9 +116,6 @@ data class PublicProfile(
     val relationshipStatus: RelationshipStatus = RelationshipStatus.NONE
 )
 
-/**
- * Activité récente d'un utilisateur
- */
 data class RecentActivity(
     val id: String,
     val pleasureTitle: String,
@@ -166,45 +124,35 @@ data class RecentActivity(
     val isCompleted: Boolean
 )
 
-// ==================== EVENTS ====================
-
 sealed interface CommunityEvent {
-    // Navigation
     data class OnTabSelected(val tab: CommunityTab) : CommunityEvent
     data object OnSearchClicked : CommunityEvent
     data object OnAddFriendClicked : CommunityEvent
     data object OnCreatePostClicked : CommunityEvent
-    
-    // Friends Feed
+    data object OnInvitationsClicked : CommunityEvent
+    data object OnFriendsListClicked : CommunityEvent
+
     data class OnPostLiked(val postId: String) : CommunityEvent
     data class OnPostCommentClicked(val post: FriendPost) : CommunityEvent
     data class OnPostMenuClicked(val post: FriendPost) : CommunityEvent
-    
-    // Friends List
+
     data class OnFriendClicked(val friend: Friend) : CommunityEvent
     data class OnFriendMenuClicked(val friend: Friend) : CommunityEvent
     data class OnInviteFriendToPleasure(val friend: Friend) : CommunityEvent
     data class OnRemoveFriend(val friend: Friend) : CommunityEvent
-    
-    // Suggestions
-    data class OnSuggestionFilterChanged(val filter: SuggestionFilter) : CommunityEvent
+
     data class OnAddSuggestion(val suggestion: FriendSuggestion) : CommunityEvent
     data class OnHideSuggestion(val suggestion: FriendSuggestion) : CommunityEvent
-    
-    // Friend Requests
-    data object OnFriendRequestsClicked : CommunityEvent
+
     data class OnAcceptFriendRequest(val request: FriendRequest) : CommunityEvent
     data class OnDeclineFriendRequest(val request: FriendRequest) : CommunityEvent
     data class OnCancelSentRequest(val request: FriendRequest) : CommunityEvent
-    
-    // Search
+
     data class OnSearchQueryChanged(val query: String) : CommunityEvent
     data class OnSearchResultClicked(val result: UserSearchResult) : CommunityEvent
     data class OnAddUserFromSearch(val userId: String) : CommunityEvent
-    
-    // Profile
+
     data class OnViewProfile(val userId: String) : CommunityEvent
-    
-    // Error
+
     data object OnRetryClicked : CommunityEvent
 }

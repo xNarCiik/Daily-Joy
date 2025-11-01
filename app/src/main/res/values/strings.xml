@@ -7,7 +7,6 @@
 
     <!-- Login Screen -->
     <string name="login_google_failed">Connexion Google échouée</string>
-    <string name="login_daily_joy_logo">Flip Logo</string>
     <string name="login_start_day_with_joy">Commencez votre journée avec joie</string>
     <string name="login_daily_happiness">Votre dose de bonheur quotidienne</string>
     <string name="login_terms_and_conditions">En continuant, vous acceptez nos %1$s et notre %2$s.</string>
@@ -18,7 +17,6 @@
 
     <!-- Onboarding -->
     <!-- Welcome Step -->
-    <string name="onboarding_welcome_emoji" translatable="false">🎉</string>
     <string name="onboarding_welcome_title">Bienvenue dans Flip</string>
     <string name="onboarding_welcome_subtitle">Configurons ensemble votre expérience pour profiter pleinement de vos plaisirs quotidiens.</string>
     <string name="onboarding_welcome_feature1_emoji" translatable="false">📝</string>
@@ -38,9 +36,6 @@
     <!-- Notification Step -->
     <string name="onboarding_notification_title">Configurez vos rappels</string>
     <string name="onboarding_notification_subtitle">Recevez une notification quotidienne pour découvrir votre plaisir du jour.</string>
-    <string name="onboarding_notification_daily_reminder">Rappel quotidien</string>
-    <string name="onboarding_notification_daily_reminder_subtitle">Ne manquez aucun plaisir</string>
-    <string name="onboarding_notification_reminder_time">Heure du rappel</string>
 
     <!-- Daily Flip Screen -->
     <!-- Setup State -->
@@ -69,39 +64,9 @@
     <string name="history_streak_days">Jours de série</string>
     <string name="history_ready_for_joy">Prêt(e) pour votre joie du jour ?</string>
     <string name="history_discover_button">Découvrir</string>
-    <string name="history_day_locked">Jour verrouillé</string>
     <string name="status_done_checked">Fait ✓</string>
 
-    <!-- Social Screen -->
-    <string name="social_friends_title">Amis</string>
-    <string name="social_invitations_title">Invitations à compléter un plaisir</string>
-    <string name="social_invitation_from">%1$s vous invite à :</string>
-    <string name="social_accept">Accepter</string>
-    <string name="social_decline">Refuser</string>
-    <string name="social_search_placeholder">Rechercher un ami</string>
-    <string name="social_no_pleasure_today">Pas encore de plaisir aujourd\'hui</string>
-    <string name="social_streak_days">%d jours d\'affilé</string>
-    <string name="status_completed_short">Fait</string>
-    <string name="status_in_progress">En cours</string>
-    <string name="status_completed">Complété</string>
-    <string name="social_invite_to_pleasure">Inviter à compléter un plaisir</string>
-    <string name="social_pleasure_of_the_day">Plaisir du jour</string>
-    <string name="social_view_stats">Voir les statistiques</string>
-    <string name="social_remove_friend">Retirer des amis</string>
     <string name="dialog_close">Fermer</string>
-    <string name="social_empty_title">Aucun ami pour le moment</string>
-    <string name="social_friend_requests">Demandes d\'amis</string>
-    <string name="social_add_friend_title">Ajouter un ami</string>
-    <string name="social_add_friend">Ajouter</string>
-    <string name="social_add_friend_placeholder">Nom d\'utilisateur</string>
-    <string name="social_received_requests">Demandes reçues</string>
-    <string name="social_sent_requests">Demandes envoyées</string>
-    <string name="social_wants_to_add_you">Veut vous ajouter</string>
-    <string name="social_request_pending">En attente</string>
-    <string name="social_cancel">Annuler</string>
-    <string name="social_no_requests">Aucune demande en cours</string>
-    <string name="social_no_requests_subtitle">Ajoutez des amis pour partager vos plaisirs ensemble !</string>
-    <string name="social_empty_subtitle">Commencez à ajouter des amis pour partager vos plaisirs quotidiens ensemble</string>
     <!-- Settings Screen -->
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_daily_reminder_title">Rappel quotidien</string>
@@ -218,34 +183,26 @@
     <!-- Community Main -->
     <string name="community_title">Communauté</string>
     <string name="community_search">Rechercher</string>
+    <string name="friends_list">Liste d\'amis</string>
+    <string name="community_invitations">Invitations</string>
     <string name="community_add_friend">Ajouter un ami</string>
-    <string name="community_create_post">Créer un post</string>
     <string name="community_like">J\'aime</string>
     <string name="community_comment">Commenter</string>
     <string name="community_post_menu">Menu du post</string>
-    <string name="community_friend_menu">Menu de l\'ami</string>
-
-    <!-- Tabs -->
-    <string name="community_tab_friends">Amis</string>
-    <string name="community_tab_suggestions">Suggestions</string>
-    <string name="community_tab_invitations">Invitations</string>
 
     <!-- Friends List -->
     <string name="friends_list_title">Mes Amis</string>
     <string name="friends_invite_to_pleasure">Inviter à un plaisir</string>
+    <string name="friend_options">Liste des options des amis</string>
+    <string name="view_profile">Voir le profil</string>
+    <string name="remove_friend">Supprimer l\'ami</string>
 
     <!-- Suggestions -->
     <string name="suggestions_title">Suggestions</string>
-    <string name="filter_all">Tous</string>
-    <string name="filter_communities">Communautés</string>
-    <string name="filter_contacts">Contacts</string>
-    <string name="mutual_friends_count">%d amis en commun</string>
 
     <!-- Friend Requests -->
-    <string name="friend_requests_title">Demandes d\'amis</string>
     <string name="requests_received">Reçues</string>
     <string name="requests_sent">Envoyées</string>
-    <string name="request_pending">En attente</string>
 
     <!-- Buttons -->
     <string name="button_add">Ajouter</string>
@@ -267,47 +224,7 @@
     <string name="activity_completed">Terminé</string>
     <string name="activity_in_progress">En cours</string>
 
-    <!-- Menu Actions -->
-    <string name="menu_hide_post">Masquer ce post</string>
-    <string name="menu_hide_post_desc">Ne plus voir les posts de cet utilisateur</string>
-    <string name="menu_report">Signaler</string>
-    <string name="menu_report_desc">Signaler un contenu inapproprié</string>
-    <string name="menu_remove_friend">Retirer des amis</string>
-    <string name="menu_block_user">Bloquer l\'utilisateur</string>
-
-    <!-- Empty States -->
-    <string name="empty_feed_title">Aucune activité</string>
-    <string name="empty_feed_message">Ajoutez des amis pour voir leurs activités quotidiennes</string>
-    <string name="empty_suggestions_title">Aucune suggestion</string>
-    <string name="empty_suggestions_message">Nous n\'avons pas de suggestions pour le moment</string>
-    <string name="empty_invitations_title">Aucune invitation</string>
-    <string name="empty_invitations_message">Vous n\'avez aucune demande d\'ami en attente</string>
-    <string name="empty_sent_requests_title">Aucune demande envoyée</string>
-    <string name="empty_sent_requests_message">Recherchez des amis et ajoutez-les</string>
-    <string name="empty_search_title">Aucun résultat</string>
-    <string name="empty_search_message">Essayez une autre recherche</string>
-
-    <!-- Notifications -->
-    <string name="friend_request_accepted">%s a accepté votre demande d\'ami</string>
-    <string name="new_friend_post">%s a partagé un nouveau moment</string>
-    <string name="friend_completed_pleasure">%s a terminé un plaisir</string>
-
     <!-- Errors -->
     <string name="error_load_friends">Impossible de charger la liste d\'amis</string>
-    <string name="error_send_request">Impossible d\'envoyer la demande</string>
-    <string name="error_accept_request">Impossible d\'accepter la demande</string>
-    <string name="error_network">Vérifiez votre connexion internet</string>
-    <string name="error_generic">Une erreur est survenue</string>
-
-    <!-- Confirmations -->
-    <string name="confirm_remove_friend">Retirer %s de vos amis ?</string>
-    <string name="confirm_cancel_request">Annuler la demande d\'ami ?</string>
-    <string name="confirm_block_user">Bloquer %s ?</string>
-
-    <!-- Success Messages -->
-    <string name="success_friend_added">%s a été ajouté à vos amis</string>
-    <string name="success_request_sent">Demande d\'ami envoyée</string>
-    <string name="success_request_accepted">Demande acceptée</string>
-    <string name="success_request_declined">Demande refusée</string>
 
 </resources>
