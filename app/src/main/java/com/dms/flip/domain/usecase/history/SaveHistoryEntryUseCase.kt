@@ -1,8 +1,8 @@
 package com.dms.flip.domain.usecase.history
 
 import com.dms.flip.domain.model.Pleasure
-import com.dms.flip.domain.model.getTodayDayIdentifier
 import com.dms.flip.domain.repository.PleasureRepository
+import com.dms.flip.ui.util.getTodayDayIdentifier
 import javax.inject.Inject
 
 class SaveHistoryEntryUseCase @Inject constructor(
@@ -13,8 +13,9 @@ class SaveHistoryEntryUseCase @Inject constructor(
         val existingEntry = pleasureRepository.getPleasureHistory(dayIdentifier)
 
         val entryToUpsert = existingEntry?.copy(
+            completedAt = if (markAsCompleted) System.currentTimeMillis() else null,
             completed = markAsCompleted
-        ) ?: pleasure.toPleasureHistory()
+        ) ?: pleasure.toPleasureHistory(id = dayIdentifier)
 
         pleasureRepository.upsertPleasureHistory(entryToUpsert)
     }

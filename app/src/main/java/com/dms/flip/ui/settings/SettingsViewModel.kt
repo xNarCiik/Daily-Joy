@@ -133,7 +133,7 @@ class SettingsViewModel @Inject constructor(
     private fun deleteAccount() {
         viewModelScope.launch {
             try {
-                authRepository.deleteAccount(context = application)
+                authRepository.deleteAccount()
             } catch (e: Exception) {
                 Log.e("SettingsViewModel", e.message ?: "Unknown error")
                 // TODO Generic error toast ?

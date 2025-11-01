@@ -78,8 +78,11 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideHistoryRepository(): HistoryRepository =
-        HistoryRepositoryImpl()
+    fun provideHistoryRepository(
+        firestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth
+    ): HistoryRepository =
+        HistoryRepositoryImpl(firestore = firestore, auth = firebaseAuth)
 
     @Provides
     @Singleton

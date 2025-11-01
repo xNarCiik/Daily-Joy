@@ -40,18 +40,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dms.flip.R
-import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.ui.history.WeeklyDay
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
+import com.dms.flip.ui.util.previewWeeklyDays
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
 private enum class DayType {
-    COMPLETED,    // Jour complété
-    TODAY,        // Jour actuel (à découvrir)
-    LOCKED        // Jour futur verrouillé
+    COMPLETED,
+    TODAY,
+    LOCKED
 }
 
 @Composable
@@ -355,50 +355,8 @@ private fun WeeklyPleasuresListPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                val previewItems = listOf(
-                    WeeklyDay(
-                        dayName = "Lundi",
-                        historyEntry = PleasureHistory(
-                            id = "1",
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis() - 86400000 * 2,
-                            completed = true,
-                            pleasureTitle = "Savourer un café chaud",
-                            pleasureDescription = "Prendre le temps de déguster",
-                            category = PleasureCategory.FOOD
-                        )
-                    ),
-                    WeeklyDay(
-                        dayName = "Mardi",
-                        historyEntry = PleasureHistory(
-                            id = "2",
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis() - 86400000,
-                            completed = true,
-                            pleasureTitle = "Lire quelques pages d'un livre",
-                            pleasureDescription = "Se plonger dans une histoire",
-                            category = PleasureCategory.LEARNING
-                        )
-                    ),
-                    WeeklyDay(
-                        dayName = "Mercredi",
-                        historyEntry = PleasureHistory(
-                            id = "3",
-                            dayIdentifier = "",
-                            dateDrawn = System.currentTimeMillis(),
-                            completed = false,
-                            pleasureTitle = "Plaisir du jour",
-                            pleasureDescription = "",
-                            category = PleasureCategory.ALL
-                        )
-                    ),
-                    WeeklyDay(dayName = "Jeudi", historyEntry = null),
-                    WeeklyDay(dayName = "Vendredi", historyEntry = null),
-                    WeeklyDay(dayName = "Samedi", historyEntry = null),
-                    WeeklyDay(dayName = "Dimanche", historyEntry = null)
-                )
                 WeeklyPleasuresList(
-                    items = previewItems,
+                    items = previewWeeklyDays,
                     onCardClicked = {},
                     onDiscoverTodayClicked = {}
                 )

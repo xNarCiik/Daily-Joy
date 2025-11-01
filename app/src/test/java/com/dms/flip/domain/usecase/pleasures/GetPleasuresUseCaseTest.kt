@@ -28,8 +28,8 @@ class GetPleasuresUseCaseTest {
     fun `invoke should return pleasures from repository`() = runTest {
         // Given
         val pleasures = listOf(
-            Pleasure(id = 1, title = "Lire un livre"),
-            Pleasure(id = 2, title = "Écouter de la musique")
+            Pleasure(id = "1", title = "Lire un livre"),
+            Pleasure(id = "2", title = "Écouter de la musique")
         )
         whenever(repository.getPleasures()).thenReturn(flowOf(pleasures))
 

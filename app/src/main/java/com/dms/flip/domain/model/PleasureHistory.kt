@@ -1,29 +1,27 @@
 package com.dms.flip.domain.model
 
 import com.dms.flip.data.model.PleasureCategory
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
+/**
+ * Entrée d'historique d'un plaisir tiré / réalisé.
+ */
 data class PleasureHistory(
     val id: String = "",
-    val dayIdentifier: String,
-    val dateDrawn: Long,
+    val dateDrawn: Long = 0L,
     val completed: Boolean = false,
-    val pleasureTitle: String,
+    val pleasureTitle: String? = null,
+    val pleasureCategory: PleasureCategory? = null,
     val pleasureDescription: String? = null,
-    val category: PleasureCategory
+    val completedAt: Long? = null
 ) {
-    fun toPleasure() =
-        Pleasure(
+    fun toPleasureOrNull(): Pleasure? {
+        val title = pleasureTitle ?: return null
+        val category = pleasureCategory ?: return null
+        return Pleasure(
             id = id,
-            title = pleasureTitle,
-            description = pleasureDescription ?: "",
+            title = title,
+            description = pleasureDescription.orEmpty(),
             category = category
         )
-}
-
-fun getTodayDayIdentifier(): String {
-    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    return sdf.format(Date())
+    }
 }

@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.domain.model.Pleasure
+import com.dms.flip.domain.model.PleasureHistory
+import com.dms.flip.ui.history.WeeklyDay
 import com.dms.flip.ui.social.Friend
 import com.dms.flip.ui.social.FriendPleasure
 import com.dms.flip.ui.social.PleasureStatus
@@ -36,7 +38,7 @@ val previewFriends = listOf(
         username = "Emma",
         streak = 326,
         currentPleasure = FriendPleasure(
-            title = "Baiser Hugo",
+            title = "Baiser Ugo",
             status = PleasureStatus.IN_PROGRESS,
             category = PleasureCategory.FOOD
         ),
@@ -70,4 +72,44 @@ val previewFriends = listOf(
         ),
         avatarUrl = "https://instagram.frns1-1.fna.fbcdn.net/v/t51.2885-19/543112697_18301432420247093_348652955831382183_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby41NDkuYzIifQ&_nc_ht=instagram.frns1-1.fna.fbcdn.net&_nc_cat=105&_nc_oc=Q6cZ2QEE6lZarhdFjXx3xHmMEZsR_baiOqSHKIXHktWDZ8P1janqlnFy_0NacBb3jnxCZEWaHe3rYc7oZSO1qLnpexd0&_nc_ohc=uWd8IyzNH58Q7kNvwFXQHjy&_nc_gid=-5FDa0QEFTWLM6xUhBpTvw&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Afcq1SdfVr6AaoiNk0G24x-VIF-CTrQyWDDmy6XKY2ARVw&oe=6905CD5F&_nc_sid=7a9f4b"
     )
+)
+
+val previewWeeklyDays = listOf(
+    WeeklyDay(
+        dayName = "Lundi",
+        historyEntry = PleasureHistory(
+            id = "1",
+            dateDrawn = System.currentTimeMillis() - 86400000 * 2,
+            completed = true,
+            pleasureTitle = "Savourer un café chaud",
+            pleasureDescription = "Prendre le temps de déguster",
+            pleasureCategory = PleasureCategory.FOOD
+        )
+    ),
+    WeeklyDay(
+        dayName = "Mardi",
+        historyEntry = PleasureHistory(
+            id = "2",
+            dateDrawn = System.currentTimeMillis() - 86400000,
+            completed = true,
+            pleasureTitle = "Lire quelques pages d'un livre",
+            pleasureDescription = "Se plonger dans une histoire",
+            pleasureCategory = PleasureCategory.LEARNING
+        )
+    ),
+    WeeklyDay(
+        dayName = "Mercredi",
+        historyEntry = PleasureHistory(
+            id = "3",
+            dateDrawn = System.currentTimeMillis(),
+            completed = false,
+            pleasureTitle = "Plaisir du jour",
+            pleasureDescription = "",
+            pleasureCategory = PleasureCategory.ALL
+        )
+    ),
+    WeeklyDay(dayName = "Jeudi", historyEntry = null),
+    WeeklyDay(dayName = "Vendredi", historyEntry = null),
+    WeeklyDay(dayName = "Samedi", historyEntry = null),
+    WeeklyDay(dayName = "Dimanche", historyEntry = null)
 )

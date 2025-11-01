@@ -1,35 +1,41 @@
 package com.dms.flip.data.model
 
+import androidx.annotation.Keep
 import com.dms.flip.domain.model.PleasureHistory
+import com.google.firebase.firestore.IgnoreExtraProperties
 
+@Keep
+@IgnoreExtraProperties
 data class PleasureHistoryDto(
-    val dayIdentifier: String = "",
-    val dateDrawn: Long = 0,
-    val completed: Boolean = false,
-    val pleasureTitle: String = "",
+    val id: String = "",
+    val pleasureTitle: String? = null,
+    val pleasureCategory: String? = null,
     val pleasureDescription: String? = null,
-    val category: String = ""
+    val dateDrawn: Long? = null,
+    val completedAt: Long? = null,
+    val completed: Boolean = false
 ) {
-    fun toDomain(id: String): PleasureHistory {
+    fun toDomain(): PleasureHistory {
         return PleasureHistory(
             id = id,
-            dayIdentifier = dayIdentifier,
-            dateDrawn = dateDrawn,
-            completed = completed,
             pleasureTitle = pleasureTitle,
+            pleasureCategory = pleasureCategory?.let { PleasureCategory.valueOf(pleasureCategory) },
             pleasureDescription = pleasureDescription,
-            category = PleasureCategory.valueOf(category)
+            dateDrawn = dateDrawn ?: 0L,
+            completedAt = completedAt,
+            completed = completed
         )
     }
 }
 
 fun PleasureHistory.toDto(): PleasureHistoryDto {
     return PleasureHistoryDto(
-        dayIdentifier = dayIdentifier,
-        dateDrawn = dateDrawn,
-        completed = completed,
+        id = id,
         pleasureTitle = pleasureTitle,
+        pleasureCategory = pleasureCategory?.name,
         pleasureDescription = pleasureDescription,
-        category = category.name
+        dateDrawn = dateDrawn,
+        completedAt = completedAt,
+        completed = completed
     )
 }

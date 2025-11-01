@@ -68,7 +68,7 @@ class DailyFlipViewModel @Inject constructor(
                     else -> DailyFlipUiState(
                         screenState = DailyFlipScreenState.Ready(
                             availableCategories = PleasureCategory.entries,
-                            dailyPleasure = todayHistory?.toPleasure(), // TODO LET HISTORY
+                            dailyPleasure = todayHistory?.toPleasureOrNull(), // TODO LET HISTORY ?
                             isCardFlipped = todayHistory != null
                         ),
                         headerMessage = if (todayHistory == null)

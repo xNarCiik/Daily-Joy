@@ -87,7 +87,7 @@ fun WeekNavigationHeader(
 
             // Bouton Suivant
             IconButton(
-                onClick = onPreviousWeekClick,
+                onClick = onNextWeekClick,
                 modifier = Modifier.size(48.dp)
             ) {
                 Surface(

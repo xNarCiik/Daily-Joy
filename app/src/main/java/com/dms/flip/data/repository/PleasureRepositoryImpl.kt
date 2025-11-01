@@ -9,6 +9,7 @@ import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.domain.repository.PleasureRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -83,7 +84,8 @@ class PleasureRepositoryImpl @Inject constructor(
     override suspend fun delete(pleasuresId: List<String>) {
         val batch = firestore.batch()
         pleasuresId.forEach { pleasureId ->
-            val docRef = firestore.collection("users").document(userId).collection("pleasures").document(pleasureId)
+            val docRef = firestore.collection("users").document(userId).collection("pleasures")
+                .document(pleasureId)
             batch.delete(docRef)
         }
         batch.commit().await()
@@ -91,13 +93,22 @@ class PleasureRepositoryImpl @Inject constructor(
 
     override suspend fun upsertPleasureHistory(pleasureHistory: PleasureHistory) {
         firestore.collection("users").document(userId).collection("history")
-            .document(pleasureHistory.dayIdentifier).set(pleasureHistory.toDto()).await()
+            .document(pleasureHistory.id).set(pleasureHistory.toDto(), SetOptions.merge()).await()
     }
 
-    override suspend fun getPleasureHistory(dayIdentifier: String): PleasureHistory? {
-        val document = firestore.collection("users").document(userId).collection("history")
-            .document(dayIdentifier).get().await()
+    override suspend fun getPleasureHistory(id: String): PleasureHistory? {
+        val snapshot = firestore.collection("users")
+            .document(userId)
+            .collection("history")
+            .whereEqualTo("id", id)
+            .limit(1)
+            .get()
+            .await()
 
-        return document.toObject(PleasureHistoryDto::class.java)?.toDomain(document.id)
+        val doc = snapshot.documents.firstOrNull() ?: return null
+
+        val dto = doc.toObject(PleasureHistoryDto::class.java) ?: return null
+
+        return dto.toDomain()
     }
 }
