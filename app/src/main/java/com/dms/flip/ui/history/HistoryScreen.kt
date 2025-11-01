@@ -29,7 +29,8 @@ import com.dms.flip.ui.util.previewWeeklyDays
 fun HistoryScreen(
     modifier: Modifier = Modifier,
     uiState: HistoryUiState,
-    onEvent: (HistoryEvent) -> Unit
+    onEvent: (HistoryEvent) -> Unit,
+    navigateToDailyFlip: () -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
@@ -50,7 +51,8 @@ fun HistoryScreen(
                     weekTitle = uiState.weekTitle,
                     weekDates = uiState.weekDates,
                     streakDays = uiState.streakDays,
-                    onEvent = onEvent
+                    onEvent = onEvent,
+                    navigateToDailyFlip = navigateToDailyFlip
                 )
             }
         }
@@ -64,7 +66,8 @@ private fun HistoryContent(
     weekTitle: String,
     weekDates: String,
     streakDays: Int,
-    onEvent: (HistoryEvent) -> Unit
+    onEvent: (HistoryEvent) -> Unit,
+    navigateToDailyFlip: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -99,9 +102,7 @@ private fun HistoryContent(
         WeeklyPleasuresList(
             items = weeklyDays,
             onCardClicked = { item -> onEvent(HistoryEvent.OnCardClicked(item)) },
-            onDiscoverTodayClicked = {
-                onEvent(HistoryEvent.OnDiscoverTodayClicked)
-            }
+            onDiscoverTodayClicked = navigateToDailyFlip
         )
     }
 }
@@ -116,7 +117,8 @@ private fun HistoryScreenPreview() {
         ) {
             HistoryScreen(
                 uiState = HistoryUiState(weeklyDays = previewWeeklyDays),
-                onEvent = {}
+                onEvent = {},
+                navigateToDailyFlip = {}
             )
         }
     }

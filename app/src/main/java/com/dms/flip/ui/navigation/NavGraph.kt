@@ -117,7 +117,8 @@ fun NavGraph(
             HistoryScreen(
                 modifier = modifierWithPaddingValues,
                 uiState = historyState,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                navigateToDailyFlip = { navController.navigate(DailyPleasureRoute) }
             )
         }
 
