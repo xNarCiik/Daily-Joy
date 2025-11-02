@@ -1,10 +1,10 @@
 package com.dms.flip.data.repository
 
 import com.dms.flip.data.model.PleasureCategory
+import com.dms.flip.domain.model.community.Friend
+import com.dms.flip.domain.model.community.FriendPleasure
+import com.dms.flip.domain.model.community.PleasureStatus
 import com.dms.flip.domain.repository.SocialRepository
-import com.dms.flip.ui.community.Friend
-import com.dms.flip.ui.community.FriendPleasure
-import com.dms.flip.ui.community.PleasureStatus
 import com.dms.flip.ui.util.previewFriends
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

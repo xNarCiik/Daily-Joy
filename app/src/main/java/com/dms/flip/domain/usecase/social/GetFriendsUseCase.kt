@@ -1,8 +1,8 @@
 
 package com.dms.flip.domain.usecase.social
 
+import com.dms.flip.domain.model.community.Friend
 import com.dms.flip.domain.repository.SocialRepository
-import com.dms.flip.ui.community.Friend
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

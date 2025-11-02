@@ -37,8 +37,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.dms.flip.R
-import com.dms.flip.ui.community.FriendRequest
-import com.dms.flip.ui.community.FriendSuggestion
+import com.dms.flip.domain.model.community.FriendRequest
+import com.dms.flip.domain.model.community.FriendSuggestion
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 import com.dms.flip.ui.util.previewPendingRequests

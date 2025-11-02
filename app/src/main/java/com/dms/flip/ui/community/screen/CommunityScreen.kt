@@ -13,7 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.dms.flip.ui.community.CommunityEvent
 import com.dms.flip.ui.community.CommunityUiState
-import com.dms.flip.ui.community.FriendPost
+import com.dms.flip.domain.model.community.FriendPost
 import com.dms.flip.ui.community.component.CommunityTopBar
 import com.dms.flip.ui.community.component.FriendsFeedContent
 import com.dms.flip.ui.community.component.PostOptionsDialog
