@@ -15,7 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.dms.flip.ui.community.CommunityEvent
 import com.dms.flip.ui.community.CommunityUiState
-import com.dms.flip.ui.community.Friend
+import com.dms.flip.domain.model.community.Friend
 import com.dms.flip.ui.community.component.FriendListItem
 import com.dms.flip.ui.community.component.FriendOptionsDialog
 import com.dms.flip.ui.community.component.FriendsListTopBar

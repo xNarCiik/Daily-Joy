@@ -52,8 +52,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.dms.flip.R
 import com.dms.flip.data.model.PleasureCategory
 import com.dms.flip.ui.community.CommunityEvent
-import com.dms.flip.ui.community.FriendPost
-import com.dms.flip.ui.community.PostComment
+import com.dms.flip.domain.model.community.FriendPost
+import com.dms.flip.domain.model.community.PostComment
 import com.dms.flip.ui.theme.FlipTheme
 import com.dms.flip.ui.util.LightDarkPreview
 import com.dms.flip.ui.util.formatTimestamp

@@ -7,18 +7,18 @@ import com.dms.flip.domain.model.Pleasure
 import com.dms.flip.domain.model.PleasureHistory
 import com.dms.flip.ui.community.CommunityTab
 import com.dms.flip.ui.community.CommunityUiState
-import com.dms.flip.ui.community.Friend
-import com.dms.flip.ui.community.FriendPleasure
-import com.dms.flip.ui.community.FriendPost
-import com.dms.flip.ui.community.FriendRequest
-import com.dms.flip.ui.community.FriendRequestSource
-import com.dms.flip.ui.community.FriendSuggestion
-import com.dms.flip.ui.community.PleasureStatus
-import com.dms.flip.ui.community.PublicProfile
-import com.dms.flip.ui.community.RecentActivity
-import com.dms.flip.ui.community.RelationshipStatus
+import com.dms.flip.domain.model.community.Friend
+import com.dms.flip.domain.model.community.FriendPleasure
+import com.dms.flip.domain.model.community.FriendPost
+import com.dms.flip.domain.model.community.FriendRequest
+import com.dms.flip.domain.model.community.FriendRequestSource
+import com.dms.flip.domain.model.community.FriendSuggestion
+import com.dms.flip.domain.model.community.PleasureStatus
+import com.dms.flip.domain.model.community.PublicProfile
+import com.dms.flip.domain.model.community.RecentActivity
+import com.dms.flip.domain.model.community.RelationshipStatus
 import com.dms.flip.ui.community.SuggestionSource
-import com.dms.flip.ui.community.UserSearchResult
+import com.dms.flip.domain.model.community.UserSearchResult
 import com.dms.flip.ui.history.WeeklyDay
 
 @Preview(name = "Light", showBackground = true)

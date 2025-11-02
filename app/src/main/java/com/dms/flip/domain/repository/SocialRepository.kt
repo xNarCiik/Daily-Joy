@@ -1,7 +1,7 @@
 
 package com.dms.flip.domain.repository
 
-import com.dms.flip.ui.community.Friend
+import com.dms.flip.domain.model.community.Friend
 import kotlinx.coroutines.flow.Flow
 
 interface SocialRepository {

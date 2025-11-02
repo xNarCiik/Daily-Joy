@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.glide.compose)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

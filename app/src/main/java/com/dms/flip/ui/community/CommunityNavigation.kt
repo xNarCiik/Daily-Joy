@@ -8,6 +8,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
@@ -133,7 +136,9 @@ fun CommunityNavHost(
             val userId = backStackEntry.arguments?.getString("userId")
 
             if (userId != null) {
-                val profile = viewModel.getPublicProfile(userId)
+                val profiles by viewModel.publicProfiles.collectAsState()
+                LaunchedEffect(userId) { viewModel.loadPublicProfile(userId) }
+                val profile = profiles[userId]
 
                 if (profile != null) {
                     PublicProfileScreen(
